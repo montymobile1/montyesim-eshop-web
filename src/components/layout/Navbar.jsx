@@ -58,15 +58,13 @@ const Navbar = ({ main }) => {
     };
   }, [lastScrollY, isHomePage]);
 
-  let textColorClass = "";
-
-  if (isActive(item.path)) {
-    textColorClass = "text-secondary";
-  } else if (!isHomePage || showMenu) {
-    textColorClass = "text-primary hover:text-secondary";
-  } else {
-    textColorClass = "text-white hover:text-secondary";
-  }
+  const customClassName = useMemo(() => {
+    if (!isHomePage || showMenu) {
+      return "text-primary hover:text-secondary";
+    } else {
+      return "text-white hover:text-secondary";
+    }
+  }, [isHomePage, showMenu]);
 
   const menuLinks = useMemo(() => {
     if (main) return menuItems;
@@ -100,7 +98,9 @@ const Navbar = ({ main }) => {
                   key={item.path}
                   to={item.path}
                   onClick={() => window.scrollTo(0, 0)}
-                  className={`px-4 py-2 text-base transition-colors flex items-center font-bold ${textColorClass}`}
+                  className={`px-4 py-2 text-base transition-colors flex items-center font-bold ${
+                    isActive(item.path) ? "text-secondary" : customClassName
+                  }`}
                 >
                   {item.icon && <item.icon className="w-4 h-4 mr-2" />}
                   {t(`nav.${item.label}`)}
