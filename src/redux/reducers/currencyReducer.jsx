@@ -11,6 +11,7 @@ const initialState = {
   allowed_payment_types: ["dcb"],
   whatsapp_number: "",
   bundles_version: null,
+  referral_amount: "",
 };
 
 //EXPLANATION: I moved the api to authServices to prevent circular dependency
@@ -38,42 +39,41 @@ const CurrencySlice = createSlice({
         state.isLoading = true;
       })
       .addCase(fetchCurrencyInfo.fulfilled, (state, action) => {
-        let currency = action.payload?.data?.data?.find(
-          (el) => el?.key === "default_currency"
-        );
-        let paymentTypes = action.payload?.data?.data?.find(
-          (el) => el?.key === "allowed_payment_types"
-        );
-        let loginType = action.payload?.data?.data?.find(
-          (el) => el?.key === "login_type"
-        );
-        let versionId = action.payload?.data?.data?.find(
-          (el) => el?.key === "CATALOG.BUNDLES_CACHE_VERSION"
-        );
+        const data = action.payload?.data?.data ?? [];
+
+        // helper to find key ignoring case
+        const findByKey = (key) =>
+          data.find((el) => el?.key?.toLowerCase() === key.toLowerCase());
+
+        let currency = findByKey("default_currency");
+        let referralAmount = findByKey("REFERRAL_CODE_AMOUNT");
+        let paymentTypes = findByKey("allowed_payment_types");
+        let loginType = findByKey("login_type");
+        let versionId = findByKey("CATALOG.BUNDLES_CACHE_VERSION");
+        let whatsappNumber = findByKey("WHATSAPP_NUMBER");
 
         state.bundles_version = versionId?.value || null;
         state.login_type = loginType?.value || "email";
+
         state.otp_channel = import.meta.env.VITE_APP_OTP_CHANNEL
           ? import.meta.env.VITE_APP_OTP_CHANNEL.split(",")
           : ["email"];
+
         state.sea_option = import.meta.env.VITE_APP_SEA_OPTION
           ? import.meta.env.VITE_APP_SEA_OPTION === "true"
-            ? true
-            : false
-          : true;
-        state.social_login = import.meta.env.VITE_APP_SOCIAL_LOGIN
-          ? import.meta.env.VITE_APP_SOCIAL_LOGIN === "true"
-            ? true
-            : false
           : true;
 
-        let whatsappNumber = action.payload?.data?.data?.find(
-          (el) => el?.key === "WHATSAPP_NUMBER"
-        );
+        state.social_login = import.meta.env.VITE_APP_SOCIAL_LOGIN
+          ? import.meta.env.VITE_APP_SOCIAL_LOGIN === "true"
+          : true;
 
         state.whatsapp_number = whatsappNumber?.value || "";
         state.system_currency = currency?.value || "EUR";
-        state.allowed_payment_types = paymentTypes?.value.split(",") || ["dcb"];
+        state.allowed_payment_types = paymentTypes?.value
+          ? paymentTypes.value.split(",")
+          : ["wallet"];
+
+        state.referral_amount = referralAmount?.value || "";
         state.isLoading = false;
       })
       .addCase(fetchCurrencyInfo.rejected, (state, action) => {
@@ -93,10 +93,13 @@ const CurrencySlice = createSlice({
             ? true
             : false
           : true;
+
         state.allowed_payment_types = ["dcb"];
         state.system_currency = "EUR";
         state.whatsapp_number = "";
+        state.referral_amount = "";
         state.isLoading = false;
+
         state.error = action.payload;
       });
   },

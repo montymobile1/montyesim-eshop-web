@@ -7,7 +7,7 @@ import {
   CustomToggleButton,
   CustomToggleGroup,
 } from "../../assets/CustomComponents";
-import { Link, useSearchParams } from "react-router-dom";
+import { Link, useLocation, useSearchParams } from "react-router-dom";
 import useQueryParams from "../../core/custom-hook/useQueryParams";
 import NoDataFound from "../../components/shared/no-data-found/NoDataFound";
 import { NoDataFoundSVG } from "../../assets/icons/Common";
@@ -16,6 +16,7 @@ import OrderCard from "../../components/order/OrderCard";
 
 const Esim = () => {
   const { t } = useTranslation();
+  const location = useLocation();
   const [searchParams] = useSearchParams();
   const [filters, setFilters] = useState({
     expired: searchParams.get("expired") || "false",

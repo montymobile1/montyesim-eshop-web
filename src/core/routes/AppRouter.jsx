@@ -5,6 +5,7 @@ import { useAppRoutes } from "../custom-hook/useAppRoutes";
 
 const AppRouter = () => {
   const allRoutes = useAppRoutes();
+
   return (
     <Routes>
       {allRoutes?.map((route) => {

@@ -8,8 +8,8 @@ import { useTranslation, Trans } from "react-i18next";
 import { useSelector } from "react-redux";
 
 const EmailSent = ({ email, onClose, verifyBy, phone }) => {
-  const { login_type } = useSelector((state) => state.currency);
-  console.log(verifyBy, "verifyy by", login_type, "loginn type");
+  const login_type = useSelector((state) => state?.currency?.login_type);
+
   const { t } = useTranslation();
   useEffect(() => {
     const timer = setTimeout(() => {

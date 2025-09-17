@@ -1,9 +1,13 @@
 //UTILITIES
-import React, { useMemo, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import React, { useEffect, useMemo, useState } from "react";
+import { useLocation, useNavigate } from "react-router-dom";
+import { yupResolver } from "@hookform/resolvers/yup";
+import { useForm, Controller } from "react-hook-form";
+import * as yup from "yup";
 //COMPONENT
 import NoDataFound from "../../shared/no-data-found/NoDataFound";
-import { Close, QuestionMark } from "@mui/icons-material";
+import { Check, Close, QuestionMark } from "@mui/icons-material";
+import PriorityHighIcon from "@mui/icons-material/PriorityHigh";
 import {
   Avatar,
   Button,
@@ -19,7 +23,19 @@ import { useSelector } from "react-redux";
 import clsx from "clsx";
 import TooltipComponent from "../../shared/tooltip/TooltipComponent";
 import { useTranslation, Trans } from "react-i18next";
-import { formatValidity } from "../../../assets/utils/formatValidity";
+import { FormInput } from "../../shared/form-components/FormComponents";
+import { validatePromo } from "../../../core/apis/promotionsAPI";
+
+const schema = () =>
+  yup.object().shape({
+    code: yup
+      .string()
+      .label("Code")
+      .transform((value, originalValue) =>
+        originalValue?.trim() === "" ? null : value
+      )
+      .nullable(),
+  });
 
 const BundleDetail = ({
   onClose,
@@ -31,29 +47,76 @@ const BundleDetail = ({
   const { t } = useTranslation();
   const isSmall = useMediaQuery("(max-width: 639px)");
   const navigate = useNavigate();
+  const location = useLocation();
   const { isAuthenticated, tmp } = useSelector((state) => state.authentication);
-  const { login_type } = useSelector((state) => state.currency);
+  const login_type = useSelector((state) => state.currency?.login_type);
   const [openRedirection, setOpenRedirection] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [checkingCode, setCheckingCode] = useState(false);
+  const [appliedCode, setAppliedCode] = useState(false);
+  const [isReferral, setIsReferral] = useState(false);
+  const [newBundle, setNewBundle] = useState("");
+  const [selectedBundle, setSelectedBundle] = useState("");
+  const [codeMessage, setCodeMessage] = useState({
+    message: "",
+    status: "",
+  });
+  const {
+    control,
+    handleSubmit,
+    reset,
+    watch,
+    getValues,
+    setValue,
+    formState: { errors },
+  } = useForm({
+    defaultValues: {
+      code: "",
+      referral: false,
+    },
+    resolver: yupResolver(schema({ t })),
+    mode: "all",
+  });
 
   const handleCheckExist = () => {
     //order top-up
-    console.log(tmp?.isAuthenticated, isAuthenticated, "check maro");
-    if (!tmp?.isAuthenticated && !isAuthenticated) {
-      if (login_type === "phone") {
-        navigate(
-          `/signin?next=${encodeURIComponent(
-            `/checkout/${bundle?.bundle_code}`
-          )}`
-        );
-      } else {
-        navigate(`/checkout/${bundle?.bundle_code}`);
-      }
+    if (!tmp?.isAuthenticated && !isAuthenticated && login_type === "phone") {
+      navigate(
+        `/signin?next=${encodeURIComponent(
+          `/checkout/${bundle?.bundle_code}`
+        )}`,
+        {
+          state: {
+            promo_code: appliedCode ? getValues("code") : "",
+            new_price: newBundle?.price,
+            new_price_display: newBundle?.price_display || null,
+          },
+        }
+      );
+      return;
+    }
+    if (
+      (tmp?.isAuthenticated && !isAuthenticated) ||
+      (!tmp?.isAuthenticated && !isAuthenticated)
+    ) {
+      navigate(`/checkout/${bundle?.bundle_code}`, {
+        state: {
+          promo_code: appliedCode ? getValues("code") : "",
+          new_price: newBundle?.price,
+          new_price_display: newBundle?.price_display || null,
+        },
+      });
 
       return;
     }
     if (iccid) {
-      navigate(`/checkout/${bundle?.bundle_code}/${iccid}`);
+      navigate(`/checkout/${bundle?.bundle_code}/${iccid}`, {
+        state: {
+          promo_code: appliedCode ? getValues("code") : "",
+          new_price: newBundle?.price,
+          new_price_display: newBundle?.price_display || null,
+        },
+      });
       return;
     } else {
       //normal order
@@ -65,7 +128,13 @@ const BundleDetail = ({
             if (res?.data?.data) {
               setOpenRedirection(true);
             } else {
-              navigate(`/checkout/${bundle?.bundle_code}`);
+              navigate(`/checkout/${bundle?.bundle_code}`, {
+                state: {
+                  promo_code: appliedCode ? getValues("code") : "",
+                  new_price: newBundle?.price,
+                  new_price_display: newBundle?.price_display || null,
+                },
+              });
             }
           } else {
             toast.error(res?.message);
@@ -77,6 +146,64 @@ const BundleDetail = ({
         .finally(() => setIsSubmitting(false));
     }
   };
+
+  const handleCodeValidation = (payload) => {
+    setCheckingCode(true);
+    validatePromo({
+      promo_code: payload?.code?.trim(),
+      bundle_code: bundle?.bundle_code,
+    })
+      .then((res) => {
+        console.log("res error", res);
+        if (res?.data?.status?.toLowerCase() === "success") {
+          setNewBundle(res?.data?.data || null);
+          setAppliedCode(true);
+          setCodeMessage({
+            message: res?.data?.message,
+            status: res?.data?.status,
+          });
+        }
+      })
+      .catch((error) => {
+        console.log("catch error", error);
+        const status = error?.response?.data?.status || "";
+        setCodeMessage({
+          message: error?.response?.data?.message || error?.message || "",
+          status: status,
+        });
+        localStorage.removeItem("referral_code");
+        setAppliedCode(false);
+      })
+      .finally(() => {
+        setCheckingCode(false);
+      });
+  };
+
+  useEffect(() => {
+    if (location?.state?.promo_code) {
+      reset({
+        code: location?.state?.promo_code || "",
+      });
+      handleCodeValidation({ code: location?.state?.promo_code });
+    } else if (localStorage.getItem("referral_code")) {
+      reset({
+        code: localStorage.getItem("referral_code") || "",
+      });
+      handleCodeValidation({ code: localStorage.getItem("referral_code") });
+    }
+  }, []);
+
+  useEffect(() => {
+    if (appliedCode) {
+      setSelectedBundle(newBundle);
+    } else {
+      setSelectedBundle(bundle);
+      setCodeMessage({
+        message: "",
+        status: "",
+      });
+    }
+  }, [appliedCode]);
 
   const avatarSrc = useMemo(() => {
     if (globalDisplay) return "/media/global.svg";
@@ -119,14 +246,14 @@ const BundleDetail = ({
           <div className={"flex flex-row gap-4 items-center min-w-0 "}>
             <Avatar
               src={avatarSrc}
-              alt={bundle?.display_title || ""}
+              alt={selectedBundle?.display_title || ""}
               sx={{ width: 45, height: 45 }}
             >
               {/* fallback image */}
               <img
                 src={"/media/global.svg"}
                 className={"bg-white"}
-                alt={bundle?.display_title || ""}
+                alt={selectedBundle?.display_title || ""}
               />
             </Avatar>
             <div
@@ -138,7 +265,7 @@ const BundleDetail = ({
                   "text-xl font-bold text-primary truncate w-full sm:max-w-none"
                 }
               >
-                {bundle?.display_title || ""}
+                {selectedBundle?.display_title || ""}
               </p>
               {/* NOTES: done by request because title and sub title are same
               <p className={"text-base text-color-400 truncate w-full"}>
@@ -152,7 +279,12 @@ const BundleDetail = ({
               "text-2xl font-bold text-primary flex justify-end break-all"
             }
           >
-            {`${formatValidity(bundle?.validity_display)}` || ""}
+            {`${t("bundles.validity")}: ${t(
+              `validity.${selectedBundle?.validity_label?.toLowerCase()}${
+                selectedBundle?.validity > 1 ? "_plural" : ""
+              }`,
+              { count: selectedBundle?.validity }
+            )}` || ""}
           </div>
         </div>
         <hr />
@@ -162,62 +294,68 @@ const BundleDetail = ({
             "flex sm:flex-row justify-between  items-center text-2xl font-bold text-primary min-w-0 gap-[0.5rem]"
           }
         >
-          <TooltipComponent title={isSmall ? bundle?.gprs_limit_display : ""}>
-            <p className={"truncate min-w-0"}>{bundle?.gprs_limit_display}</p>
+          <TooltipComponent
+            title={isSmall ? selectedBundle?.gprs_limit_display : ""}
+          >
+            <p className={"truncate min-w-0"}>
+              {selectedBundle?.gprs_limit_display}
+            </p>
           </TooltipComponent>
           <p className={"flex flex-row justify-end whitespace-nowrap"}>
-            {bundle?.price_display}
+            {selectedBundle?.price_display}
           </p>
         </div>
         <div
           className={
-            "flex flex-col sm:flex-row gap-[1rem] items-start sm:min-h-[150px]"
+            "flex flex-col sm:flex-row gap-[1rem] items-start sm:min-h-[220px]"
           }
         >
-          {bundle?.bundle_category?.type !== "CRUISE" && (
+          {selectedBundle?.bundle_category?.type !== "CRUISE" && (
             <div
               className={
-                "flex flex-col gap-[1rem] w-[100%] sm:basis-[50%] bg-bgLight rounded-md p-2 sm:min-h-[150px] max-h-[220px] sm:h-[220px]"
+                "flex flex-col gap-[1rem] w-[100%] sm:basis-[50%] bg-bgLight rounded-md p-2 sm:min-h-[220px] max-h-[220px] sm:h-[220px]"
               }
             >
               <h6>
                 {t("bundles.supportedCountries")}&nbsp;
-                {bundle?.countries?.length !== 0 &&
-                  `(${bundle?.countries?.length})`}
+                {selectedBundle?.countries?.length !== 0 &&
+                  `(${selectedBundle?.countries?.length})`}
               </h6>
               <div
                 className={
                   "flex flex-col gap-[0.5rem] overflow-x-hidden overflow-x-auto cursor-auto"
                 }
               >
-                {bundle?.countries?.length === 0 ? (
+                {selectedBundle?.countries?.length === 0 ? (
                   <NoDataFound text={t("bundles.bundleIsntSupportedCountry")} />
                 ) : (
-                  bundle?.countries?.map((supportedCountries, index) => (
-                    <div
-                      className={"flex flex-row gap-[1rem] items-center"}
-                      key={`${index}`}
-                    >
-                      <Avatar
-                        src={supportedCountries?.icon}
-                        alt={
-                          supportedCountries?.country ||
-                          `supported-country-${index}`
-                        }
-                        sx={{ width: 20, height: 20 }}
-                      />
-                      <p>{supportedCountries?.country}</p>
-                    </div>
-                  ))
+                  selectedBundle?.countries?.map(
+                    (supportedCountries, index) => (
+                      <div
+                        className={"flex flex-row gap-[1rem] items-center"}
+                        key={`${index}`}
+                      >
+                        <Avatar
+                          src={supportedCountries?.icon}
+                          alt={
+                            supportedCountries?.country ||
+                            `supported-country-${index}`
+                          }
+                          sx={{ width: 20, height: 20 }}
+                        />
+                        <p>{supportedCountries?.country}</p>
+                      </div>
+                    )
+                  )
                 )}
               </div>
             </div>
           )}
           <div
             className={clsx(
-              "flex flex-col w-[100%] sm:basis-[50%]  gap-[1rem] bg-bgLight rounded-md p-2 sm:min-h-[150px] sm:h-[220px]",
+              "flex flex-col w-[100%] sm:basis-[50%]  gap-[1rem] bg-bgLight rounded-md p-2 sm:min-h-[220px] sm:h-[220px]",
               {
-                "flex-1": bundle?.bundle_category?.type === "CRUISE",
+                "flex-1": selectedBundle?.bundle_category?.type === "CRUISE",
               }
             )}
           >
@@ -233,7 +371,7 @@ const BundleDetail = ({
                   {t("bundles.planType")}
                 </div>
                 <p className={"font-semibold break-words"}>
-                  {t(`planType.${bundle?.plan_type}`) ||
+                  {t(`planType.${selectedBundle?.plan_type}`) ||
                     t("common.notAvailable")}
                 </p>
               </div>
@@ -249,6 +387,106 @@ const BundleDetail = ({
             </div>
           </div>
         </div>
+        {isAuthenticated &&
+          import.meta.env.VITE_SUPPORT_PROMO == "true" &&
+          !iccid && (
+            <form
+              className={"bg-bgLight flex flex-col gap-2  p-2 rounded-md"}
+              onSubmit={handleSubmit(handleCodeValidation)}
+            >
+              <h6 className={"text-start"}>
+                {t("bundles.apply_promo_or_referral")}
+              </h6>
+              <div className={"flex flex-row gap-2"}>
+                <div className={"basis-[80%]"}>
+                  <Controller
+                    render={({
+                      field: { onChange, value },
+                      fieldState: { error },
+                    }) => (
+                      <FormInput
+                        placeholder={t("bundles.enter_promo_code_or_referral")}
+                        value={value}
+                        onChange={(value) => {
+                          onChange(value);
+                        }}
+                        disabled={appliedCode}
+                        hintMessage={
+                          codeMessage?.message !== "" && (
+                            <div className={"flex flex-row gap-1 items-center"}>
+                              {codeMessage?.status === "success" ? (
+                                <Check
+                                  fontSize="small"
+                                  sx={{ height: "1rem" }}
+                                  color="success"
+                                />
+                              ) : (
+                                <PriorityHighIcon
+                                  fontSize="small"
+                                  sx={{ height: "1rem" }}
+                                />
+                              )}
+                              <p
+                                style={{
+                                  color:
+                                    codeMessage?.status === "failed"
+                                      ? undefined
+                                      : "green", // Green if success
+                                }}
+                              >
+                                {`${codeMessage?.message}`}
+                              </p>
+                            </div>
+                          )
+                        }
+                        helperText={error?.message}
+                      />
+                    )}
+                    name="code"
+                    control={control}
+                  />
+                </div>
+                <div
+                  className={"flex flex-row gap-2 basis-[20%]"}
+                  style={{ flexFlow: "column" }}
+                >
+                  {appliedCode ? (
+                    <Button
+                      type="button"
+                      variant={"contained"}
+                      onClick={(e) => {
+                        e.preventDefault();
+                        setAppliedCode(false);
+                        localStorage.removeItem("referral_code");
+                        reset();
+                      }}
+                      style={{ marginTop: "2px" }}
+                      color="secondary"
+                      disabled={
+                        !watch("code") || watch("code") === "" || checkingCode
+                      }
+                    >
+                      {t("btn.cancel")}
+                    </Button>
+                  ) : (
+                    <Button
+                      variant={"contained"}
+                      color="primary"
+                      style={{ marginTop: "2px" }}
+                      type={"submit"}
+                      disabled={
+                        !watch("code") ||
+                        watch("code")?.trim() === "" ||
+                        checkingCode
+                      }
+                    >
+                      {t("btn.apply")}
+                    </Button>
+                  )}
+                </div>
+              </div>
+            </form>
+          )}
         <div
           className={
             "bg-bgLight flex flex-row gap-6 items-center p-2 rounded-md"
@@ -267,6 +505,7 @@ const BundleDetail = ({
               />
             </div>
           </div>
+
           <div className={"flex flex-col gap-1"}>
             <h6>{t("bundles.compatibility")}</h6>
             <p className={"text-sm font-bold break-words"}>
@@ -281,7 +520,7 @@ const BundleDetail = ({
       </DialogContent>
       <div className={"px-[24px] py-[20px]"}>
         <Button
-          disabled={isSubmitting}
+          disabled={isSubmitting || checkingCode}
           variant={"contained"}
           color="primary"
           onClick={() => handleCheckExist()}
@@ -289,15 +528,18 @@ const BundleDetail = ({
           <p className={"font-bold !text-base truncate max-w-20px"}>
             {isSubmitting
               ? t("btn.checkingBundle")
-              : `${t("btn.buyNow")} - ${bundle?.price_display}`}
+              : `${t("btn.buyNow")} - ${selectedBundle?.price_display}`}
           </p>
         </Button>
       </div>
       {openRedirection && (
         <BundleExistence
-          bundle={bundle}
+          bundle={selectedBundle}
           onClose={() => setOpenRedirection(false)}
           closeDetail={() => onClose()}
+          appliedCode={appliedCode}
+          newBundle={newBundle}
+          getValues={getValues}
         />
       )}
     </Dialog>

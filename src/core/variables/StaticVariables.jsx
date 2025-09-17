@@ -1,7 +1,11 @@
+import React from "react";
 import MonetizationOnOutlinedIcon from "@mui/icons-material/MonetizationOnOutlined";
 import PublicOutlinedIcon from "@mui/icons-material/PublicOutlined";
 import CheckCircleOutlineOutlinedIcon from "@mui/icons-material/CheckCircleOutlineOutlined";
 import AirplanemodeActiveOutlinedIcon from "@mui/icons-material/AirplanemodeActiveOutlined";
+
+const isSupportPromo = import.meta.env.VITE_SUPPORT_PROMO == "true";
+
 export const menuItems = [
   { path: "/plans", label: "plans" },
   { path: "/how-it-works", label: "howItWorks" },
@@ -10,14 +14,22 @@ export const menuItems = [
 ];
 
 export const authMenuItems = [
-  { path: "/esim", label: "myEsim" },
-  { path: "/orders", label: "ordersHistory" },
+  { path: "/esim", label: "myEsim", visible: true },
+  { path: "/orders", label: "ordersHistory", visible: true },
+  { path: "/my-wallet", label: "myWallet", visible: isSupportPromo },
 ];
 
 export const authResponsiveMenuItems = [
-  { path: "/profile", label: "accountInfo" },
-  { path: "/esim", label: "myEsim" },
-  { path: "/orders", label: "ordersHistory" },
+  { path: "/profile", label: "accountInfo", visible: true },
+  { path: "/esim", label: "myEsim", visible: true },
+  { path: "/orders", label: "ordersHistory", visible: true },
+  { path: "/my-wallet", label: "myWallet", visible: isSupportPromo },
+];
+
+export const languages = [
+  { code: "en", name: "English", flag: "EN" },
+  { code: "ar", name: "العربية", flag: "ع" },
+  // { code: "fr", name: "Français", flag: "FR" },
 ];
 
 export const benefits = [

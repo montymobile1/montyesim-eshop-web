@@ -21,12 +21,13 @@ import { UpdateCurrency } from "../../redux/reducers/currencyReducer";
 import { Info } from "@mui/icons-material";
 import { queryClient } from "../../main";
 import { useTranslation } from "react-i18next";
+import { languages } from "../../core/variables/StaticVariables";
 
 const Profile = () => {
   const { t } = useTranslation();
   const dispatch = useDispatch();
   const { user_info } = useSelector((state) => state.authentication);
-  const { login_type } = useSelector((state) => state.currency);
+  const login_type = useSelector((state) => state?.currency?.login_type);
   const system_currency = useSelector(
     (state) => state.currency?.system_currency
   );
@@ -124,8 +125,6 @@ const Profile = () => {
     mode: "all",
   });
 
-  console.log("login type", login_type, "errors", errors);
-
   const handleSubmitForm = (payload) => {
     setIsSubmitting(true);
     const { email, ...rest } = payload;
@@ -142,6 +141,9 @@ const Profile = () => {
               "user_currency",
               payload?.user_currency?.currency
             );
+            languages?.map((el) => {
+              localStorage.removeItem(`home_countries_cache_${el?.code}`);
+            });
           } else {
             sessionStorage?.removeItem("user_currency");
           }

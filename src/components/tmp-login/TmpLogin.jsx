@@ -30,7 +30,7 @@ const TmpLogin = () => {
   const dispatch = useDispatch();
 
   const { login_type, otp_channel, social_login } = useSelector(
-    (state) => state.currency,
+    (state) => state.currency
   );
   const schema = ({ t }) =>
     yup.object().shape({
@@ -229,7 +229,7 @@ const TmpLogin = () => {
                 <div
                   className={"flex flex-col text-sm gap-[0.1rem] font-semibold"}
                 >
-                  <div>{t("confirmValidAndNoTypos", { login_type })}</div>
+                  <div>{t("auth.confirmValidAndNoTypos", { login_type })}</div>
                   <div>
                     {t("auth.andIAcceptThe")}{" "}
                     <Link

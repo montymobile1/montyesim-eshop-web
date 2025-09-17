@@ -10,15 +10,19 @@ import { NoDataFoundSVG } from "../../../assets/icons/Common";
 import NoDataFound from "../../../components/shared/no-data-found/NoDataFound";
 import { Skeleton } from "@mui/material";
 import { useTranslation } from "react-i18next";
+import { useDispatch } from "react-redux";
+import { fetchUserInfo } from "../../../redux/reducers/authReducer";
 
 const EsimDetail = (props) => {
   const { t } = useTranslation();
   const navigate = useNavigate();
+  const dispatch = useDispatch();
   const { iccid } = useParams();
   const { data, isLoading, error, refetch } = useQuery({
     queryKey: [`esim-detail-${iccid}`],
     queryFn: () => getMyEsimByIccid(iccid).then((res) => res?.data?.data),
     enabled: !!iccid,
+    onSuccess: () => dispatch(fetchUserInfo()),
   });
 
   return (

@@ -8,7 +8,13 @@ import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import { Link } from "react-router-dom";
 import { useSelector } from "react-redux";
 
-const BundleExistence = ({ onClose, bundle }) => {
+const BundleExistence = ({
+  onClose,
+  bundle,
+  appliedCode,
+  newBundle,
+  getValues,
+}) => {
   const { t } = useTranslation();
 
   return (
@@ -51,6 +57,11 @@ const BundleExistence = ({ onClose, bundle }) => {
           <Button
             component={Link}
             to={`/checkout/${bundle?.bundle_code}`}
+            state={{
+              promo_code: appliedCode ? getValues("code") : "",
+              new_price: newBundle?.price,
+              new_price_display: newBundle?.price_display || null,
+            }}
             className={"max-w-xs"}
             variant={"contained"}
             color="primary"

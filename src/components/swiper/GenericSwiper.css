@@ -1,0 +1,14 @@
+.custom-bullet {
+  background-color: #ffffff;
+  opacity: 0.5;
+  width: 8px;
+  height: 8px;
+  margin: 0 4px;
+  border-radius: 50%;
+  transition: background-color 0.3s, opacity 0.3s;
+}
+
+.custom-bullet-active {
+  background-color: #eb224d !important;
+  opacity: 1;
+}

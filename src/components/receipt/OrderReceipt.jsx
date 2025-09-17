@@ -120,7 +120,7 @@ const OrderReceipt = ({ order, onClose, isLoading }) => {
                       {isLoading ? (
                         <Skeleton width={50} />
                       ) : (
-                        order?.bundle_details?.price_display
+                        order?.order_display_price
                       )}
                     </TableCell>
                     <TableCell sx={{ border: "1px solid black" }}>

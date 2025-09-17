@@ -5,6 +5,7 @@ import clsx from "clsx";
 import { useDispatch } from "react-redux";
 import { setDirection } from "../redux/reducers/directionSlice.jsx";
 import { queryClient } from "../main.jsx";
+import i18next from "i18next";
 
 const LanguageSwitcher = () => {
   const [openModal, setOpenModal] = useState(false);
@@ -60,7 +61,9 @@ const LanguageSwitcher = () => {
       </button>
       {openModal && (
         <div
-          className={`absolute ${i18n.language === "en" ? "right-0" : "left-0"} mt-2 w-48 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200`}
+          className={`absolute ${
+            i18n.language === "en" ? "right-0" : "left-0"
+          } mt-2 w-48 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200`}
         >
           <div className="py-1">
             {languages?.map((language) => (
@@ -72,7 +75,7 @@ const LanguageSwitcher = () => {
                   {
                     "bg-gray-50 text-secondary":
                       i18n.language === language.code,
-                  },
+                  }
                 )}
               >
                 <span>{language?.name}</span>

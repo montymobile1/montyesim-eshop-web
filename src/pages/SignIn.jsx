@@ -1,5 +1,5 @@
 //UTILITIES
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { useForm, Controller } from "react-hook-form";
 import { useTranslation } from "react-i18next";
@@ -39,6 +39,7 @@ const SignIn = () => {
   const { login_type, otp_channel, social_login } = useSelector(
     (state) => state.currency
   );
+  const [otpRequested, setOtpRequested] = useState(false);
 
   const schema = ({ t }) =>
     yup.object().shape({
@@ -107,7 +108,6 @@ const SignIn = () => {
     resolver: yupResolver(schema({ t })),
     mode: "all",
   });
-
   const handleSubmitForm = (payload) => {
     setIsSubmitting(true);
     userLogin({
@@ -118,6 +118,7 @@ const SignIn = () => {
       .then((res) => {
         if (res?.data?.status === "success") {
           setShowEmailSent(true);
+          setOtpRequested(true);
         }
       })
       .catch((e) => {
@@ -135,6 +136,7 @@ const SignIn = () => {
             phone={getValues("phone")}
             verifyBy={getValues("verify_by")}
             setShowEmailSent={setShowEmailSent}
+            otpRequested={otpRequested}
           />
         </div>
         {showEmailSent && (

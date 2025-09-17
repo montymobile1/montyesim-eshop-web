@@ -19,7 +19,10 @@ import Profile from "../../pages/profile/Profile";
 import UserNotifications from "../../pages/user-notification/UserNotifications";
 import EsimDetail from "../../pages/my-esim/esim-detail/EsimDetail";
 import PrivacyPolicy from "../../pages/privacy-policy/PrivacyPolicy";
+import MyWallet from "../../pages/my-wallet/MyWallet";
+import ReferAndEarn from "../../pages/refer-earn/ReferAndEarn";
 
+const isSupportPromo = import.meta.env.VITE_SUPPORT_PROMO === "true";
 export const allRoutes = [
   {
     path: "",
@@ -92,6 +95,7 @@ export const allRoutes = [
     path: "/checkout/:id/:iccid",
     element: <Checkout topup={true} />,
   },
+
   {
     path: "/user-notifications",
     element: <UserNotifications />,
@@ -116,4 +120,19 @@ export const allRoutes = [
     element: <Profile />,
     isPrivate: true,
   },
+  {
+    path: "/refer-earn",
+    element: <ReferAndEarn />,
+    isPrivate: true,
+  },
+
+  ...(isSupportPromo
+    ? [
+        {
+          path: "/my-wallet",
+          element: <MyWallet />,
+          isPrivate: true,
+        },
+      ]
+    : []),
 ];

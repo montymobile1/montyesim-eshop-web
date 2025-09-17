@@ -1,41 +1,40 @@
+import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { queryClient } from "../../main";
 import {
   clearCacheIfVersionChanged,
   getStoredVersion,
+  setStoredVersion,
 } from "../version-storage/versionStorage";
-import { useEffect } from "react";
+
 import { getHomePageContent } from "../apis/homeAPI";
 import { useQuery } from "react-query";
+import i18n from "../../i18n";
+import { languages } from "../variables/StaticVariables";
 
 export const VERSION_STORAGE_KEY = "app_bundles_version";
-export const API_CACHE_KEY = "home_countries_cache";
 
 export const useHomeCountries = () => {
-  const { bundles_version } = useSelector((state) => state.currency);
+  const bundles_version = useSelector(
+    (state) => state?.currency?.bundles_version
+  );
+  const language = i18n.language;
 
-  //EXPLANATION: I am checking the version of bundles if changed then I invalidate the query
-  useEffect(() => {
-    if (bundles_version) {
-      const versionChanged = clearCacheIfVersionChanged(bundles_version);
-
-      if (versionChanged) {
-        queryClient.invalidateQueries({
-          queryKey: ["home-countries"],
-        });
-      }
-    }
-  }, [bundles_version, queryClient]);
+  const cacheKey = `home_countries_cache_${language}`;
 
   return useQuery({
-    queryKey: ["home-countries", bundles_version],
+    queryKey: ["home-countries", bundles_version, language],
     queryFn: async () => {
       try {
-        const cachedData = localStorage.getItem(API_CACHE_KEY);
+        const cachedData = localStorage.getItem(cacheKey);
         const storedVersion = getStoredVersion();
 
         if (cachedData && storedVersion === bundles_version) {
           return JSON.parse(cachedData);
+        } else {
+          localStorage.removeItem(cacheKey);
+
+          setStoredVersion(bundles_version);
         }
       } catch (error) {
         console.error("Error reading from localStorage:", error);
@@ -46,7 +45,7 @@ export const useHomeCountries = () => {
       const data = response?.data?.data;
 
       try {
-        localStorage.setItem(API_CACHE_KEY, JSON.stringify(data));
+        localStorage.setItem(cacheKey, JSON.stringify(data));
       } catch (error) {
         console.error("Error saving to localStorage:", error);
       }

@@ -1,51 +1,118 @@
 //UTILITIES
-import React, { useEffect, useMemo, useState } from "react";
-import { toast } from "react-toastify";
+import { useEffect, useMemo, useState } from "react";
 import { useQuery } from "react-query";
-import { useNavigate, useParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import * as yup from "yup";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
 //API
-import { userLimitedLogin } from "../../core/apis/authAPI";
 import { getBundleById } from "../../core/apis/bundlesAPI";
 //REDUCER
 import {
-  LimitedSignIn,
+  fetchUserInfo,
   LimitedSignOut,
 } from "../../redux/reducers/authReducer";
 //COMPONENT
 import ArrowBackIosNewIcon from "@mui/icons-material/ArrowBackIosNew";
-import { Controller, useForm } from "react-hook-form";
-import { yupResolver } from "@hookform/resolvers/yup";
-import {
-  FormCheckBox,
-  FormInput,
-} from "../../components/shared/form-components/FormComponents";
-import { Button, Link, Skeleton } from "@mui/material";
-import { StripePayment } from "../../components/stripe-payment/StripePayment";
-import PaymentFlow from "../../components/payment/PaymentFlow";
-import TmpLogin from "../../components/tmp-login/TmpLogin";
+import { Skeleton } from "@mui/material";
 import { useTranslation } from "react-i18next";
+import PaymentFlow from "../../components/payment/PaymentFlow";
+import PaymentSummary from "../../components/payment/PaymentSummary";
+import TmpLogin from "../../components/tmp-login/TmpLogin";
+import { cancelOrder } from "../../core/apis/userAPI";
+import { queryClient } from "../../main";
 
 const Checkout = () => {
   const { isAuthenticated, tmp } = useSelector((state) => state.authentication);
-  const { login_type } = useSelector((state) => state.currency);
+  const { allowed_payment_types } = useSelector((state) => state?.currency);
+  const { user_info } = useSelector((state) => state.authentication);
   const { id } = useParams();
+  const { iccid } = useParams();
   const navigate = useNavigate();
   const { t } = useTranslation();
-
-  const [isSubmitting, setIsSubmitting] = useState(false);
   const dispatch = useDispatch();
+  const location = useLocation();
+  const [checkedMethod, setCheckedMethod] = useState(false);
+  const [orderId, setOrderId] = useState(null);
+
+  const state = location.state;
 
   const { data, isLoading, error } = useQuery({
     queryKey: [`${id}-details`],
     queryFn: () => getBundleById(id).then((res) => res?.data?.data),
     enabled: !!id,
   });
-
   const confirmed = useMemo(() => {
     return isAuthenticated || tmp?.isAuthenticated;
   }, [isAuthenticated, tmp]);
+
+  const handleCancelOrder = async () => {
+    if (orderId) {
+      try {
+        await cancelOrder(orderId);
+      } catch (err) {
+        console.error("Cancel order failed:", err);
+      }
+      setOrderId(null);
+    }
+
+    if (checkedMethod && filteredPaymentTypes?.length !== 1) {
+      setCheckedMethod(false);
+    } else {
+      navigate(-1);
+      dispatch(LimitedSignOut());
+    }
+  };
+
+  const handleSuccessOrder = (id) => {
+    const searchParams = new URLSearchParams(location.search);
+    searchParams.set("order_id", id ? id : orderId);
+    localStorage.removeItem("referral_code");
+
+    setTimeout(() => {
+      queryClient.invalidateQueries({ queryKey: ["my-esim"] });
+      if (iccid) {
+        queryClient.invalidateQueries({
+          queryKey: [`esim-detail-${iccid}`],
+        });
+      }
+
+      navigate({
+        pathname: iccid ? `/esim/${iccid}` : "/plans",
+        search: !iccid ? `?${searchParams.toString()}` : "",
+      });
+    }, 5000);
+  };
+
+  const filteredPaymentTypes = useMemo(() => {
+    if (!allowed_payment_types) return [];
+
+    const currentPrice = state?.new_price ?? data?.price;
+    const userBalance = user_info?.balance || 0;
+
+    return allowed_payment_types.filter((paymentType) => {
+      const paymentTypeLower = paymentType?.toLowerCase();
+
+      // Hide wallet option if user balance is insufficient
+      if (paymentTypeLower === "wallet" && userBalance < currentPrice) {
+        return false;
+      }
+
+      // Hide DCB and wallet options for non-authenticated users
+      if (
+        !isAuthenticated &&
+        (paymentTypeLower === "dcb" || paymentTypeLower === "wallet")
+      ) {
+        return false;
+      }
+
+      return true;
+    });
+  }, [
+    allowed_payment_types,
+    user_info?.balance,
+    data,
+    isAuthenticated,
+    tmp?.isAuthenticated,
+  ]);
 
   return (
     <div
@@ -58,8 +125,7 @@ const Checkout = () => {
           "flex flex-row gap-2 items-center font-semibold cursor-pointer"
         }
         onClick={() => {
-          navigate(-1);
-          dispatch(LimitedSignOut());
+          handleCancelOrder();
         }}
       >
         <ArrowBackIosNewIcon
@@ -98,65 +164,17 @@ const Checkout = () => {
         !confirmed ? (
           <TmpLogin />
         ) : (
-          <PaymentFlow bundle={data} />
+          <PaymentFlow
+            bundle={data}
+            filteredPaymentTypes={filteredPaymentTypes}
+            checkedMethod={checkedMethod}
+            setCheckedMethod={setCheckedMethod}
+            handleCancelOrder={handleCancelOrder}
+            handleSuccessOrder={handleSuccessOrder}
+            setOrderId={setOrderId}
+          />
         )}
-        <div
-          className={
-            "bg-primary-50 p-4 rounded-2xl flex flex-col gap-8 w-full sm:basis-[50%] shadow-sm grow-0 min-w-0"
-          }
-        >
-          <h1 className={"font-bold text-2xl"}>{t("checkout.summary")}</h1>
-          <div className={"flex flex-col gap-2 min-w-0"}>
-            <div
-              className={
-                "flex flex-row justify-between items-start gap-[1rem] min-w-0"
-              }
-            >
-              <label className={"flex-1 font-semibold"}>
-                {t("checkout.bundleName")}
-              </label>
-              <p
-                dir={"ltr"}
-                className={`flex-1 font-bold truncate ${localStorage.getItem("i18nextLng") === "en" ? "text-right" : "text-left"}`}
-              >
-                {data?.display_title || t("common.notAvailable")}
-              </p>
-            </div>
-            <div
-              className={"flex flex-row justify-between items-start gap-[1rem]"}
-            >
-              <label className={"flex-1 font-semibold"}>
-                {t("checkout.subtotal")}
-              </label>
-              <p
-                dir={"ltr"}
-                className={`flex-1 font-bold ${localStorage.getItem("i18nextLng") === "en" ? "text-right" : "text-left"}`}
-              >
-                {data?.price_display}
-              </p>
-            </div>
-            <div
-              className={"flex flex-row justify-between items-start gap-[1rem]"}
-            >
-              <label className={"flex-1 font-semibold"}>
-                {t("checkout.estimatedTax")}
-              </label>
-              <p className={"flex-1 font-bold text-end"}>---</p>
-            </div>
-          </div>
-          <hr />
-          <div
-            className={"flex flex-row justify-between items-start gap-[1rem]"}
-          >
-            <label className={"font-semibold"}>{t("checkout.total")}</label>
-            <p
-              dir={"ltr"}
-              className={`font-bold text-2xl ${localStorage.getItem("i18nextLng") === "en" ? "text-right" : "text-left"}`}
-            >
-              {data?.price_display}
-            </p>
-          </div>
-        </div>
+        <PaymentSummary data={data} />
       </div>
     </div>
   );

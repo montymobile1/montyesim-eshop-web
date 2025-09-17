@@ -1,6 +1,7 @@
 import { createTheme } from "@mui/material/styles";
 import tailwindConfigModule from "../../tailwind.config";
 import resolveConfig from "tailwindcss/resolveConfig";
+import i18n from "../i18n";
 const tailwindConfig = resolveConfig(tailwindConfigModule);
 
 export const appTheme = createTheme({
@@ -69,6 +70,10 @@ export const appTheme = createTheme({
       styleOverrides: {
         root: {
           borderRadius: tailwindConfig.theme.borderRadius.DEFAULT,
+          padding:
+            localStorage.getItem("i18nextLng") === "ar"
+              ? "6px 12px"
+              : "4px 8px",
         },
       },
     },
@@ -294,6 +299,18 @@ export const appTheme = createTheme({
           "@media (max-width:500px)": { fontSize: "14px" },
           "@media (max-width:860px)": { fontSize: "12px" },
           "@media (max-width:791px)": { fontSize: "12px" },
+        },
+      },
+    },
+    MuiTableRow: {
+      styleOverrides: {
+        root: {
+          "&:nth-of-type(even)": {
+            backgroundColor: tailwindConfig.theme.backgroundColor.bgGrey,
+          },
+          "&:nth-of-type(odd)": {
+            backgroundColor: "#ffffff",
+          },
         },
       },
     },

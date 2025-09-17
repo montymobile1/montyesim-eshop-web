@@ -20,12 +20,16 @@ import Profile from "../../pages/profile/Profile";
 import UserNotifications from "../../pages/user-notification/UserNotifications";
 import EsimDetail from "../../pages/my-esim/esim-detail/EsimDetail";
 import PrivacyPolicy from "../../pages/privacy-policy/PrivacyPolicy";
+import MyWallet from "../../pages/my-wallet/MyWallet";
+import ReferAndEarn from "../../pages/refer-earn/ReferAndEarn";
+import Referral from "../../pages/referral/Referral";
 
 export const useAppRoutes = () => {
-  const { login_type } = useSelector((state) => state.currency);
+  const login_type = useSelector((state) => state?.currency?.login_type);
+  const isSupportPromo = import.meta?.env?.VITE_SUPPORT_PROMO === "true";
 
-  return useMemo(
-    () => [
+  return useMemo(() => {
+    const routes = [
       {
         path: "",
         element:
@@ -102,6 +106,11 @@ export const useAppRoutes = () => {
         isPrivate: login_type == "phone",
       },
       {
+        path: "/referral",
+        element: <Referral />,
+        isPrivate: true,
+      },
+      {
         path: "/user-notifications",
         element: <UserNotifications />,
         isPrivate: true,
@@ -125,7 +134,21 @@ export const useAppRoutes = () => {
         element: <Profile />,
         isPrivate: true,
       },
-    ],
-    [login_type]
-  );
+      {
+        path: "/refer-earn",
+        element: <ReferAndEarn />,
+        isPrivate: true,
+      },
+    ];
+
+    if (isSupportPromo) {
+      routes.push({
+        path: "/my-wallet",
+        element: <MyWallet />,
+        isPrivate: true,
+      });
+    }
+
+    return routes;
+  }, [login_type]);
 };

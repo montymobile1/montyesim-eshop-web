@@ -4,6 +4,7 @@ import { useCallback } from "react";
 const useQueryParams = (filters) => {
   const location = useLocation();
   const navigate = useNavigate();
+
   let { pathname, search } = location;
 
   // Parsing the query string
@@ -51,7 +52,7 @@ const useQueryParams = (filters) => {
       : pathname;
 
     // Update the URL in the browser using navigate
-    navigate(newUrl);
+    navigate(newUrl, { state: location?.state });
   }, [filters, pathname, query, navigate]);
 
   return handleQueryParams;

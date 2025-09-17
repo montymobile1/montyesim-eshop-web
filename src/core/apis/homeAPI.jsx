@@ -1,8 +1,32 @@
+import i18n from "../../i18n";
 import { api } from "./axios";
 
 export const getHomePageContent = async () => {
   try {
-    const res = await api.get("api/v1/home/");
+    const res = await api.get("api/v1/home/", {
+      params: {
+        bundle_version: localStorage.getItem("app_bundles_version"),
+        language: i18n.language,
+      },
+    });
+    return res;
+  } catch (error) {
+    throw error;
+  }
+};
+
+export const getCruiseContent = async () => {
+  try {
+    const res = await api.get("api/v1/home/cruise");
+    return res;
+  } catch (error) {
+    throw error;
+  }
+};
+
+export const getLandContent = async () => {
+  try {
+    const res = await api.get("api/v1/home/land");
     return res;
   } catch (error) {
     throw error;
@@ -68,6 +92,24 @@ export const getPrivacyPolicyContent = async () => {
 export const getFAQContent = async () => {
   try {
     const res = await api.get("api/v1/app/faq");
+    return res;
+  } catch (error) {
+    return error;
+  }
+};
+
+export const getBannersContent = async () => {
+  try {
+    const res = await api.get("api/v1/app/banners");
+    return res;
+  } catch (error) {
+    return error;
+  }
+};
+
+export const getReferEarnContent = async () => {
+  try {
+    const res = await api.get("api/v1/promotion/referral-info");
     return res;
   } catch (error) {
     return error;

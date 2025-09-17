@@ -20,7 +20,6 @@ export const userLogin = async (payload) => {
 };
 
 export const resendOrderOTP = async (payload) => {
-  console.log(payload, "pppppp");
   try {
     const res = await api.post(
       `api/v1/user/bundle/resend_order_otp/${payload}`

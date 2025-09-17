@@ -12,18 +12,25 @@ const RouteWrapper = ({ layout, element, isPrivate, isAuthRestricted }) => {
   const next = searchParams.get("next");
 
   if (isPrivate && !isAuthenticated) {
+    const nextPath = location?.pathname + location?.search;
     return (
       <Navigate
         to={
           location?.pathname
-            ? `/signin?next=${encodeURIComponent(location.pathname)}`
+            ? `/signin?next=${encodeURIComponent(nextPath)}`
             : "signin"
         }
+        state={location?.state}
         replace
       />
     );
   } else if (isAuthRestricted && isAuthenticated) {
-    return <Navigate to={next ? decodeURIComponent(next) : "/plans"} />;
+    return (
+      <Navigate
+        to={next ? decodeURIComponent(next) : "/plans"}
+        state={location?.state}
+      />
+    );
   }
 
   const Layout = layout ? layout : isAuthenticated ? AuthLayout : MainLayout;

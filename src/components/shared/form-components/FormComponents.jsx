@@ -7,12 +7,15 @@ import {
   FormGroup,
   FormHelperText,
   InputAdornment,
+  Radio,
+  RadioGroup,
   Switch,
   TextField,
 } from "@mui/material";
 import "react-phone-number-input/style.css";
 import PhoneInput from "react-phone-number-input";
 import React, { useEffect, useState } from "react";
+import i18n from "../../../i18n";
 
 export const FormInput = (props) => {
   const {
@@ -22,20 +25,29 @@ export const FormInput = (props) => {
     placeholder,
     onChange,
     helperText,
+    endAdornment,
+    hintMessage,
+    type = "text",
   } = props;
 
   return (
     <TextField
       className={props.className}
       fullWidth
+      type={type}
       onClick={onClick}
       value={props.value}
       placeholder={placeholder}
       variant={variant}
       onChange={(e) => onChange(e.target.value)}
-      helperText={helperText}
+      helperText={hintMessage || helperText}
       disabled={props.disabled}
       slotProps={{
+        formHelperText: {
+          sx: {
+            textAlign: i18n.language === "ar" ? "right" : "left",
+          },
+        },
         input: {
           startAdornment: (
             <InputAdornment position="start">{startAdornment}</InputAdornment>
@@ -44,6 +56,9 @@ export const FormInput = (props) => {
           form: {
             autoComplete: "off",
           },
+          endAdornment: (
+            <InputAdornment position="end">{endAdornment}</InputAdornment>
+          ),
         },
       }}
       size="small"
@@ -131,7 +146,23 @@ export const FormCheckBox = (props) => {
     </FormControl>
   );
 };
-
+export const FormRadioGroup = (props) => {
+  const { data, value, onChange } = props;
+  return (
+    <FormControl>
+      <RadioGroup
+        aria-labelledby="demo-radio-buttons-group-label"
+        name="radio-buttons-group"
+        value={value}
+        onChange={(e) => onChange(e.target.value)}
+      >
+        {data?.map((el) => (
+          <FormControlLabel value={el} control={<Radio />} label={el} />
+        ))}
+      </RadioGroup>
+    </FormControl>
+  );
+};
 export const FormDropdownList = (props) => {
   const {
     data,

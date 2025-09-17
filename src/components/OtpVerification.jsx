@@ -12,7 +12,6 @@ import { toast } from "react-toastify";
 import { resendOrderOTP, userLogin, verifyOTP } from "../core/apis/authAPI";
 import { verifyOrderOTP } from "../core/apis/userAPI";
 import { dcbMessage } from "../core/variables/ProjectVariables";
-import { queryClient } from "../main";
 import { SignIn } from "../redux/reducers/authReducer";
 
 const schema = ({ t }) =>
@@ -35,14 +34,16 @@ const OtpVerification = ({
   setShowEmailSent,
   phone,
   orderDetail,
+  handleCancelOrder,
   verifyBy,
+  handleSuccessOrder,
   checkout = false,
-  recallAssign,
+  otpRequested = false,
 }) => {
   const { iccid } = useParams();
 
   const { t } = useTranslation();
-  console.log(checkout, "sssssssssssssssss");
+
   const inputRefs = useRef([]);
   const navigate = useNavigate();
   const dispatch = useDispatch();
@@ -67,10 +68,31 @@ const OtpVerification = ({
     mode: "all",
   });
 
+  const handleRequestOTP = () => {
+    if ("OTPCredential" in window) {
+      const ac = new AbortController();
+
+      navigator.credentials
+        .get({ otp: { transport: ["sms"] }, signal: ac.signal })
+        .then((otp) => {
+          console.log(otp?.code, "the code from otp");
+          reset({ otp: otp?.code?.split("") });
+        })
+        .catch((err) => console.error(err));
+
+      // Optional: abort after some time
+      setTimeout(() => ac.abort(), 60000);
+    } else {
+      toast.error("Web OTP API not supported. Please enter OTP manually.");
+    }
+  };
   useEffect(() => {
     // Focus first input on mount
     if (inputRefs.current[0]) {
       inputRefs.current[0].focus();
+    }
+    if (otpRequested) {
+      handleRequestOTP();
     }
   }, []);
 
@@ -100,8 +122,7 @@ const OtpVerification = ({
 
   const handleSubmitForm = (payload) => {
     setIsVerifying(true);
-    const searchParams = new URLSearchParams(location.search);
-    searchParams.set("order_id", orderDetail?.order_id);
+
     let handleAPI = checkout ? verifyOrderOTP : verifyOTP;
     handleAPI({
       ...payload,
@@ -123,17 +144,8 @@ const OtpVerification = ({
       .then((res) => {
         if (res?.data?.status === "success") {
           if (checkout) {
-            queryClient.invalidateQueries({ queryKey: ["my-esim"] });
-            if (iccid) {
-              queryClient.invalidateQueries({
-                queryKey: [`esim-detail-${iccid}`],
-              });
-            }
-
-            navigate({
-              pathname: iccid ? `/esim/${iccid}` : "/plans",
-              search: !iccid ? `?${searchParams.toString()}` : "",
-            });
+            // Delay invalidation by 5 seconds
+            handleSuccessOrder();
           } else {
             //login user
             dispatch(
@@ -153,7 +165,9 @@ const OtpVerification = ({
         toast.error(error?.developerMessage || t("auth.failedToVerifyOtp"));
       })
       .finally(() => {
-        setIsVerifying(false);
+        setTimeout(() => {
+          setIsVerifying(false);
+        }, 5000);
       });
   };
 
@@ -179,7 +193,6 @@ const OtpVerification = ({
   };
 
   const handleResendOtp = () => {
-    console.log(orderDetail, "ordrrr detaill");
     if (checkout) {
       resendOrderOTP(orderDetail?.order_id)
         .then((res) => {
@@ -215,7 +228,6 @@ const OtpVerification = ({
     );
   }, [errors, getValues()]);
 
-  console.log(checkout, otp_channel, proceed);
   //EXPLANATION : PLEASE DON'T CHANGE THIS AS IT WILL BE APPLIED LATER
 
   // if (checkout && otp_channel?.length > 1 && !proceed) {
@@ -282,7 +294,7 @@ const OtpVerification = ({
         <span dir="ltr" className="font-medium">
           {login_type === "phone"
             ? phone?.toLowerCase() || ""
-            : email?.toLowerCase || ""}
+            : email?.toLowerCase() || ""}
         </span>
       </p>
 
@@ -316,6 +328,14 @@ const OtpVerification = ({
                     maxLength: 1,
                     dir: "ltr",
                     style: { textAlign: "center" },
+                    inputMode: "numeric",
+                    pattern: "[0-9]*",
+                  }}
+                  slotProps={{
+                    autoComplete: "one-time-code",
+                    form: {
+                      autoComplete: "one-time-code",
+                    },
                   }}
                   variant="outlined"
                   fullWidth
@@ -327,14 +347,26 @@ const OtpVerification = ({
       </div>
 
       <div className={"flex flex-col gap-[0.5rem]"}>
-        <Button
-          type={"submit"}
-          color="primary"
-          variant="contained"
-          disabled={isVerifying || shouldBeDisabled}
-        >
-          {isVerifying ? t("auth.verifying") : t("auth.verify")}
-        </Button>
+        <div className={"flex flex-row gap-[0.5rem]"}>
+          <Button
+            type={"submit"}
+            color="primary"
+            variant="contained"
+            disabled={isVerifying || shouldBeDisabled}
+          >
+            {isVerifying ? t("auth.verifying") : t("auth.verify")}
+          </Button>
+          {checkout && (
+            <Button
+              type={"button"}
+              color="secondary"
+              variant="contained"
+              onClick={() => handleCancelOrder()}
+            >
+              {t("btn.cancel")}
+            </Button>
+          )}
+        </div>
 
         <div className="flex flex-row flex-wrap gap-[0.5rem] w-full justify-center text-center text-sm">
           {!resend ? (

@@ -50,7 +50,7 @@ const OrderShare = ({ onClose }) => {
             color="secondary"
             onClick={() => {
               navigator.clipboard.writeText("https://google.com");
-              toast.success("Copied Successfully");
+              toast.success(t("btn.copiedSuccessfully"));
             }}
           >
             {t("btn.copy_link")}

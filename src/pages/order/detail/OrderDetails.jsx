@@ -14,8 +14,6 @@ const OrderDetails = () => {
     enabled: !!id,
   });
 
-  console.log(data, "dataaaaaaaaaaaaaaaa");
-
   return <div>OrderDetails {id}</div>;
 };
 

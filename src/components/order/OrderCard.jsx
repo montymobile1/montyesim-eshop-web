@@ -34,7 +34,6 @@ import {
   getMyEsimConsumption,
   getOrderHistoryById,
 } from "../../core/apis/userAPI";
-import { formatValidity } from "../../assets/utils/formatValidity";
 import OrderReceipt from "../receipt/OrderReceipt";
 import NoDataFound from "../shared/no-data-found/NoDataFound";
 import TagComponent from "../shared/tag-component/TagComponent";
@@ -42,8 +41,11 @@ import OrderConsumption from "./OrderConsumption";
 import OrderLabelChange from "./OrderLabelChange";
 import OrderPopup from "./OrderPopup";
 import OrderTopup from "./OrderTopup";
+import { useDispatch } from "react-redux";
+import { fetchUserInfo } from "../../redux/reducers/authReducer";
 const OrderCard = ({ order, myesim, refetchData }) => {
   const { t } = useTranslation();
+  const dispatch = useDispatch();
   const [anchorEl, setAnchorEl] = useState(null);
   const [collapseElement, setCollapseElement] = useState(null);
   const [openOrderReceipt, setOpenOrderReceipt] = useState(false);
@@ -64,12 +66,17 @@ const OrderCard = ({ order, myesim, refetchData }) => {
     isLoading: consumptionLoading,
     error: consumptionError,
   } = useQuery({
-    queryKey: [`my-esim-consumption-${order?.bundle_details?.iccid}`],
+    queryKey: [
+      `my-esim-consumption-${order?.bundle_details?.iccid}`,
+      openConsumption,
+    ],
     queryFn: () =>
       getMyEsimConsumption(order?.bundle_details?.iccid).then(
         (res) => res?.data?.data
       ),
-    enabled: !!collapseElement && !!order?.bundle_details?.iccid,
+    enabled:
+      (!!collapseElement || !!openConsumption) &&
+      !!order?.bundle_details?.iccid,
   });
 
   const open = Boolean(anchorEl);
@@ -139,7 +146,7 @@ const OrderCard = ({ order, myesim, refetchData }) => {
                       order?.bundle_details?.label_name ||
                       ""}{" "}
                   </span>
-                  {myesim && (
+                  {myesim && !order?.bundle_details?.bundle_expired && (
                     <Edit
                       fontSize="small"
                       sx={{ cursor: "pointer" }}
@@ -160,7 +167,11 @@ const OrderCard = ({ order, myesim, refetchData }) => {
           </div>
           <div className="flex items-center flex-shrink-0 gap-2">
             <div className="text-xl font-bold text-end hidden sm:block text-primary">
-              <span dir="ltr">{order?.bundle_details?.price_display}</span>
+              <span dir="ltr">
+                {myesim
+                  ? order.bundle_details?.price_display
+                  : order?.order_display_price}
+              </span>
             </div>
             <IconButton
               onClick={() =>
@@ -178,7 +189,9 @@ const OrderCard = ({ order, myesim, refetchData }) => {
         </div>
 
         <div className="text-xl font-bold items-center cursor-pointer text-end sm:hidden block">
-          {order.bundle_details?.price_display}
+          {myesim
+            ? order.bundle_details?.price_display
+            : order?.order_display_price}
         </div>
         <div className={"flex flex-wrap flex-row gap-[0.5rem]"}>
           <Chip
@@ -208,7 +221,19 @@ const OrderCard = ({ order, myesim, refetchData }) => {
                 fontSize="small"
               />
             }
-            label={formatValidity(order?.bundle_details?.validity_display)}
+            label={
+              `${t("bundles.validity")}: ${t(
+                `validity.${
+                  order?.validity_label?.toLowerCase() ||
+                  order?.bundle_details?.validity_label?.toLowerCase()
+                }${
+                  order?.validity > 1 || order?.bundle_details?.validity > 1
+                    ? "_plural"
+                    : ""
+                }`,
+                { count: order?.validity || order?.bundle_details?.validity }
+              )}` || ""
+            }
             color="secondary"
           />
           <Chip
@@ -325,11 +350,15 @@ const OrderCard = ({ order, myesim, refetchData }) => {
                       {t(`label.eSIM_validity`)}
                     </label>
                     <p>
-                      {consumptionData?.expiry_date
-                        ? dayjs(consumptionData?.expiry_date)?.format(
-                            "DD-MM-YYYY HH:mm"
-                          )
-                        : t("common.notAvailable")}
+                      {consumptionLoading ? (
+                        <Skeleton />
+                      ) : consumptionData?.expiry_date ? (
+                        dayjs(consumptionData?.expiry_date)?.format(
+                          "DD-MM-YYYY HH:mm"
+                        )
+                      ) : (
+                        t("common.notAvailable")
+                      )}
                     </p>
                   </div>
                 </>
@@ -442,9 +471,14 @@ const OrderCard = ({ order, myesim, refetchData }) => {
                                           : "ltr"
                                       }
                                     >
-                                      {formatValidity(
-                                        tb?.bundle?.validity_display
-                                      )}
+                                      {`${t(
+                                        `validity.${tb?.bundle?.validity_label?.toLowerCase()}${
+                                          tb?.bundle?.validity > 1
+                                            ? "_plural"
+                                            : ""
+                                        }`,
+                                        { count: tb?.bundle?.validity }
+                                      )}` || "N/A"}
                                     </span>
                                   )}
                                 </TableCell>
@@ -489,42 +523,46 @@ const OrderCard = ({ order, myesim, refetchData }) => {
           <>
             <hr />
             <div className="flex flex-wrap gap-[0.3rem] justify-center items-center">
-              <Button
-                onClick={() => setOpenConsumption(true)}
-                startIcon={
-                  <LanguageOutlinedIcon
-                    style={
-                      localStorage.getItem("i18nextLng") === "ar"
-                        ? { marginLeft: "8px" }
-                        : {}
-                    }
-                    fontSize="small"
-                  />
-                }
-                variant="outlined"
-                color="primary"
-                sx={{ width: "fit-content" }}
-              >
-                {t("btn.consumption")}
-              </Button>
-              <Button
-                onClick={() => setOpenQRCode(true)}
-                startIcon={
-                  <QrCode2OutlinedIcon
-                    style={
-                      localStorage.getItem("i18nextLng") === "ar"
-                        ? { marginLeft: "8px" }
-                        : {}
-                    }
-                    fontSize="small"
-                  />
-                }
-                variant="outlined"
-                color="primary"
-                sx={{ width: "fit-content" }}
-              >
-                {t("btn.view_qr_code")}
-              </Button>
+              {!order?.bundle_details?.bundle_expired && (
+                <Button
+                  onClick={() => setOpenConsumption(true)}
+                  startIcon={
+                    <LanguageOutlinedIcon
+                      style={
+                        localStorage.getItem("i18nextLng") === "ar"
+                          ? { marginLeft: "8px" }
+                          : {}
+                      }
+                      fontSize="small"
+                    />
+                  }
+                  variant="outlined"
+                  color="primary"
+                  sx={{ width: "fit-content" }}
+                >
+                  {t("btn.consumption")}
+                </Button>
+              )}
+              {!order?.bundle_details?.bundle_expired && (
+                <Button
+                  onClick={() => setOpenQRCode(true)}
+                  startIcon={
+                    <QrCode2OutlinedIcon
+                      style={
+                        localStorage.getItem("i18nextLng") === "ar"
+                          ? { marginLeft: "8px" }
+                          : {}
+                      }
+                      fontSize="small"
+                    />
+                  }
+                  variant="outlined"
+                  color="primary"
+                  sx={{ width: "fit-content" }}
+                >
+                  {t("btn.view_qr_code")}
+                </Button>
+              )}
               {order?.bundle_details?.is_topup_allowed && (
                 <Button
                   onClick={() => setOpenTopUp(true)}
@@ -552,7 +590,7 @@ const OrderCard = ({ order, myesim, refetchData }) => {
         {openConsumption && (
           <OrderConsumption
             data={consumptionData}
-            lisLoading={consumptionLoading}
+            isLoading={consumptionLoading}
             onClose={() => setOpenConsumption(false)}
           />
         )}

@@ -2,7 +2,7 @@
 import React, { useEffect } from "react";
 import QRCode from "react-qr-code";
 import { useQuery } from "react-query";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { toast } from "react-toastify";
 import { useTranslation } from "react-i18next";
 
@@ -20,17 +20,24 @@ import {
   Skeleton,
 } from "@mui/material";
 import { Link } from "react-router-dom";
+import { fetchUserInfo } from "../../redux/reducers/authReducer";
 
 const OrderPopup = ({ id, onClose, orderData }) => {
   const { t } = useTranslation();
+  const dispatch = useDispatch();
   const { isAuthenticated, user_info, tmp } = useSelector(
-    (state) => state.authentication,
+    (state) => state.authentication
   );
 
   const { data, isLoading, error } = useQuery({
     queryKey: [`${user_info?.id}-order-${id}`],
     queryFn: () => getOrderByID(id).then((res) => res?.data?.data),
     enabled: !!id,
+    onSuccess: () => {
+      if (isAuthenticated) {
+        dispatch(fetchUserInfo());
+      }
+    },
   });
 
   useEffect(() => {
@@ -67,14 +74,27 @@ const OrderPopup = ({ id, onClose, orderData }) => {
           </IconButton>
         </div>
         <h1 className={"mt-2 text-center"}>{t("orders.qrcode_detail")}</h1>
-        <p className={"text-center text-content-600 font-medium"}>
-          {t("orders.qrcode_sent_text")}
-        </p>
-        {isLoading || (!isLoading && (data || orderData)) ? (
+        {!isLoading ? (
+          orderData || data ? (
+            <p className={"text-center text-content-600 font-medium"}>
+              {t("orders.qrcode_sent_text")}
+            </p>
+          ) : (
+            ""
+          )
+        ) : (
+          <div className={"flex flex-col gap-[1rem]"}>
+            <p className={"text-center text-content-600 font-medium"}>
+              {t("orders.qrcode_loading")}
+            </p>
+            <Skeleton width={"100%"} />
+          </div>
+        )}
+        {!isLoading && (data || orderData) && (
           <>
             <div
               className={
-                "bg-primary-50 p-4 rounded-2xl flex items-center justify-center shadow-sm"
+                "bg-primary-50 p-4 rounded-2xl flex items-center justify-center shadow-sm flex flex-col gap-2"
               }
             >
               <div
@@ -95,11 +115,26 @@ const OrderPopup = ({ id, onClose, orderData }) => {
                   <NoDataFound text="QR code not generated" />
                 )}
               </div>
+              <label className={"self-start"}>{t("orders.instructions")}</label>
+              <p
+                className={`font-medium text-content-500 self-start ${
+                  localStorage.getItem("i18nextLng") === "ar"
+                    ? "!text-right"
+                    : "!text-left"
+                }`}
+              >
+                {t("orders.esim_instructions")}
+              </p>
             </div>
+
             <div className={"flex flex-col gap-[0.5rem]"}>
               <label
                 dir={"ltr"}
-                className={`font-semibold ${localStorage.getItem("i18nextLng") === "ar" ? "text-right" : "text-left"}`}
+                className={`font-semibold ${
+                  localStorage.getItem("i18nextLng") === "ar"
+                    ? "text-right"
+                    : "text-left"
+                }`}
               >
                 SM-DP+ &nbsp;{t("orders.smdpAddress")}
               </label>
@@ -118,7 +153,7 @@ const OrderPopup = ({ id, onClose, orderData }) => {
                 <IconButton
                   onClick={() => {
                     navigator.clipboard.writeText(
-                      data?.smdp_address || orderData?.smdp_address,
+                      data?.smdp_address || orderData?.smdp_address
                     );
                     toast.success(t("btn.copiedSuccessfully"));
                   }}
@@ -129,7 +164,7 @@ const OrderPopup = ({ id, onClose, orderData }) => {
             </div>
             <div className={"flex flex-col gap-[0.5rem]"}>
               <label className={"font-semibold"}>
-                {t("orders.activateCode")}
+                {t("orders.activationCode")}
               </label>
               <div
                 className={
@@ -146,7 +181,7 @@ const OrderPopup = ({ id, onClose, orderData }) => {
                 <IconButton
                   onClick={() => {
                     navigator.clipboard.writeText(
-                      orderData?.activation_code || data?.activation_code,
+                      orderData?.activation_code || data?.activation_code
                     );
                     toast.success(t("btn.copiedSuccessfully"));
                   }}
@@ -154,9 +189,112 @@ const OrderPopup = ({ id, onClose, orderData }) => {
                   <ContentCopyIcon fontSize="small" color="primary" />
                 </IconButton>
               </div>
-            </div>{" "}
+            </div>
+            {import.meta.env.VITE_ESIM_INSTALLATION == "true" && (
+              <>
+                <div className={"flex flex-col gap-[0.5rem]"}>
+                  <label
+                    className={`font-semibold ${
+                      localStorage.getItem("i18nextLng") === "ar"
+                        ? "text-right"
+                        : "text-left"
+                    }`}
+                  >
+                    {t("orders.iosDirectInstallation")}
+                  </label>
+                  <div
+                    className={
+                      "flex flex-row justify-between items-center bg-white shadow-sm p-[0.8rem] rounded-md"
+                    }
+                  >
+                    <p className={"font-medium text-content-500 truncate "}>
+                      {isLoading ? (
+                        <Skeleton width={100} />
+                      ) : (
+                        `https://esimsetup.apple.com/esim_qrcode_provisioning?carddata=LPA:1$${
+                          data?.smdp_address || orderData?.smdp_address
+                        }$${
+                          orderData?.activation_code || data?.activation_code
+                        }`
+                      )}
+                    </p>
+                    <IconButton
+                      onClick={() => {
+                        navigator.clipboard.writeText(
+                          `https://esimsetup.apple.com/esim_qrcode_provisioning?carddata=LPA:1$${
+                            data?.smdp_address || orderData?.smdp_address
+                          }$${
+                            orderData?.activation_code || data?.activation_code
+                          }`
+                        );
+                        toast.success(t("btn.copiedSuccessfully"));
+                      }}
+                    >
+                      <ContentCopyIcon fontSize="small" color="primary" />
+                    </IconButton>
+                  </div>
+                </div>
+                <div className={"flex flex-col gap-[0.5rem] "}>
+                  <label
+                    dir={"ltr"}
+                    className={`font-semibold ${
+                      localStorage.getItem("i18nextLng") === "ar"
+                        ? "text-right"
+                        : "text-left"
+                    }`}
+                  >
+                    {t("orders.LPALink")}
+                  </label>
+                  <div className={"bg-white shadow-sm p-[0.8rem] rounded-md"}>
+                    <div
+                      className={"flex flex-row justify-between items-center "}
+                    >
+                      <p className={"font-medium text-content-500 truncate "}>
+                        {isLoading ? (
+                          <Skeleton width={100} />
+                        ) : (
+                          `LPA:1$${
+                            data?.smdp_address || orderData?.smdp_address
+                          }$${
+                            orderData?.activation_code || data?.activation_code
+                          }`
+                        )}
+                      </p>
+
+                      <IconButton
+                        onClick={() => {
+                          navigator.clipboard.writeText(
+                            `LPA:1$${
+                              data?.smdp_address || orderData?.smdp_address
+                            }$${
+                              orderData?.activation_code ||
+                              data?.activation_code
+                            }`
+                          );
+                          toast.success(t("btn.copiedSuccessfully"));
+                        }}
+                      >
+                        <ContentCopyIcon fontSize="small" color="primary" />
+                      </IconButton>
+                    </div>
+                    <label>{t("orders.instructions")}</label>
+                    <p
+                      className={`font-medium text-content-500   ${
+                        localStorage.getItem("i18nextLng") === "ar"
+                          ? "!text-right"
+                          : "!text-left"
+                      }`}
+                    >
+                      {t("orders.esim_lpa_instructions")}
+                    </p>
+                  </div>
+                </div>
+              </>
+            )}
           </>
-        ) : (
+        )}
+
+        {!isLoading && !data && !orderData && (
           <NoDataFound
             text={`${t("orders.failedToLoad")}${
               !isAuthenticated ? ` ${t("orders.pleaseSignIn")}` : ""

@@ -7,6 +7,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { AttachDevice } from "../../redux/reducers/deviceReducer";
 import { Close } from "@mui/icons-material";
 import { useNotifications } from "../../core/context/NotificationContext";
+import { queryClient } from "../../main";
 
 const PushNotification = () => {
   const dispatch = useDispatch();
@@ -42,6 +43,8 @@ const PushNotification = () => {
         onClick={() => {
           if (notification?.iccid) {
             navigate(`/esim/${notification?.iccid}`);
+          } else if (notification?.category == "9") {
+            navigate(`/my-wallet`);
           }
           toast.dismiss(toastElement?.id);
         }}
@@ -102,21 +105,28 @@ const PushNotification = () => {
   }, [isAuthenticated]);
 
   onMessageListener().then((payload) => {
-    console.log("jjjjjjjjjjjjjjjjjjjjj1111");
-    console.log(payload, "notificationnn payloadddd");
+    if (payload?.notification?.category == 2) {
+      queryClient.invalidateQueries({ queryKey: ["my-esim"] });
+      if (payload?.data?.iccid) {
+        queryClient.invalidateQueries({
+          queryKey: [`esim-detail-${payload?.data?.iccid}`],
+        });
+      }
+    }
     setNotification({
       title: payload?.notification?.title,
       body: payload?.notification?.body,
       iccid: payload?.data?.iccid,
+      category: payload?.notification?.category,
     });
   });
   return (
     <Toaster
+      position="bottom-right"
       toastOptions={{
         style: {
           display: "flex",
           justifyContent: "flex-start",
-
           minWidth: "300px",
           wordBreak: "break-word",
         },

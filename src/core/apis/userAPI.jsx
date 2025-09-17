@@ -144,3 +144,12 @@ export const verifyOrderOTP = async (payload) => {
     throw error;
   }
 };
+
+export const cancelOrder = async (payload) => {
+  try {
+    const res = await api.delete(`api/v1/user/order/cancel/${payload}`);
+    return res;
+  } catch (error) {
+    throw error;
+  }
+};

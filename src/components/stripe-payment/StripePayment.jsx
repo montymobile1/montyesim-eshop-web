@@ -1,26 +1,24 @@
 //UTILTIIES
-import { loadStripe } from "@stripe/stripe-js";
-import React, { useEffect, useState } from "react";
-import * as yup from "yup";
-import { useNavigate, useParams } from "react-router-dom";
-import { useDispatch, useSelector } from "react-redux";
-import { toast } from "react-toastify";
-import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
+import { useState } from "react";
+import { useForm } from "react-hook-form";
+import { useDispatch } from "react-redux";
+import { useNavigate, useParams } from "react-router-dom";
+import { toast } from "react-toastify";
+import * as yup from "yup";
 //API
-import { assignBundle, assignTopupBundle } from "../../core/apis/userAPI";
 //COMPONENT
+import { Button, Skeleton } from "@mui/material";
 import {
   Elements,
   PaymentElement,
   useElements,
   useStripe,
 } from "@stripe/react-stripe-js";
-import { Button, Skeleton } from "@mui/material";
+import { useTranslation } from "react-i18next";
+import { fetchUserInfo } from "../../redux/reducers/authReducer";
 import NoDataFound from "../shared/no-data-found/NoDataFound";
 import { queryClient } from "../../main";
-import { LimitedSignOut } from "../../redux/reducers/authReducer";
-import { useTranslation } from "react-i18next";
 
 const schema = yup.object().shape({
   card: yup.string().nullable(),
@@ -28,7 +26,14 @@ const schema = yup.object().shape({
 
 export const StripePayment = (props) => {
   const { t } = useTranslation();
-  const { stripePromise, clientSecret, orderDetail, loading } = props;
+  const {
+    stripePromise,
+    clientSecret,
+    orderDetail,
+    loading,
+    fromUpgradeWallet = false,
+    onClose = () => {},
+  } = props;
 
   // Enable the skeleton loader UI for the optimal loading experience.
   const loader = "auto";
@@ -46,7 +51,12 @@ export const StripePayment = (props) => {
         locale: localStorage.getItem("i18nextLng"),
       }}
     >
-      <InjectedCheckout {...props} orderDetail={orderDetail} />
+      <InjectedCheckout
+        {...props}
+        orderDetail={orderDetail}
+        fromUpgradeWallet={fromUpgradeWallet}
+        onClose={onClose}
+      />
     </Elements>
   ) : (
     <div className={"flex flex-col gap-8 w-full sm:basis-[50%] shrink-0"}>
@@ -55,13 +65,20 @@ export const StripePayment = (props) => {
   );
 };
 
-const InjectedCheckout = ({ orderDetail }) => {
+const InjectedCheckout = ({
+  orderDetail,
+  onClose,
+  fromUpgradeWallet,
+  handleCancelOrder,
+  handleSuccessOrder,
+}) => {
   const { t } = useTranslation();
   const { iccid } = useParams();
   const elements = useElements({ locale: localStorage.getItem("i18nextLng") });
   const stripe = useStripe();
   const dispatch = useDispatch();
   const navigate = useNavigate();
+
   const {
     control,
     handleSubmit,
@@ -83,8 +100,7 @@ const InjectedCheckout = ({ orderDetail }) => {
       toast.error(t("stripe.paymentProcessingError"));
       return;
     }
-    const searchParams = new URLSearchParams(location.search);
-    searchParams.set("order_id", orderDetail?.order_id);
+
     try {
       setIsSubmitting(true);
       stripe
@@ -95,26 +111,25 @@ const InjectedCheckout = ({ orderDetail }) => {
         .then(function (result) {
           if (result.error) {
             toast.error(result.error?.message);
-
-            // Inform the customer that there was an error.
           } else {
-            queryClient.invalidateQueries({ queryKey: ["my-esim"] });
-            if (iccid) {
-              queryClient.invalidateQueries({
-                queryKey: [`esim-detail-${iccid}`],
-              });
+            if (fromUpgradeWallet) {
+              dispatch(fetchUserInfo());
+              queryClient.invalidateQueries({ queryKey: ["user-rewards"] });
+              toast.success(t("stripe.wallet_topped_up_successfully"));
+              return onClose();
             }
 
-            navigate({
-              pathname: iccid ? `/esim/${iccid}` : "/plans",
-              search: !iccid ? `?${searchParams.toString()}` : "",
-            });
+            handleSuccessOrder();
           }
         })
         .catch((error) => {
           toast.error(error?.message || t("stripe.paymentConfirmationFailed"));
         })
-        .finally(() => setIsSubmitting(false));
+        .finally(() =>
+          setTimeout(() => {
+            setIsSubmitting(false);
+          }, 5000)
+        );
     } catch (error) {
       toast.error(t("stripe.paymentConfirmationFailed"));
       setIsSubmitting(false);
@@ -127,8 +142,6 @@ const InjectedCheckout = ({ orderDetail }) => {
 
   return (
     <div className={"flex flex-col gap-8 w-full sm:basis-[50%] shrink-0"}>
-      <h1>{t("stripe.paymentMethod")}</h1>
-
       <>
         <PaymentElement id="payment-element" onChange={handleChange} />
 
@@ -147,8 +160,11 @@ const InjectedCheckout = ({ orderDetail }) => {
             variant="contained"
             sx={{ width: "60%" }}
             onClick={() => {
-              dispatch(LimitedSignOut());
-              navigate("/plans");
+              if (fromUpgradeWallet) {
+                onClose();
+              } else {
+                handleCancelOrder();
+              }
             }}
           >
             {t("btn.cancel")}

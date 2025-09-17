@@ -25,7 +25,7 @@ const DrawerMenu = ({ toggleMenu, setToggleMenu }) => {
 
   const menuElements = useMemo(() => {
     return isAuthenticated
-      ? authResponsiveMenuItems.concat(menuItems)
+      ? authResponsiveMenuItems?.filter((el) => el?.visible).concat(menuItems)
       : menuItems;
   }, [isAuthenticated]);
 

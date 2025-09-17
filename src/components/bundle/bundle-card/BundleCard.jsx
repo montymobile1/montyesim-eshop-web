@@ -22,26 +22,12 @@ const BundleCard = ({
   cruises,
   iccid,
   regionIcon,
+  topup,
 }) => {
   const { t } = useTranslation();
   const [openDetail, setOpenDetail] = useState(false);
   const handleDetail = () => {
     setOpenDetail(true);
-  };
-
-  const formatValidity = (validityDisplay) => {
-    if (!validityDisplay) return "";
-
-    const [num, rawUnit] = validityDisplay.split(" ");
-    const count = Number(num);
-    if (isNaN(count) || !rawUnit) return validityDisplay;
-
-    const unitKeyRaw = rawUnit.toLowerCase().replace(/s$/, "");
-    const unitKey = count === 1 ? unitKeyRaw : `${unitKeyRaw}_plural`;
-
-    const translatedUnit = i18next.t(`bundles.unit.${unitKey}`);
-
-    return `${count} ${translatedUnit}`;
   };
 
   const avatarSrc = useMemo(() => {
@@ -102,8 +88,11 @@ const BundleCard = ({
               {isLoading ? (
                 <Skeleton variant="text" width="100px" height={20} />
               ) : (
-                `${t("bundles.validity")}: ${formatValidity(
-                  bundle?.validity_display
+                `${t("bundles.validity")}: ${t(
+                  `validity.${bundle?.validity_label?.toLowerCase()}${
+                    bundle?.validity > 1 ? "_plural" : ""
+                  }`,
+                  { count: bundle?.validity }
                 )}`
               )}
             </p>
@@ -198,7 +187,6 @@ const BundleCard = ({
       </Card>
       {openDetail && (
         <BundleDetail
-          formatValidity={formatValidity}
           regionIcon={regionIcon}
           globalDisplay={globalDisplay}
           onClose={() => setOpenDetail(false)}

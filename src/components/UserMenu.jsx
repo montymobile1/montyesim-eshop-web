@@ -18,7 +18,7 @@ const UserMenu = () => {
   const profileRef = useRef(null);
   const { handleLogout } = useAuth();
   const { user_info } = useSelector((state) => state.authentication);
-  const { login_type } = useSelector((state) => state.currency);
+  const login_type = useSelector((state) => state.currency?.login_type);
 
   const [isProfileOpen, setIsProfileOpen] = useState(false);
   useClickOutside(profileRef, () => setIsProfileOpen(false));
@@ -40,12 +40,18 @@ const UserMenu = () => {
 
       {isProfileOpen && (
         <div
-          className={`absolute ${localStorage.getItem("i18nextLng") === "ar" ? "left-0" : "right-0"} mt-2 w-80 rounded-2xl shadow-lg bg-white ring-1 ring-black ring-opacity-5 p-4`}
+          className={`absolute ${
+            localStorage.getItem("i18nextLng") === "ar" ? "left-0" : "right-0"
+          } mt-2 w-80 rounded-2xl shadow-lg bg-white ring-1 ring-black ring-opacity-5 p-4`}
         >
           <div className="mb-4 px-2">
             <p
               dir={"ltr"}
-              className={`text-sm truncate font-semibold ${localStorage.getItem("i18nextLng") === "ar" ? "text-right" : "text-left"}`}
+              className={`text-sm truncate font-semibold ${
+                localStorage.getItem("i18nextLng") === "ar"
+                  ? "text-right"
+                  : "text-left"
+              }`}
             >
               {login_type === "phone" ? user_info?.msisdn : user_info?.email}
             </p>

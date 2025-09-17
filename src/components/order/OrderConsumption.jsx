@@ -17,6 +17,7 @@ const OrderConsumption = ({ onClose, data, isLoading }) => {
   const calculatedProgress = useMemo(() => {
     return (data?.data_used * 100) / data?.data_allocated;
   }, [data]);
+
   return (
     <Dialog open={true} maxWidth="sm" fullWidth>
       <DialogContent className="flex flex-col gap-[1rem] xs:!px-8 !py-10">

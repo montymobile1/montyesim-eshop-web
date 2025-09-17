@@ -68,7 +68,7 @@ const Navbar = ({ main }) => {
 
   const menuLinks = useMemo(() => {
     if (main) return menuItems;
-    else return authMenuItems;
+    else return authMenuItems?.filter((e) => e?.visible);
   }, [main]);
 
   return (

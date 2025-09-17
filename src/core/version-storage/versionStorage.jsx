@@ -1,5 +1,8 @@
+import i18n from "../../i18n";
+
+const getLanguageAwareKey = (baseKey) => `${baseKey}_${i18n?.language}`;
+
 export const VERSION_STORAGE_KEY = "app_bundles_version";
-export const API_CACHE_KEY = "home_countries_cache";
 
 export const getStoredVersion = () => {
   try {
@@ -23,7 +26,7 @@ export const clearCacheIfVersionChanged = (newVersion) => {
 
   if (storedVersion !== newVersion) {
     try {
-      localStorage.removeItem(API_CACHE_KEY);
+      localStorage.removeItem(getLanguageAwareKey(`home_countries_cache`));
       setStoredVersion(newVersion);
       return true;
     } catch (error) {

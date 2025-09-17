@@ -13,7 +13,7 @@ import { setDayjsLocale } from "./components/dayjsSetup.js";
 function App() {
   const dispatch = useDispatch();
   const whatsapp_number = useSelector(
-    (state) => state.currency?.whatsapp_number || "",
+    (state) => state.currency?.whatsapp_number || ""
   );
   const { isAuthenticated } = useSelector((state) => state.authentication);
   const { i18n } = useTranslation();
@@ -21,7 +21,7 @@ function App() {
   const getDeviceId = async () => {
     const fp = await FingerprintJS.load();
     const result = await fp.get();
-    console.log(result, "fingerprint result");
+
     sessionStorage.setItem("x-device-id", result?.visitorId);
   };
 
@@ -30,6 +30,7 @@ function App() {
   }, [i18n.language]);
 
   useEffect(() => {
+    console.log("app mounted");
     const lang = i18n.language;
     document.documentElement.lang = lang;
     document.documentElement.dir = lang === "ar" ? "rtl" : "ltr";
@@ -40,11 +41,9 @@ function App() {
       getDeviceId();
     }
     dispatch(fetchCurrencyInfo());
-
     if (!isAuthenticated) {
       dispatch(SignOut());
     } else {
-      console.log("fetch user info app ");
       dispatch(fetchUserInfo());
     }
 

@@ -52,7 +52,6 @@ export const AuthProvider = ({ children }) => {
 
   const displayUserInfo = useCallback(
     (data) => {
-      console.log("display user info", data);
       setLoadingSocial(true);
       axios
         .get(`${import.meta.env.VITE_API_URL}api/v1/auth/user-info`, {
@@ -83,7 +82,6 @@ export const AuthProvider = ({ children }) => {
             `Failed to Sign-in : ${error?.message}` ||
               "Failed to signin. Please try again later"
           );
-          console.log("catch user info error in social media", error);
           if (isAuthenticated) {
             handleLogout();
           } else {
@@ -97,7 +95,6 @@ export const AuthProvider = ({ children }) => {
   );
 
   const signinWithFacebook = async () => {
-    console.log("facebook login success:");
     try {
       const { error } = await supabase.auth.signInWithOAuth({
         provider: "facebook",
@@ -120,7 +117,6 @@ export const AuthProvider = ({ children }) => {
   const signinWithGoogle = async () => {
     const auth = getAuth();
     const provider = new GoogleAuthProvider();
-    console.log("Google login success:");
     try {
       const result = await signInWithPopup(auth, provider);
       const credential = GoogleAuthProvider.credentialFromResult(result);
@@ -155,9 +151,7 @@ export const AuthProvider = ({ children }) => {
     userLogout()
       .then((res) => {
         if (res?.data?.status === "success") {
-          console.log("start with firebase signout");
           firebaseSignOut(auth);
-          console.log("start with dispatch");
           dispatch(SignOut());
           dispatch(DetachDevice());
           queryClient.clear();
@@ -199,13 +193,6 @@ export const AuthProvider = ({ children }) => {
     const {
       data: { subscription },
     } = supabase.auth.onAuthStateChange(async (event, session) => {
-      console.log(
-        event,
-        ":event on auth state change session:",
-        session,
-        user_info
-      );
-      console.log(session?.user?.email, user_info?.email);
       if (
         (event === "SIGNED_IN" ||
           event === "INITIAL_SESSION" ||

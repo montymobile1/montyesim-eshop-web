@@ -1,17 +1,18 @@
 //UTILTIIES
+import clsx from "clsx";
 import React, { useRef } from "react";
 import { useTranslation } from "react-i18next";
-import clsx from "clsx";
 
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
-import Container from "../../components/Container";
-import ContactForm from "../../components/ContactForm";
-import Plans from "../plans/Plans";
-import { ConnectSVG } from "../../assets/icons/Home";
-import { benefits } from "../../core/variables/StaticVariables";
 import { Button } from "@mui/material";
-import { Link } from "react-router-dom";
 import { useSelector } from "react-redux";
+import { Link } from "react-router-dom";
+import { ConnectSVG } from "../../assets/icons/Home";
+import ContactForm from "../../components/ContactForm";
+import Container from "../../components/Container";
+import ReferralSwiper from "../../components/swiper/ReferralSwiper";
+import { benefits } from "../../core/variables/StaticVariables";
+import Plans from "../plans/Plans";
 
 const Home = () => {
   const { t } = useTranslation();
@@ -21,6 +22,8 @@ const Home = () => {
   const scrollToFeatures = () => {
     featuresRef.current?.scrollIntoView({ behavior: "smooth" });
   };
+
+  const supportPromo = import.meta.env.VITE_SUPPORT_PROMO == "true";
 
   return (
     <div className="min-h-screen overflow-x-hidden">
@@ -155,7 +158,8 @@ const Home = () => {
       </section>
       {/* Contact Form Section */}
       <ContactForm bg={"bg-content-300 rounded-md p-10"} />
-      {/* WhatsApp Button */}
+
+      {supportPromo && <ReferralSwiper />}
     </div>
   );
 };

@@ -47,7 +47,6 @@ const OrderLabelChange = ({ refetch, onClose, bundle }) => {
   });
 
   const handleSubmitForm = async (payload) => {
-    console.log(bundle, "vvvvv");
     setIsSubmitting(true);
 
     updateBundleLabelByIccid({ ...payload, code: bundle?.iccid })

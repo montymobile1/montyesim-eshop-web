@@ -31,6 +31,7 @@
     "signInWithGoogle": "تسجيل الدخول باستخدام Google",
     "signInWithFacebook": "تسجيل الدخول باستخدام Facebook",
     "verifyEmail": "يرجى التحقق من {{verifyBy}}!",
+    "dcbMessage": "أنت على وشك الدفع باستخدام رقم هاتفك. تم إرسال رمز التحقق عبر {{verifyBy}}",
     "syrialtelDcbMessage": "أنت على وشك الدفع باستخدام SyriaCash. تم إرسال رمز التحقق عن طريق {{verifyBy}}",
     "mtnDcbMessage": "أنت على وشك الدفع باستخدام رصيد MTN الخاص بك. تم إرسال رمز التحقق عن طريق {{verifyBy}}",
     "verificationCodeSent": "لقد شارفنا على الانتهاء! تم إرسال رمز التحقق عن طريق {{verifyBy}}",
@@ -93,7 +94,8 @@
     "order_id": "رقم الطلب",
     "bundle_name": "اسم الباقة",
     "link": "الرابط",
-    "enterName": "أدخل الاسم"
+    "enterName": "أدخل الاسم",
+    "eSIM_validity": "صلاحية الشريحة الإلكترونية"
   },
   "bundle": {
     "bundle_existence_title": "لقد اشتريت eSIM من قبل!",
@@ -179,7 +181,8 @@
     "orderType": "نوع الطلب",
     "Primary Bundle": "الباقة الأساسية",
     "TopUp Bundle": "باقة الشحن",
-    "labelRequired": "حقل التسمية مطلوب"
+    "labelRequired": "حقل التسمية مطلوب",
+    "qrcode_loading": "جارٍ تحميل بيانات رمز الاستجابة السريعة. لحظة من فضلك..."
   },
   "esim": {
     "title": "شريحتي الإلكترونية",
@@ -216,7 +219,8 @@
     "onLand": "على اليابسة",
     "searchByCountry": "البحث حسب البلد",
     "Plan Started": "بدأت الخطة",
-    "Plan Not Started": "لم تبدأ الخطة"
+    "Plan Not Started": "لم تبدأ الخطة",
+    "Expired": "غير صالح"
   },
   "bundles": {
     "validity": "الصلاحية",
@@ -319,7 +323,11 @@
     "termsAndConditions": "الشروط والأحكام"
   },
   "errors": {
-    "maxCharacter": "يجب أن لا يحتوي {{field}} على أكثر من {{character}} حرفًا"
+    "maxCharacter": "يجب أن لا يحتوي {{field}} على أكثر من {{character}} حرفًا",
+    "customer_not_enougn_balance": "رقم العميل لا يحتوي على رصيد كافٍ",
+    "invalid_otp": "رمز التحقق غير صالح",
+    "technical_error": "خطأ تقني",
+    "expired_otp": "انتهت صلاحية رمز التحقق"
   },
   "profile": {
     "infoUpdatedSuccessfully": "تم تحديث المعلومات بنجاح",
