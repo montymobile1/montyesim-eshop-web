@@ -1,0 +1,133 @@
+.custom-flag-dropdown {
+  border-right: 1px solid #d1d5db !important;
+  margin: 2px 0 2px 0.5px !important;
+  border: none !important;
+  border-left: 1px solid #d1d5db !important;
+  z-index: 0px;
+  background-color: #fff !important;
+  border-radius: 7px !important;
+  display: flex;
+  padding: 0px !important;
+  align-items: center;
+}
+
+.custom-flag-dropdown .flag {
+  transform: scale(1.2);
+}
+
+.react-tel-input {
+  width: 100% !important;
+  direction: ltr !important;
+  text-align: left !important;
+}
+
+
+.react-tel-input .form-control {
+  width: 100% !important;
+  padding-left: 55px !important;
+  direction: ltr !important;
+  text-align: left !important;
+}
+
+.react-tel-input .country-list .search-box::before {
+  display: none !important;
+}
+
+.country-list .search {
+  background-color: #fff !important;
+  z-index: 999 !important;
+}
+
+.react-tel-input .country-list {
+  position: absolute !important;
+  top: 100% !important;
+  left: 0 !important;
+  right: 0 !important;
+  margin-top: 4px !important;
+  border-radius: 6px !important;
+  background: #fff !important;
+  z-index: 1000 !important;
+  max-height: 200px;
+  overflow-y: auto;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.react-tel-input .country-list .search-box {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  background: white !important;
+  z-index: 999 !important;
+  border: 1px solid #d1d5db !important;
+  border-radius: 6px !important;
+  padding: 6px 10px !important;
+  font-size: 14px !important;
+  box-shadow: none !important;
+  margin: 8px 10px !important;
+  width: calc(100% - 20px) !important;
+  z-index: 999 !important;
+}
+
+.react-tel-input .country-list .country {
+  padding: 8px 12px !important;
+  font-size: 14px !important;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.react-tel-input .country-list .country.highlight {
+  background-color: #f3f4f6 !important;
+}
+
+.react-tel-input .country-list .country .flag {
+  transform: scale(1.2);
+  margin: 0 !important;
+  display: inline-block;
+}
+
+.custom-flag-dropdown .selected-flag {
+  border-radius: 10px !important;
+  margin: 6px !important;
+}
+
+.react-tel-input .form-control:disabled,
+.custom-flag-dropdown.flag-disabled {
+  background-color: #fff !important;
+  border: 1px solid #e0e0e0 !important;
+  color: #9e9e9e !important;
+  cursor: not-allowed !important;
+  opacity: 1 !important;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05), 0 0 0 1px #f3f4f6 inset !important;
+}
+
+.react-tel-input .form-control:disabled:hover,
+.custom-flag-dropdown.flag-disabled:hover {
+  background-color: #fff !important;
+  cursor: not-allowed !important;
+}
+
+.custom-flag-dropdown.flag-disabled,
+.custom-flag-dropdown.flag-disabled .selected-flag {
+  background-color: #fff !important;
+  border: none !important;
+  cursor: not-allowed !important;
+  opacity: 1 !important;
+}
+
+.custom-flag-dropdown.flag-disabled:hover,
+.custom-flag-dropdown.flag-disabled .selected-flag:hover {
+  background-color: #ffff !important;
+  cursor: not-allowed !important;
+}
+
+.react-tel-input .flag.sy {
+    background: url("../../../assets/images/flags/syria-custom-flag.png") no-repeat center center !important;
+    background-size: contain !important;  
+    width: 18px !important;               
+    height: 14px !important;            
+    border: none !important;
+    box-shadow: none !important;
+  }
+  

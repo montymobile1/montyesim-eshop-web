@@ -12,10 +12,12 @@ import {
   Switch,
   TextField,
 } from "@mui/material";
-import "react-phone-number-input/style.css";
-import PhoneInput from "react-phone-number-input";
 import React, { useEffect, useState } from "react";
+import PhoneInput from "react-phone-input-2";
+import "react-phone-input-2/lib/style.css";
 import i18n from "../../../i18n";
+import "./formComponantsStyles.css";
+import { excludedCountries } from "../../../core/variables/ProjectVariables";
 
 export const FormInput = (props) => {
   const {
@@ -254,25 +256,45 @@ export const FormPhoneInput = ({
   helperText,
   value,
   onChange,
-  disabled,
+  disabled = false,
+  defaultCountry = "lb",
+  countries = [],
   ...props
 }) => {
+  const currentLang = localStorage.getItem("i18nextLng") || "en";
+
   return (
-    <FormGroup aria-label="position" row>
+    <FormGroup aria-label="position" row className="w-full">
       <PhoneInput
-        international
-        className="w-full shadow-sm !bg-white disabled:bg-white rounded h-[40px] p-4 border-2 border-transparent hover:border-[#122644]"
-        defaultCountry="LB"
+        country={defaultCountry.toLowerCase()}
+        onlyCountries={countries.map((c) => c.toLowerCase())}
         value={value}
-        disabled={disabled}
-        onChange={(value, country) => onChange(value)}
-        numberInputProps={{
-          className: "rounded-md px-4 focus:outline-none",
+        excludeCountries={excludedCountries}
+        enableSearch={true}
+        searchPlaceholder="Search countries..."
+        onChange={(val, countryData) => {
+          const withPlus = val && !val.startsWith("+") ? `+${val}` : val;
+          onChange(withPlus, countryData);
         }}
+        disabled={disabled}
+        disableDropdown={disabled}
+        countryCodeEditable={false}
+        inputClass={`w-full !h-[45px] !rounded-[10px] border shadow-sm text-sm px-4 !focus:ring-3 focus:ring-primary focus:border-primary ${
+          disabled
+            ? "!bg-gray-100 !text-gray-500 !border-gray-200 !cursor-not-allowed"
+            : "bg-white !border-gray-300 hover:!border-primary"
+        }`}
+        buttonClass={`custom-flag-dropdown ${disabled ? "flag-disabled" : ""}`}
+        dropdownClass={"shadow-md rounded-md"}
+        id="phone-input"
+        containerClass="w-full"
         {...props}
       />
-
-      {helperText && <FormHelperText>{helperText}</FormHelperText>}
+      {helperText && (
+        <FormHelperText className="!text-red-500 text-xs mt-1">
+          {helperText}
+        </FormHelperText>
+      )}
     </FormGroup>
   );
 };

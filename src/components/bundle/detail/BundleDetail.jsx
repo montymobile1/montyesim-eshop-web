@@ -80,7 +80,7 @@ const BundleDetail = ({
 
   const handleCheckExist = () => {
     //order top-up
-    if (!tmp?.isAuthenticated && !isAuthenticated && login_type === "phone") {
+    if (!tmp?.isAuthenticated && !isAuthenticated && (login_type === "phone" ||login_type === "email_phone") ) {
       navigate(
         `/signin?next=${encodeURIComponent(
           `/checkout/${bundle?.bundle_code}`

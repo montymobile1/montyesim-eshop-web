@@ -1,10 +1,10 @@
 //UTILITIES
-import React, { useEffect, useState } from "react";
 import { yupResolver } from "@hookform/resolvers/yup";
-import { useForm, Controller } from "react-hook-form";
+import { useEffect, useState } from "react";
+import { Controller, useForm } from "react-hook-form";
 import { useTranslation } from "react-i18next";
-import * as yup from "yup";
 import { toast } from "react-toastify";
+import * as yup from "yup";
 //COMPONENT
 import {
   Backdrop,
@@ -17,29 +17,41 @@ import {
   RadioGroup,
   Typography,
 } from "@mui/material";
+import { isValidPhoneNumber } from "react-phone-number-input";
+import { useSelector } from "react-redux";
 import OtpVerification from "../components/OtpVerification";
 import {
   FormCheckBox,
   FormInput,
   FormPhoneInput,
 } from "../components/shared/form-components/FormComponents";
-import { userLogin } from "../core/apis/authAPI";
+import ActiveOtpSent from "../components/shared/popups/ActiveOtpSent";
 import EmailSent from "../components/shared/popups/EmailSent";
+import { userLogin } from "../core/apis/authAPI";
 import { useAuth } from "../core/context/AuthContext";
-import { isValidPhoneNumber } from "react-phone-number-input";
-import { useSelector } from "react-redux";
-import { supportedPrefix } from "../core/variables/ProjectVariables";
+import {
+  excludedCountries,
+  onlyCountries,
+  supportedPrefix,
+} from "../core/variables/ProjectVariables";
 
 const SignIn = () => {
   const { t } = useTranslation();
   const { signinWithGoogle, loadingSocial, signinWithFacebook } = useAuth();
   const [showOtpVerification, setShowOtpVerification] = useState(false);
   const [showEmailSent, setShowEmailSent] = useState(false);
+  const [showActiveOtpExist, setShowActiveOtpExist] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [otpExpiration, setOtpExpiration] = useState(200);
+  const [otpRequested, setOtpRequested] = useState(false);
+  const [info, setInfo] = useState(null);
   const { login_type, otp_channel, social_login } = useSelector(
     (state) => state.currency
   );
-  const [otpRequested, setOtpRequested] = useState(false);
+  const canSocialLogin =
+    !(login_type === "phone" || login_type === "email_phone") && social_login;
+
+  const defaultSelectedCountry = info;
 
   const schema = ({ t }) =>
     yup.object().shape({
@@ -48,8 +60,8 @@ const SignIn = () => {
         .label("Phone number")
         .nullable()
         .when("$signinType", {
-          is: (val) => login_type == "phone",
-          then: (schema) => schema.required(`${t("auth.phoneRequired")}`),
+          is: () => login_type === "phone" || login_type === "email_phone",
+          then: (schema) => schema.required(t("auth.phoneRequired")),
           otherwise: (schema) => schema.notRequired(),
         })
         .test("is-valid-phone", `${t("auth.invalidPhone")}`, (value) => {
@@ -58,12 +70,14 @@ const SignIn = () => {
           // Validate phone number format
           if (!isValidPhoneNumber(value)) return false;
 
+          // If supportedPrefix is empty, skip additional prefix check
+          if (!supportedPrefix || supportedPrefix.length === 0) return true;
+
           // Validate first 2 digits after +963
           const cleaned = value.replace(/^(\+?963)/, "");
-
           const prefix = cleaned.substring(0, 2);
-          const validPrefixes = supportedPrefix;
-          return validPrefixes.includes(prefix);
+
+          return supportedPrefix.includes(prefix);
         }),
 
       email: yup
@@ -77,7 +91,7 @@ const SignIn = () => {
         })
         .nullable()
         .when("$signinType", {
-          is: (val) => login_type !== "phone",
+          is: (val) => login_type !== "phone" || login_type == "email_phone",
           then: (schema) => schema.required(`${t("checkout.emailRequired")}`),
           otherwise: (schema) => schema.notRequired(),
         }),
@@ -97,6 +111,7 @@ const SignIn = () => {
     handleSubmit,
     reset,
     getValues,
+    getValue,
     formState: { errors },
   } = useForm({
     defaultValues: {
@@ -110,22 +125,76 @@ const SignIn = () => {
   });
   const handleSubmitForm = (payload) => {
     setIsSubmitting(true);
-    userLogin({
+
+    const requestPayload = {
       verify_by: payload?.verify_by,
       confirm: payload?.confirm,
-      [login_type]: payload?.[login_type]?.toLowerCase(),
-    })
+    };
+
+    const storageKey = `${payload?.phone}-otpVerification`;
+
+    switch (login_type) {
+      case "email":
+        requestPayload.email = payload?.email?.toLowerCase();
+        break;
+
+      case "phone":
+        requestPayload.phone = payload?.phone;
+        break;
+
+      case "email_phone":
+        requestPayload.email = payload?.email?.toLowerCase();
+        requestPayload.phone = payload?.phone;
+        break;
+
+      default:
+        break;
+    }
+
+    userLogin(requestPayload)
       .then((res) => {
         if (res?.data?.status === "success") {
+          const otpExpSec = res?.data?.data?.otp_expiration;
+          const expiresAt = Date.now() + otpExpSec * 1000;
+
+          localStorage.setItem(
+            storageKey,
+            JSON.stringify({ otpExpSec, expiresAt })
+          );
+
+          setOtpExpiration(otpExpSec);
           setShowEmailSent(true);
           setOtpRequested(true);
         }
       })
       .catch((e) => {
-        toast?.error(e?.message || t("checkout.failedToSendMessage"));
+        if (e?.response?.status === 429) {
+          const saved = localStorage.getItem(storageKey);
+          if (saved) {
+            const { otpExpSec, expiresAt } = JSON.parse(saved);
+            const remaining = Math.max(
+              0,
+              Math.floor((expiresAt - Date.now()) / 1000)
+            );
+
+            setOtpExpiration(remaining);
+            setShowOtpVerification(true);
+            setShowActiveOtpExist(true);
+            setOtpRequested(true);
+          }
+        } else {
+          toast?.error(e?.message || t("checkout.failedToSendMessage"));
+        }
       })
       .finally(() => setIsSubmitting(false));
   };
+
+  useEffect(() => {
+    fetch("https://ipapi.co/json/")
+      .then((res) => res.json())
+      .then((data) => setInfo(data?.country_code?.toLowerCase()))
+      .catch((err) => console.error(err));
+  }, []);
 
   if (showOtpVerification) {
     return (
@@ -137,6 +206,7 @@ const SignIn = () => {
             verifyBy={getValues("verify_by")}
             setShowEmailSent={setShowEmailSent}
             otpRequested={otpRequested}
+            otpExpiration={otpExpiration}
           />
         </div>
         {showEmailSent && (
@@ -146,6 +216,14 @@ const SignIn = () => {
             verifyBy={getValues("verify_by")}
             onClose={() => {
               setShowEmailSent(false);
+              setShowOtpVerification(true);
+            }}
+          />
+        )}
+        {showActiveOtpExist && (
+          <ActiveOtpSent
+            onClose={() => {
+              setShowActiveOtpExist(false);
               setShowOtpVerification(true);
             }}
           />
@@ -170,31 +248,7 @@ const SignIn = () => {
           className="flex flex-col gap-[1rem]"
           onSubmit={handleSubmit(handleSubmitForm)}
         >
-          {login_type === "phone" ? (
-            <div>
-              <label htmlFor="phone" className="block text-sm font-medium mb-2">
-                {t("auth.phoneNumber")}
-              </label>
-              <Controller
-                render={({
-                  field: { onChange, value },
-                  fieldState: { error },
-                }) => (
-                  <FormPhoneInput
-                    value={value}
-                    defaultCountry="SY"
-                    countries={["SY"]}
-                    international={false}
-                    countrySelectProps={{ disabled: true }}
-                    helperText={error?.message}
-                    onChange={(value, country) => onChange(value)}
-                  />
-                )}
-                name="phone"
-                control={control}
-              />
-            </div>
-          ) : (
+          {(login_type === "email" || login_type == "email_phone") && (
             <div>
               <label htmlFor="email" className="block text-sm font-medium mb-2">
                 {t("auth.email")}
@@ -216,6 +270,41 @@ const SignIn = () => {
               />
             </div>
           )}
+          {(login_type === "phone" || login_type === "email_phone") && (
+            <div>
+              <label htmlFor="phone" className="block text-sm font-medium mb-2">
+                {t("auth.phoneNumber")}
+              </label>
+              <Controller
+                name="phone"
+                control={control}
+                render={({
+                  field: { onChange, value },
+                  fieldState: { error },
+                }) => {
+                  return (
+                    <FormPhoneInput
+                      onlyCountries={onlyCountries}
+                      value={value}
+                      defaultCountry={
+                        onlyCountries?.length
+                          ? onlyCountries.includes(defaultSelectedCountry)
+                            ? defaultSelectedCountry
+                            : onlyCountries[0]
+                          : excludedCountries?.includes(defaultSelectedCountry)
+                          ? "lb"
+                          : defaultSelectedCountry || "lb"
+                      }
+                      disabled={false}
+                      helperText={error?.message}
+                      onChange={(val, country) => onChange(val)}
+                    />
+                  );
+                }}
+              />
+            </div>
+          )}
+
           {otp_channel?.length > 1 && (
             <Controller
               render={({
@@ -314,7 +403,7 @@ const SignIn = () => {
           </div>
         </form>
 
-        {social_login && (
+        {canSocialLogin && (
           <>
             <div className="flex items-center">
               <div className="flex-grow border-t-[0.1rem] border-500"></div>

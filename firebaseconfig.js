@@ -40,7 +40,7 @@ const requestPermission = async () => {
     const token = await getToken(messaging, {
       vapidKey: import.meta.env.VITE_APP_VAPID_KEY,
     });
-    console.log(token, "firebaseee tokennn");
+
     return token;
   } else if (permission === "denied") {
     console.log("User Permission Denied.");

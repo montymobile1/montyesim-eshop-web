@@ -75,7 +75,7 @@ const EmailSent = ({ email, onClose, verifyBy, phone }) => {
               values={{
                 verifyBy: t(`auth.${verifyBy}`),
                 contact:
-                  login_type === "phone"
+                  login_type === "phone" || login_type === "email_phone"
                     ? phone?.toLowerCase() || ""
                     : email?.toLowerCase() || "",
               }}

@@ -41,11 +41,9 @@ import OrderConsumption from "./OrderConsumption";
 import OrderLabelChange from "./OrderLabelChange";
 import OrderPopup from "./OrderPopup";
 import OrderTopup from "./OrderTopup";
-import { useDispatch } from "react-redux";
-import { fetchUserInfo } from "../../redux/reducers/authReducer";
 const OrderCard = ({ order, myesim, refetchData }) => {
   const { t } = useTranslation();
-  const dispatch = useDispatch();
+
   const [anchorEl, setAnchorEl] = useState(null);
   const [collapseElement, setCollapseElement] = useState(null);
   const [openOrderReceipt, setOpenOrderReceipt] = useState(false);

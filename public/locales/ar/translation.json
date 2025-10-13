@@ -30,9 +30,10 @@
     "orContinueWith": "أو المتابعة باستخدام",
     "signInWithGoogle": "تسجيل الدخول باستخدام Google",
     "signInWithFacebook": "تسجيل الدخول باستخدام Facebook",
+    "whatsapp": "واتساب",
     "verifyEmail": "يرجى التحقق من {{verifyBy}}!",
     "dcbMessage": "أنت على وشك الدفع باستخدام رقم هاتفك. تم إرسال رمز التحقق عبر {{verifyBy}}",
-    "syrialtelDcbMessage": "أنت على وشك الدفع باستخدام SyriaCash. تم إرسال رمز التحقق عن طريق {{verifyBy}}",
+    "syrialtelDcbMessage": "أنت على وشك الدفع باستخدام Syriatel Cash. تم إرسال رمز التحقق عن طريق {{verifyBy}}",
     "mtnDcbMessage": "أنت على وشك الدفع باستخدام رصيد MTN الخاص بك. تم إرسال رمز التحقق عن طريق {{verifyBy}}",
     "verificationCodeSent": "لقد شارفنا على الانتهاء! تم إرسال رمز التحقق عن طريق {{verifyBy}}",
     "verify": "تحقق",
@@ -62,13 +63,17 @@
     "andIAcceptThe": "وأنا أوافق على",
     "andIUnderstandProductWorksWithESIM": "وأفهم أن المنتج يعمل فقط مع أجهزة eSIM المتوافقة وغير المقيدة بالشبكة.",
     "emailMustBeValid": "يجب أن يكون البريد الإلكتروني بريدًا إلكترونيًا صالحًا",
-    "phoneNumber": "رقم الهاتف"
+    "phoneNumber": "رقم الهاتف",
+    "email_phone": "البريد الإلكتروني و رقم الهاتف",
+    "activeOtpExists": "رمز التحقق (OTP) موجود بالفعل",
+    "useExistingOtp": "يرجى استخدام رمز التحقق الذي استلمته مسبقًا للمتابعة."
   },
   "common": {
     "hooray": "رائع!",
     "notAvailable": "غير متوفر",
     "pageNotFound": "الصفحة غير موجودة",
-    "pageNotExistMessage": "عذرًا، الصفحة التي تبحث عنها غير موجودة."
+    "pageNotExistMessage": "عذرًا، الصفحة التي تبحث عنها غير موجودة.",
+    "referral_message": "تحقق من هذا واستخدم رمز الإحالة الخاص بي:"
   },
   "account": {
     "delete_account": "حذف الحساب",
@@ -86,7 +91,8 @@
     "no_valid_iccid": "لم يتم تقديم ICCID. يرجى تقديم ICCID صالح.",
     "no_data_matching_iccid": "لا توجد بيانات متوفرة لـ ICCID المُقدم.",
     "no_active_plans": "لا توجد باقات نشطة.",
-    "no_expired_plans": "لا توجد باقات منتهية."
+    "no_expired_plans": "لا توجد باقات منتهية.",
+    "no_rewards_history": "لا يوجد سجل {{type}}"
   },
   "label": {
     "purchase_date": "تاريخ الشراء",
@@ -95,13 +101,15 @@
     "bundle_name": "اسم الباقة",
     "link": "الرابط",
     "enterName": "أدخل الاسم",
-    "eSIM_validity": "صلاحية الشريحة الإلكترونية"
+    "eSIM_validity": "صلاحية الشريحة الإلكترونية",
+    "code": "رمز"
   },
   "bundle": {
     "bundle_existence_title": "لقد اشتريت eSIM من قبل!",
     "bundle_existence_text": "إذا كانت الشريحة لا تزال على جهازك وتستخدمها من هنا، سيكون من الأسرع تعبئتها!"
   },
   "btn": {
+    "apply": "استخدم",
     "buy_new_esim": "شراء شريحة eSIM جديدة",
     "top_up_existing_esim": "تعبئة الشريحة الحالية",
     "save": "حفظ",
@@ -133,7 +141,9 @@
     "payNow": "ادفع الآن",
     "cancel": "إلغاء",
     "savingChanges": "جارٍ حفظ التغييرات...",
-    "saveChanges": "حفظ التغييرات"
+    "saveChanges": "حفظ التغييرات",
+    "loading": "جارٍ التحميل...",
+    "Checkout": "الدفع"
   },
   "orders": {
     "plan_history": "سجل الباقات",
@@ -153,7 +163,7 @@
     "order_status": "حالة الطلب",
     "payment_details": "تفاصيل الدفع",
     "smdpAddress": "عنوان",
-    "activateCode": "كود التفعيل",
+    "activationCode": "رمز التفعيل",
     "failedToLoad": "فشل في تحميل بيانات الطلب.",
     "pleaseSignIn": "يرجى تسجيل الدخول لمزيد من التفاصيل",
     "ordered": "تم الطلب",
@@ -182,7 +192,12 @@
     "Primary Bundle": "الباقة الأساسية",
     "TopUp Bundle": "باقة الشحن",
     "labelRequired": "حقل التسمية مطلوب",
-    "qrcode_loading": "جارٍ تحميل بيانات رمز الاستجابة السريعة. لحظة من فضلك..."
+    "qrcode_loading": "جارٍ تحميل بيانات رمز الاستجابة السريعة. لحظة من فضلك...",
+    "iosDirectInstallation": "رابط التثبيت المباشر لنظام iOS (لـ iOS 17 أو أحدث فقط)",
+    "LPALink": "LPA:1",
+    "instructions": "تعليمات",
+    "esim_instructions": "الإعدادات > الشبكة والإنترنت > شرائح SIM > إضافة eSIM > مسح رمز QR",
+    "esim_lpa_instructions": "الإعدادات > الشبكة والإنترنت > شرائح SIM > إضافة eSIM > استخدام رمز التفعيل > لصق الرمز أعلاه"
   },
   "esim": {
     "title": "شريحتي الإلكترونية",
@@ -220,9 +235,14 @@
     "searchByCountry": "البحث حسب البلد",
     "Plan Started": "بدأت الخطة",
     "Plan Not Started": "لم تبدأ الخطة",
-    "Expired": "غير صالح"
+    "Expired": "غير صالح",
+    "Pending": "قيد الانتظار"
   },
   "bundles": {
+    "apply_promo": "هل تريد تطبيق رمز ترويجي؟",
+    "apply_promo_or_referral": "هل تريد تطبيق رمز ترويجي أو رمز إحالة؟",
+    "enter_promo_code": "أدخل الرمز الترويجي",
+    "enter_promo_code_or_referral": "أدخل الرمز الترويجي أو رمز الإحالة",
     "validity": "الصلاحية",
     "noBundlesAvailable": "حالياً، لا توجد أي باقات متاحة",
     "noTopupsAvailable": "حالياً، لا توجد أي شحنات متاحة",
@@ -261,7 +281,14 @@
     "bundleName": "اسم الباقة",
     "subtotal": "المجموع الفرعي",
     "estimatedTax": "الضريبة المقدرة",
-    "total": "الإجمالي"
+    "total": "الإجمالي",
+    "paymentMethod": "طريقة الدفع",
+    "confirmTitle": "تأكيد الخصم: المتابعة لخصم {{amount}} ؟",
+    "confirmMessage": "سيتم خصم {{amount}}  من محفظتك.",
+    "confirmHint": "انقر على تأكيد للمتابعة",
+    "confirmButton": "تأكيد",
+    "noPaymentMethodsFound": "لم يتم العثور على طرق دفع",
+    "low_wallet_balance": "رصيد محفظتك {{balance}} غير كافٍ لإتمام عملية الدفع. يرجى اختيار طريقة دفع أخرى."
   },
   "howItWorks": {
     "easyAndFast": "سهل وسريع",
@@ -277,7 +304,6 @@
   },
   "contactUs": {
     "messageRequired": "الرسالة حقل مطلوب",
-    "melIsTesting": "ميل يختبر",
     "messageSentSuccessfully": "تم إرسال رسالتك بنجاح!",
     "failedToSendMessage": "فشل في إرسال الرسالة",
     "contactUs": "اتصل بنا",
@@ -302,20 +328,25 @@
     "paymentProcessingError": "لا يمكن معالجة الدفع. يرجى التواصل مع دعم تقنية المعلومات.",
     "paymentConfirmationFailed": "فشل في تأكيد الدفع",
     "paymentMethod": "طريقة الدفع",
-    "failedToLoadPaymentInputs": "فشل في تحميل مدخلات الدفع. يرجى المحاولة مرة أخرى لاحقًا"
+    "failedToLoadPaymentInputs": "فشل في تحميل مدخلات الدفع. يرجى المحاولة مرة أخرى لاحقًا",
+    "wallet_topped_up_successfully": "تم شحن المحفظة بنجاح"
   },
   "planType": {
     "Data only": "بيانات فقط"
   },
   "validity": {
-    "Day": "يوم",
-    "day": "يوم",
-    "Week": "أسبوع",
-    "week": "أسبوع",
-    "Month": "شهر",
-    "month": "شهر",
-    "Year": "سنة",
-    "year": "سنة"
+    "day": "{{count}} يوم",
+    "day_plural": "{{count}} أيام",
+    "days_plural": "{{count}} أيام",
+    "month": "{{count}} شهر",
+    "month_plural": "{{count}} أشهر",
+    "months_plural": "{{count}} أشهر",
+    "week": "{{count}} أسبوع",
+    "week_plural": "{{count}} أسابيع",
+    "weeks_plural": "{{count}} أسابيع",
+    "year": "{{count}} سنة",
+    "year_plural": "{{count}} سنوات",
+    "years_plural": "{{count}} سنوات"
   },
   "activity_policy": "تبدأ فترة الصلاحية عند اتصال الشريحة الإلكترونية بأي من الشبكات المدعومة.",
   "terms": {
@@ -325,9 +356,16 @@
   "errors": {
     "maxCharacter": "يجب أن لا يحتوي {{field}} على أكثر من {{character}} حرفًا",
     "customer_not_enougn_balance": "رقم العميل لا يحتوي على رصيد كافٍ",
+    "fieldRequired": "حقل {{field}} مطلوب",
     "invalid_otp": "رمز التحقق غير صالح",
     "technical_error": "خطأ تقني",
-    "expired_otp": "انتهت صلاحية رمز التحقق"
+    "expired_otp": "انتهت صلاحية رمز التحقق",
+    "promotion_code_not_found": "رمز الترويج غير موجود",
+    "promotion_not_active": "العرض غير فعال",
+    "promotion_rule_beneficiary_user_only": "يجب أن يكون المستفيد من العرض هو المستخدم الحالي فقط",
+    "promotion_already_used": "تم استخدام رمز الترويج مسبقًا",
+    "bundle_not_available": "الباقة غير متوفرة حالياً. يرجى المحاولة لاحقاً.",
+    "share_platform_not_supported": "المشاركة على هذه المنصة غير مدعومة."
   },
   "profile": {
     "infoUpdatedSuccessfully": "تم تحديث المعلومات بنجاح",
@@ -356,16 +394,66 @@
     "success": "ناجح",
     "pending": "قيد الانتظار",
     "failed": "فشل",
-    "failure": "فشل"
+    "failure": "فشل",
+    "inactive": "غير نشط"
   },
   "payment": {
     "paymentTypeNotAvailable": "نوع الدفع هذا غير متوفر الآن",
-    "failedToLoadPaymentInput": "فشل في تحميل مدخلات الدفع",
-    "paymentMethod": "طريقة الدفع"
+    "failedToLoadPaymentInput": "فشل في تحميل مدخلات الدفع"
   },
   "privacy": {
     "failedToLoadPrivacyPolicyData": "فشل في تحميل بيانات سياسة الخصوصية",
     "noContentAvailable": "لا يوجد محتوى متاح في هذه اللحظة",
     "Privacy Policy": "سياسة الخصوصية"
+  },
+  "myWallet": {
+    "wallet": "محفظة",
+    "availableBalance": "الرصيد المتوفر",
+    "enterVoucherCode": "أدخل رمز القسيمة",
+    "enterValidCode": "يرجى إدخال رمز قسيمة صالح.",
+    "voucherCodeRequiredMessage": "رمز القسيمة مطلوب.",
+    "voucherCode": "رمز القسيمة",
+    "redeemInstruction": " يرجى إدخال الرمز أو مسح رمز الاستجابة السريعة لاسترداد القسيمة",
+    "redeem": "استرداد",
+    "referAndEarn": "الإحالة والربح",
+    "referAndEarnDescription": "اكسب المال من خلال دعوة أصدقائك وأنفقه كما تشاء. تم إرسال رمز الاستجابة السريعة إلى بريدك الإلكتروني. يمكنك مسحه هنا ومشاركته مع أصدقائك.",
+    "shareWithFriends": "شارك مع الأصدقاء",
+    "upgradeWallet": "ترقية المحفظة",
+    "enterAmountToAddFunds": "أدخل المبلغ لإضافة أموال",
+    "enterAmount": "أدخل المبلغ",
+    "amountNumber": "رقم المبلغ",
+    "upgrade": "ترقية",
+    "rewardHistory": "سجل المكافآت",
+    "cashback": "استرجاع نقدي",
+    "amountMustBeNumber": "يجب أن يكون المبلغ رقماً",
+    "amountMustBeGreaterThanZero": "يجب أن يكون المبلغ أكبر من 0",
+    "amountRequiredMessage": "المبلغ مطلوب",
+    "referral": "الإحالة",
+    "noCashbackFound": "لم يتم العثور على استرجاع نقدي",
+    "noReferralFound": "لم يتم العثور على إحالات",
+    "voucher_successfully_redeemed": "تم استرداد القسيمة بنجاح",
+    "rewards": "المكافآت"
+  },
+  "referAndEarn": {
+    "referAndEarnTitle": "الإحالة والربح",
+    "shareYourReferralCode": "شارك رمز الإحالة الخاص بك",
+    "referAndEarnDescriptionFull": "احصل على رصيد بقيمة 3 دولارات أمريكية لكل صديق يسجل ويكمل عملية شراء. يحصل أصدقاؤك على خصم بقيمة 3 دولارات أمريكية على أول عملية شراء لهم.",
+    "yourReferralCode": "رمز الإحالة الخاص بك",
+    "refferral_code_saved": "تم حفظ رمز الإحالة بنجاح",
+    "invalid_referral_code": "رمز الإحالة غير صالح"
+  },
+  "swiper": {
+    "refer_banner_title": "قم بدعوة أصدقائك",
+    "refer_banner_subtitle": "ادعُ أصدقاءك لتجربة الخدمة",
+    "discount_banner_title": "خصم لأصدقائك",
+    "cashback_banner_title": "استرداد نقدي لأصدقائك",
+    "discount_banner_subtitle": "يحصل أصدقاؤك على خصم قدره {{amount}} على أول عملية شراء eSIM باستخدام رمز الإحالة الخاص بك",
+    "refer_reward_banner_title": "مكافآت الإحالة لك",
+    "refer_reward_banner_subtitle": "ستحصل على رصيد محفظة بقيمة {{amount}} عن كل إحالة ناجحة",
+    "start_sharing": "ابدأ بالمشاركة",
+    "discount_amount_description": "يحصل أصدقاؤك على خصم قدره {{amount}} على أول عملية شراء eSIM باستخدام رمز الإحالة الخاص بك",
+    "discount_percentage_description": "يحصل أصدقاؤك على خصم {{amount}} على أول عملية شراء eSIM باستخدام رمز الإحالة الخاص بك",
+    "cashback_amount_description": "يحصل أصدقاؤك على استرداد نقدي قدره {{amount}} على أول عملية شراء eSIM باستخدام رمز الإحالة الخاص بك",
+    "cashback_percentage_description": "يحصل أصدقاؤك على استرداد نقدي بنسبة {{amount}} على أول عملية شراء eSIM باستخدام رمز الإحالة الخاص بك"
   }
 }

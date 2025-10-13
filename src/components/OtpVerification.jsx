@@ -4,7 +4,7 @@ import { Controller, useForm } from "react-hook-form";
 import { useTranslation } from "react-i18next";
 import * as yup from "yup";
 //COMPONENT
-import { Button, TextField } from "@mui/material";
+import { Button, Skeleton, TextField } from "@mui/material";
 import clsx from "clsx";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate, useParams } from "react-router-dom";
@@ -38,10 +38,11 @@ const OtpVerification = ({
   verifyBy,
   handleSuccessOrder,
   checkout = false,
+  recallAssign,
   otpRequested = false,
+  otpExpiration,
 }) => {
   const { iccid } = useParams();
-
   const { t } = useTranslation();
 
   const inputRefs = useRef([]);
@@ -50,10 +51,17 @@ const OtpVerification = ({
 
   const [isVerifying, setIsVerifying] = useState(false);
   const [resend, setResend] = useState(true);
-  const [timer, setTimer] = useState(120); // 120 seconds = 2 minutes
   const { login_type, otp_channel } = useSelector((state) => state.currency);
   const [_, setVerifiedBy] = useState("email");
   const [proceed] = useState(false);
+
+  const [expiresAt, setExpiresAt] = useState(
+    Date.now() + (otpExpiration ?? orderDetail?.otp_expiration ?? 120) * 1000
+  );
+  const [timer, setTimer] = useState(
+    Math.max(0, Math.floor((expiresAt - Date.now()) / 1000))
+  );
+
   const {
     control,
     handleSubmit,
@@ -80,14 +88,13 @@ const OtpVerification = ({
         })
         .catch((err) => console.error(err));
 
-      // Optional: abort after some time
       setTimeout(() => ac.abort(), 60000);
     } else {
       toast.error("Web OTP API not supported. Please enter OTP manually.");
     }
   };
+
   useEffect(() => {
-    // Focus first input on mount
     if (inputRefs.current[0]) {
       inputRefs.current[0].focus();
     }
@@ -97,24 +104,27 @@ const OtpVerification = ({
   }, []);
 
   const handleKeyDown = (index, e) => {
-    // Handle backspace
     if (e.key === "Backspace" && !getValues(`otp[${index}]`) && index > 0) {
       inputRefs.current[index - 1].focus();
     }
   };
 
   useEffect(() => {
-    if (timer === 0) {
-      setResend(false);
-      return;
-    }
-
     const interval = setInterval(() => {
-      setTimer((prevTimer) => prevTimer - 1);
+      const remaining = Math.max(
+        0,
+        Math.floor((expiresAt - Date.now()) / 1000)
+      );
+      setTimer(remaining);
+
+      if (remaining === 0) {
+        setResend(false);
+        clearInterval(interval);
+      }
     }, 1000);
 
     return () => clearInterval(interval);
-  }, [timer]);
+  }, [expiresAt]);
 
   useEffect(() => {
     setVerifiedBy(otp_channel?.[0]);
@@ -123,7 +133,9 @@ const OtpVerification = ({
   const handleSubmitForm = (payload) => {
     setIsVerifying(true);
 
+    const storageKey = `${payload?.phone}-otpVerification`;
     let handleAPI = checkout ? verifyOrderOTP : verifyOTP;
+
     handleAPI({
       ...payload,
       ...(checkout
@@ -134,8 +146,10 @@ const OtpVerification = ({
           }
         : {
             ...(login_type === "phone"
-              ? { phone: phone }
-              : { user_email: email }),
+              ? { phone }
+              : login_type === "email"
+              ? { email: email?.toLowerCase() }
+              : { email: email?.toLowerCase(), phone }),
             verification_pin: payload.otp.join(""),
             provider_token: "",
             provider_type: "",
@@ -143,26 +157,25 @@ const OtpVerification = ({
     })
       .then((res) => {
         if (res?.data?.status === "success") {
+          localStorage.removeItem(storageKey);
+
           if (checkout) {
-            // Delay invalidation by 5 seconds
             handleSuccessOrder();
           } else {
-            //login user
-            dispatch(
-              SignIn({
-                ...res?.data?.data,
-              })
-            );
+            dispatch(SignIn({ ...res?.data?.data }));
           }
         } else {
-          toast.error(t("auth.failedToVerifyOtp"));
+          toast.error(res?.data?.message || t("auth.failedToVerifyOtp"));
           setIsVerifying(false);
         }
       })
       .catch((error) => {
         reset();
-
-        toast.error(error?.developerMessage || t("auth.failedToVerifyOtp"));
+        const msg =
+          error?.response?.data?.message ||
+          error?.message ||
+          t("auth.failedToVerifyOtp");
+        toast.error(msg);
       })
       .finally(() => {
         setTimeout(() => {
@@ -172,51 +185,94 @@ const OtpVerification = ({
   };
 
   const handleInput = (index, value) => {
-    // Auto-focus next input
     if (value && index < 5) {
       inputRefs.current[index + 1].focus();
     }
-
-    // If all digits are filled, verify automatically
     if (value && index === 5) {
       handleSubmitForm(getValues());
     }
   };
+
   const handlePaste = (e, index) => {
     const pastedValue = e.clipboardData?.getData("Text");
     if (/^\d*$/.test(pastedValue)) {
       const digits = pastedValue.split("").slice(0, 6);
-      reset({
-        otp: digits,
-      });
+      reset({ otp: digits });
     }
   };
 
   const handleResendOtp = () => {
+    const storageKey = `${phone}-otpVerification`;
+
     if (checkout) {
       resendOrderOTP(orderDetail?.order_id)
         .then((res) => {
           if (res?.data?.status === "success") {
+            const otpExpSec = res?.data?.data?.otp_expiration ?? 120;
+            const newExpiresAt = Date.now() + otpExpSec * 1000;
+            setExpiresAt(newExpiresAt);
+            localStorage.setItem(
+              storageKey,
+              JSON.stringify({ otpExpSec, expiresAt: newExpiresAt })
+            );
             setResend(true);
-            setTimer(120);
           }
         })
         .catch((e) => {
-          toast?.error(e?.message || "Failed to send message");
+          if (e?.response?.status === 429) {
+            const saved = localStorage.getItem(storageKey);
+            if (saved) {
+              const { expiresAt } = JSON.parse(saved);
+              setExpiresAt(expiresAt);
+              setResend(true);
+            }
+          } else {
+            toast?.error(e?.message || "Failed to send message");
+          }
         });
     } else {
-      userLogin({
-        [login_type]: login_type === "phone" ? phone : email,
-      })
+      const requestPayload = {};
+      switch (login_type) {
+        case "email":
+          requestPayload.email = email?.toLowerCase();
+          break;
+        case "phone":
+          requestPayload.phone = phone;
+          break;
+        case "email_phone":
+          requestPayload.email = email?.toLowerCase();
+          requestPayload.phone = phone;
+          break;
+        default:
+          break;
+      }
+
+      userLogin(requestPayload)
         .then((res) => {
           if (res?.data?.status === "success") {
+            const otpExpSec = res?.data?.data?.otp_expiration ?? 120;
+            const newExpiresAt = Date.now() + otpExpSec * 1000;
+            setExpiresAt(newExpiresAt);
+            localStorage.setItem(
+              storageKey,
+              JSON.stringify({ otpExpSec, expiresAt: newExpiresAt })
+            );
             setShowEmailSent(true);
             setResend(true);
-            setTimer(120);
           }
         })
         .catch((e) => {
-          toast?.error(e?.message || "Failed to send message");
+          if (e?.response?.status === 429) {
+            const saved = localStorage.getItem(storageKey);
+            if (saved) {
+              const { expiresAt } = JSON.parse(saved);
+              setExpiresAt(expiresAt);
+              setResend(true);
+              setShowEmailSent(true);
+            }
+          } else {
+            toast?.error(e?.message || "Failed to send message");
+          }
         });
     }
   };
@@ -228,7 +284,7 @@ const OtpVerification = ({
     );
   }, [errors, getValues()]);
 
-  //EXPLANATION : PLEASE DON'T CHANGE THIS AS IT WILL BE APPLIED LATER
+ //EXPLANATION : PLEASE DON'T CHANGE THIS AS IT WILL BE APPLIED LATER
 
   // if (checkout && otp_channel?.length > 1 && !proceed) {
   //   return (
@@ -279,7 +335,7 @@ const OtpVerification = ({
   return (
     <form
       onSubmit={handleSubmit(handleSubmitForm)}
-      className={clsx("w-full max-w-md  flex flex-col gap-[2rem] sm:px-unset", {
+      className={clsx("w-full max-w-md flex flex-col gap-[2rem] sm:px-unset", {
         "px-8 mx-auto": !checkout,
       })}
     >
@@ -292,7 +348,7 @@ const OtpVerification = ({
           : t("auth.verificationCodeSent", { verifyBy: t(`auth.${verifyBy}`) })}
         <br />
         <span dir="ltr" className="font-medium">
-          {login_type === "phone"
+          {login_type === "phone" || login_type === "email_phone"
             ? phone?.toLowerCase() || ""
             : email?.toLowerCase() || ""}
         </span>
@@ -302,15 +358,12 @@ const OtpVerification = ({
       <div className="flex justify-center gap-2" dir="ltr">
         {Array(6)
           .fill()
-          ?.map((digit, index) => (
+          .map((digit, index) => (
             <Controller
               key={`otp-${index}`}
               name={`otp.[${index}]`}
               control={control}
-              render={({
-                field: { onChange, value },
-                fieldState: { error },
-              }) => (
+              render={({ field: { onChange, value } }) => (
                 <TextField
                   inputRef={(el) => (inputRefs.current[index] = el)}
                   value={value}
@@ -330,12 +383,6 @@ const OtpVerification = ({
                     style: { textAlign: "center" },
                     inputMode: "numeric",
                     pattern: "[0-9]*",
-                  }}
-                  slotProps={{
-                    autoComplete: "one-time-code",
-                    form: {
-                      autoComplete: "one-time-code",
-                    },
                   }}
                   variant="outlined"
                   fullWidth
@@ -385,9 +432,20 @@ const OtpVerification = ({
               </span>
             </>
           ) : (
-            <p className={"text-secondary font-bold"}>
-              {t("auth.resendCode")} {Math.floor(timer / 60)}:
-              {(timer % 60).toString().padStart(2, "0")}
+            <p className="text-secondary font-bold">
+              {timer == null || isNaN(timer) ? (
+                <Skeleton
+                  variant="text"
+                  width={80}
+                  height={30}
+                  className="!bg-gray-300 rounded-md"
+                />
+              ) : (
+                <>
+                  {t("auth.resendCode")} {Math.floor(timer / 60)}:
+                  {(timer % 60).toString().padStart(2, "0")}
+                </>
+              )}
             </p>
           )}
         </div>

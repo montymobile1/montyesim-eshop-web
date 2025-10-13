@@ -3,7 +3,8 @@
     "hooray": "Hooray!",
     "notAvailable": "N/A",
     "pageNotFound": "Page Not Found",
-    "pageNotExistMessage": "Sorry, the page you are looking for doesn't exist."
+    "pageNotExistMessage": "Sorry, the page you are looking for doesn't exist.",
+    "referral_message": "Check this out and use my referral code:"
   },
   "account": {
     "delete_account": "Delete Account",
@@ -21,7 +22,8 @@
     "no_valid_iccid": "No ICCID provided. Please provide a valid ICCID.",
     "no_data_matching_iccid": "No data available for the provided ICCID",
     "no_active_plans": "No active plans",
-    "no_expired_plans": "No expired plans"
+    "no_expired_plans": "No expired plans",
+    "no_rewards_history": "No {{type}} history"
   },
   "label": {
     "purchase_date": "Purchase Date",
@@ -30,13 +32,15 @@
     "bundle_name": "Bundle Name",
     "link": "Link",
     "enterName": "Enter name",
-    "eSIM_validity": "eSIM Validity"
+    "eSIM_validity": "eSIM Validity",
+    "code": "Code"
   },
   "bundle": {
     "bundle_existence_title": "You have purchased an eSIM before!",
     "bundle_existence_text": "If you still have the SIM on your device and you will use it from here, it is faster to top it up!"
   },
   "btn": {
+    "apply": "Apply",
     "buy_new_esim": "Buy a new eSIM",
     "top_up_existing_esim": "Top-up my existing SIM",
     "save": "Save",
@@ -68,7 +72,9 @@
     "payNow": "Pay Now",
     "cancel": "Cancel",
     "savingChanges": "Saving Changes...",
-    "saveChanges": "Save Changes"
+    "saveChanges": "Save Changes",
+    "loading": "Loading...",
+    "Checkout": "Checkout"
   },
   "orders": {
     "plan_history": "Plan History",
@@ -88,7 +94,7 @@
     "order_status": "Order Status",
     "payment_details": "Payment Details",
     "smdpAddress": "Address",
-    "activateCode": "Activate Code",
+    "activationCode": "Activation Code",
     "failedToLoad": "Failed to load order data.",
     "pleaseSignIn": "Please sign in to check more details",
     "ordered": "Ordered",
@@ -117,7 +123,12 @@
     "Primary Bundle": "Primary Bundle",
     "TopUp Bundle": "TopUp Bundle",
     "labelRequired": "Label is a required field",
-    "qrcode_loading": "Fetching QR code data. Just a moment..."
+    "qrcode_loading": "Fetching QR code data. Just a moment...",
+    "iosDirectInstallation": "iOS Direct Installation Link (For iOS 17 or later only)",
+    "LPALink": "LPA:1",
+    "instructions": "Instructions",
+    "esim_instructions": "Settings > Network & Internet > SIMs > Add eSIM > Scan QR Code",
+    "esim_lpa_instructions": "Settings > Network & Internet > SIMs > Add eSIM > Use activation code > Paste the above"
   },
   "esim": {
     "title": "My eSIM",
@@ -175,10 +186,10 @@
     "verifyEmail": "Please verify your {{verifyBy}}!",
     "sms": "SMS",
     "whatsapp": "Whatsapp",
-    "dcbMessage": "You are about to pay using your phone number. A verification code was sent to by {{verifyBy}}",
-    "syrialtelDcbMessage": "You are about to pay using SyriaCash. A verification code was sent to by {{verifyBy}}",
-    "mtnDcbMessage": "You are about to pay using your MTN airtime balance. A verification code was sent to by {{verifyBy}}",
-    "verificationCodeSent": "You're almost there! A verification code was sent to by {{verifyBy}}",
+    "dcbMessage": "You are about to pay using your phone number. A verification code was sent to you by {{verifyBy}}",
+    "syrialtelDcbMessage": "You are about to pay using Syriatel Cash. A verification code was sent to you by {{verifyBy}}",
+    "mtnDcbMessage": "You are about to pay using your MTN airtime balance. A verification code was sent to you by {{verifyBy}}",
+    "verificationCodeSent": "You're almost there! A verification code was sent to you by {{verifyBy}}",
     "verify": "Verify",
     "verifying": "Verifying...",
     "didntReceiveCode": "Didn't receive a code?",
@@ -206,7 +217,10 @@
     "andIAcceptThe": "And I accept the",
     "andIUnderstandProductWorksWithESIM": "and I understand that the product only works with eSIM compatible and carrier-unlocked devices.",
     "emailMustBeValid": "Email must be a valid email",
-    "phoneNumber": "Phone Number"
+    "phoneNumber": "Phone Number",
+    "email_phone": "email and phone number",
+    "activeOtpExists": "Active OTP already exists",
+    "useExistingOtp": "Please use the OTP you already received to continue."
   },
   "plans": {
     "restrictedCountriesSelection": "You can select up to 3 countries only",
@@ -221,9 +235,14 @@
     "searchByCountry": "Search by country",
     "Plan Started": "Plan Started",
     "Plan Not Started": "Plan Not Started",
-    "Expired": "Expired"
+    "Expired": "Expired",
+    "Pending": "Pending"
   },
   "bundles": {
+    "apply_promo": "Apply a promo code?",
+    "apply_promo_or_referral": "Apply a promo or referral code?",
+    "enter_promo_code": "Enter promo code",
+    "enter_promo_code_or_referral": "Enter promo or referral code",
     "validity": "Validity",
     "noBundlesAvailable": "Currently, There no bundles available",
     "noTopupsAvailable": "Currently, There are no top-ups available",
@@ -261,7 +280,14 @@
     "bundleName": "Bundle Name",
     "subtotal": "Subtotal",
     "estimatedTax": "Estimated Tax",
-    "total": "Total"
+    "total": "Total",
+    "confirmTitle": "Confirm Deduction: Proceed with {{amount}} Charge?",
+    "confirmMessage": "{{amount}} will be deducted from your wallet.",
+    "confirmHint": "Click confirm to proceed",
+    "confirmButton": "Confirm",
+    "paymentMethod": "Payment Method",
+    "noPaymentMethodsFound": "No payment methods found",
+    "low_wallet_balance": "Your wallet balance {{balance}} isn’t sufficient to complete the payment. Please choose another payment method."
   },
   "howItWorks": {
     "easyAndFast": "Easy and fast",
@@ -277,7 +303,6 @@
   },
   "contactUs": {
     "messageRequired": "Message is a required field",
-    "melIsTesting": "mel is testing",
     "messageSentSuccessfully": "Your message has been sent successfully!",
     "failedToSendMessage": "Failed to send message",
     "contactUs": "Contact us",
@@ -302,20 +327,25 @@
     "paymentProcessingError": "Payment cannot be processed. Please contact IT support.",
     "paymentConfirmationFailed": "Failed to confirm payment",
     "paymentMethod": "Payment Method",
-    "failedToLoadPaymentInputs": "Failed to load payment inputs. Please try again later"
+    "failedToLoadPaymentInputs": "Failed to load payment inputs. Please try again later",
+    "wallet_topped_up_successfully": "Wallet has been topped up successfully"
   },
   "planType": {
     "Data only": "Data only"
   },
   "validity": {
-    "Day": "Day",
-    "day": "day",
-    "Week": "Week",
-    "week": "week",
-    "month": "month",
-    "Month": "Month",
-    "Year": "Year",
-    "year": "year"
+    "day": "{{count}} day",
+    "day_plural": "{{count}} days",
+    "days_plural": "{{count}} days",
+    "month": "{{count}} month",
+    "month_plural": "{{count}} months",
+    "months_plural": "{{count}} months",
+    "week": "{{count}} week",
+    "week_plural": "{{count}} weeks",
+    "weeks_plural": "{{count}} weeks",
+    "year": "{{count}} year",
+    "year_plural": "{{count}} years",
+    "years_plural": "{{count}} years"
   },
   "activity_policy": "The validity period starts when the eSIM connects to any supported networks.",
   "terms": {
@@ -325,9 +355,16 @@
   "errors": {
     "maxCharacter": "{{field}} must not contain more than {{character}} characters",
     "customer_not_enougn_balance": "Customer msisdn doesn’t have enough balance",
+    "fieldRequired": "{{field}} is required",
     "invalid_otp": "Invalid OTP",
     "technical_error": "Technical error",
-    "expired_otp": "Expired OTP"
+    "expired_otp": "Expired OTP",
+    "promotion_code_not_found": "Promotion code not found",
+    "promotion_not_active": "Promotion not active",
+    "promotion_rule_beneficiary_user_only": "Promotion rule for promotion can have beneficiary user only",
+    "promotion_already_used": "Promotion code already used",
+    "bundle_not_available": "Bundle Not Available Now Try Again Later",
+    "share_platform_not_supported": "Sharing on this platform is not supported."
   },
   "profile": {
     "infoUpdatedSuccessfully": "Information Updated Successfully",
@@ -357,7 +394,8 @@
     "success": "Success",
     "pending": "Pending",
     "failed": "Failed",
-    "failure": "Failure"
+    "failure": "Failure",
+    "inactive": "Inactive"
   },
   "payment": {
     "paymentTypeNotAvailable": "This payment type is not available now",
@@ -368,5 +406,55 @@
     "failedToLoadPrivacyPolicyData": "Failed to load Privacy Policy Data",
     "noContentAvailable": "No content available at this moment",
     "Privacy Policy": "Privacy Policy"
+  },
+  "myWallet": {
+    "wallet": "Wallet",
+    "availableBalance": "Available Balance",
+    "enterVoucherCode": "Enter your voucher code",
+    "enterValidCode": "Please enter a valid voucher code.",
+    "voucherCodeRequiredMessage": "Voucher code is required.",
+    "voucherCode": "Voucher Code",
+    "redeemInstruction": "Please enter the code or scan the QR code to redeem",
+    "redeem": "Redeem",
+    "referAndEarn": "Refer & Earn",
+    "referAndEarnDescription": "Earn cash by inviting your friends and spend it as you wish. The QR\n          code was sent to your email. You can scan it here and share it with\n          your friends.",
+    "shareWithFriends": "Share with Friends",
+    "upgradeWallet": "Upgrade Wallet",
+    "enterAmountToAddFunds": "Enter the amount number to add funds to your wallet",
+    "enterAmount": "Enter amount",
+    "amountNumber": "Amount Number",
+    "upgrade": "Upgrade",
+    "rewardHistory": "Reward History",
+    "cashback": "Cashback",
+    "amountMustBeNumber": "Amount must be a number",
+    "amountMustBeGreaterThanZero": "Amount must be greater than 0",
+    "amountRequiredMessage": "Amount is required",
+    "referral": "Referral",
+    "noCashbackFound": "No Cashback history Found",
+    "noReferralFound": "No Referral Found",
+    "voucher_successfully_redeemed": "Voucher redeemed successfully",
+    "rewards": "rewards"
+  },
+  "referAndEarn": {
+    "referAndEarnTitle": "Refer & Earn",
+    "shareYourReferralCode": "Share Your Referral Code",
+    "referAndEarnDescriptionFull": "Get {{amount}} credit for every friend that signs up and completes a purchase. Your friends get {{amount}} off their first purchase.",
+    "yourReferralCode": "Your Referral Code",
+    "refferral_code_saved": "Referral code saved successfully",
+    "invalid_referral_code": "Invalid referral code"
+  },
+  "swiper": {
+    "refer_banner_title": "Refer Your Friends",
+    "refer_banner_subtitle": "Invite your friends to experience",
+    "discount_banner_title": "Discount for Your Friends",
+    "cashback_banner_title": "Cashback for Your Friends",
+    "discount_banner_subtitle": "Your friends get {{amount}} off their first eSIM purchase using your referral code",
+    "refer_reward_banner_title": "Referral Rewards for You",
+    "refer_reward_banner_subtitle": "You'll earn {{amount}} wallet credit for each successful referral",
+    "start_sharing": "Start Sharing",
+    "discount_amount_description": "Your friends get {{amount}} off their first eSIM purchase using your referral code",
+    "discount_percentage_description": "Your friends get {{amount}} off their first eSIM purchase using your referral code",
+    "cashback_amount_description": "Your friends get {{amount}} cashback on their first eSIM purchase using your referral code",
+    "cashback_percentage_description": "Your friends get {{amount}} cashback on their first eSIM purchase using your referral code"
   }
 }

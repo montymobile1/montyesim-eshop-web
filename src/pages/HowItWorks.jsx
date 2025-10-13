@@ -36,7 +36,7 @@ const HowItWorks = () => {
   }, [filters]);
 
   return (
-    <div className="min-h-screen">
+  <div className="min-h-screen">
       {/* Hero Section */}
       <div className="max-w-xxl mx-auto px-4 sm:px-6 lg:px-8 pb-16 flex flex-col gap-[2rem]">
         <div className="flex justify-center items-end">
@@ -75,7 +75,7 @@ const HowItWorks = () => {
           >
             {deviceSlides?.map((element, index) => (
               <SwiperSlide key={index} className={"flex justify-center"}>
-                <div className="w-[250px] flex flex-col gap-6 items-center justify-center w-full max-w-xs sm:max-w-sm md:max-w-md lg:max-w-lg">
+                <div className="w-[250px] flex flex-col gap-6 items-center justify-center w-full max-w-xs pb-12 sm:max-w-sm md:max-w-md lg:max-w-lg">
                   <div className="w-[250px] object-cover">
                     <LazyLoadImage
                       className="w-full h-auto"

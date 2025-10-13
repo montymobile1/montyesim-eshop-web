@@ -1,17 +1,4 @@
-import React, { useState } from "react";
 import { yupResolver } from "@hookform/resolvers/yup";
-import { useForm, Controller } from "react-hook-form";
-import { useTranslation } from "react-i18next";
-import * as yup from "yup";
-import { Link } from "react-router-dom";
-import {
-  FormCheckBox,
-  FormInput,
-  FormPhoneInput,
-} from "../shared/form-components/FormComponents";
-import { useDispatch, useSelector } from "react-redux";
-import { LimitedSignIn } from "../../redux/reducers/authReducer";
-import { toast } from "react-toastify";
 import {
   Button,
   FormControlLabel,
@@ -20,9 +7,21 @@ import {
   RadioGroup,
   Typography,
 } from "@mui/material";
-import { userLimitedLogin } from "../../core/apis/authAPI";
+import React, { useState } from "react";
+import { Controller, useForm } from "react-hook-form";
+import { useTranslation } from "react-i18next";
 import { isValidPhoneNumber } from "react-phone-number-input";
-import { supportedPrefix } from "../../core/variables/ProjectVariables";
+import { useDispatch, useSelector } from "react-redux";
+import { Link } from "react-router-dom";
+import { toast } from "react-toastify";
+import * as yup from "yup";
+import { userLimitedLogin } from "../../core/apis/authAPI";
+import { LimitedSignIn } from "../../redux/reducers/authReducer";
+import {
+  FormCheckBox,
+  FormInput,
+  FormPhoneInput,
+} from "../shared/form-components/FormComponents";
 
 const TmpLogin = () => {
   const { t } = useTranslation();
@@ -46,15 +45,13 @@ const TmpLogin = () => {
         .test("is-valid-phone", t("auth.invalidPhoneNumber"), (value) => {
           if (!value) return true;
 
-          // Validate phone number format
-          if (!isValidPhoneNumber(value)) return false;
+          const countryCode = this.parent.countryCode;
 
-          // Validate first 2 digits after +963
-          const cleaned = value.replace(/^(\+?963)/, "");
+          if (!isValidPhoneNumber(value)) {
+            return false;
+          }
 
-          const prefix = cleaned.substring(0, 2);
-          const validPrefixes = supportedPrefix;
-          return validPrefixes.includes(prefix);
+          return true;
         }),
 
       email: yup

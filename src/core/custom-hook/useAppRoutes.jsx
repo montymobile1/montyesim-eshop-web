@@ -98,12 +98,12 @@ export const useAppRoutes = () => {
       {
         path: "/checkout/:id",
         element: <Checkout />,
-        isPrivate: login_type == "phone",
+        isPrivate: login_type == "phone" || login_type == "email_phone",
       },
       {
         path: "/checkout/:id/:iccid",
         element: <Checkout topup={true} />,
-        isPrivate: login_type == "phone",
+        isPrivate: login_type == "phone" || login_type == "email_phone",
       },
       {
         path: "/referral",

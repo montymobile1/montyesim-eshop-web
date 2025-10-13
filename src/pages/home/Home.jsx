@@ -10,9 +10,9 @@ import { Link } from "react-router-dom";
 import { ConnectSVG } from "../../assets/icons/Home";
 import ContactForm from "../../components/ContactForm";
 import Container from "../../components/Container";
-import ReferralSwiper from "../../components/swiper/ReferralSwiper";
 import { benefits } from "../../core/variables/StaticVariables";
 import Plans from "../plans/Plans";
+import ReferrAndEarnSwiper from "../../components/swiper/ReferrAndEarnSwiper";
 
 const Home = () => {
   const { t } = useTranslation();
@@ -159,7 +159,7 @@ const Home = () => {
       {/* Contact Form Section */}
       <ContactForm bg={"bg-content-300 rounded-md p-10"} />
 
-      {supportPromo && <ReferralSwiper />}
+      {supportPromo && <ReferrAndEarnSwiper />}
     </div>
   );
 };

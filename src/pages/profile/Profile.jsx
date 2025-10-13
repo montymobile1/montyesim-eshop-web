@@ -22,6 +22,7 @@ import { Info } from "@mui/icons-material";
 import { queryClient } from "../../main";
 import { useTranslation } from "react-i18next";
 import { languages } from "../../core/variables/StaticVariables";
+import { onlyCountries } from "../../core/variables/ProjectVariables";
 
 const Profile = () => {
   const { t } = useTranslation();
@@ -34,7 +35,7 @@ const Profile = () => {
 
   const schema = yup.object().shape({
     email:
-      login_type === "email"
+      login_type === "email" || login_type == "email_phone"
         ? yup
             .string()
             .email(t("profile.errors.emailInvalid"))
@@ -80,7 +81,7 @@ const Profile = () => {
       .string()
       .label(t("profile.phoneNumber"))
       .when("$signinType", {
-        is: () => login_type === "phone",
+        is: () => login_type === "phone" || login_type === "email_phone",
         then: (schema) => schema.required(t("profile.errors.phoneRequired")),
         otherwise: (schema) => schema.notRequired(),
       })
@@ -205,7 +206,9 @@ const Profile = () => {
                     <FormInput
                       placeholder={t("checkout.enterEmail")}
                       value={value}
-                      disabled={login_type == "email"}
+                      disabled={
+                        login_type == "email" || login_type == "email_phone"
+                      }
                       helperText={error?.message}
                       onChange={(value) => onChange(value)}
                     />
@@ -259,8 +262,14 @@ const Profile = () => {
                     fieldState: { error },
                   }) => (
                     <FormPhoneInput
+                      onlyCountries={onlyCountries}
                       value={value}
-                      disabled={login_type == "phone"}
+                      disabled={
+                        login_type == "phone" || login_type == "email_phone"
+                      }
+                      defaultCountry={
+                        onlyCountries?.length !== 0 ? onlyCountries?.[0] : "lb"
+                      }
                       helperText={error?.message}
                       onChange={(value, country) => onChange(value)}
                     />

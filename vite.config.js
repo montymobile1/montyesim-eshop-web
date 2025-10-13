@@ -7,7 +7,7 @@ import path from "path";
 export default defineConfig(({ mode }) => {
   const env = loadEnv(mode, process.cwd(), "");
   //EXPLANATION : remove console on qa env
-  console.log(mode, "mmmmmmmmmmmmmmmmmmmm");
+  console.log(mode, "deployment mode");
 
   let currentMode = mode === "dev" ? "development" : mode;
   let buildDrop =
@@ -30,11 +30,11 @@ export default defineConfig(({ mode }) => {
   // Run the copy on config load
   copyFile(
     `./config/well-known/${currentMode}/accesslinks.json`,
-    "./public/.well-known/accesslinks.json",
+    "./public/.well-known/assetlinks.json"
   );
   copyFile(
     `./config/well-known/${currentMode}/apple-app-site-association`,
-    "./public/.well-known/apple-app-site-association",
+    "./public/.well-known/apple-app-site-association"
   );
 
   return {
@@ -49,26 +49,26 @@ export default defineConfig(({ mode }) => {
             if (req.url === "/firebase-messaging-sw.js") {
               let swContent = fs.readFileSync(
                 "./public/firebase-messaging-sw.js",
-                "utf-8",
+                "utf-8"
               );
 
               swContent = swContent
                 .replace("__VITE_FIREBASE_API_KEY__", env.VITE_APP_API_KEY)
                 .replace(
                   "__VITE_FIREBASE_AUTH_DOMAIN__",
-                  env.VITE_APP_AUTH_DOMAIN,
+                  env.VITE_APP_AUTH_DOMAIN
                 )
                 .replace(
                   "__VITE_FIREBASE_PROJECT_ID__",
-                  env.VITE_APP_PROJECT_ID,
+                  env.VITE_APP_PROJECT_ID
                 )
                 .replace(
                   "__VITE_FIREBASE_STORAGE_BUCKET__",
-                  env.VITE_APP_STORAGE_BUCKET,
+                  env.VITE_APP_STORAGE_BUCKET
                 )
                 .replace(
                   "__VITE_FIREBASE_MESSAGING_SENDER_ID__",
-                  env.VITE_APP_MESSAGING_SENDER_ID,
+                  env.VITE_APP_MESSAGING_SENDER_ID
                 )
                 .replace("__VITE_FIREBASE_APP_ID__", env.VITE_APP_APP_ID);
 
@@ -91,7 +91,7 @@ export default defineConfig(({ mode }) => {
           // Copy and process the service worker
           let swContent = fs.readFileSync(
             `${publicDir}/firebase-messaging-sw.js`,
-            "utf-8",
+            "utf-8"
           );
 
           swContent = swContent
@@ -100,11 +100,11 @@ export default defineConfig(({ mode }) => {
             .replace("__VITE_FIREBASE_PROJECT_ID__", env.VITE_APP_PROJECT_ID)
             .replace(
               "__VITE_FIREBASE_STORAGE_BUCKET__",
-              env.VITE_APP_STORAGE_BUCKET,
+              env.VITE_APP_STORAGE_BUCKET
             )
             .replace(
               "__VITE_FIREBASE_MESSAGING_SENDER_ID__",
-              env.VITE_APP_MESSAGING_SENDER_ID,
+              env.VITE_APP_MESSAGING_SENDER_ID
             )
             .replace("__VITE_FIREBASE_APP_ID__", env.VITE_APP_APP_ID);
 
@@ -119,7 +119,7 @@ export default defineConfig(({ mode }) => {
       environment: "jsdom",
       include: ["src/**/*.test.{js,jsx,ts,tsx}"], // ✅ This includes all test files
       coverage: {
-        reporter: ["text", "lcov", "html"], // ✅ Add HTML report for nice visualization
+        reporter: ["text", "lcov", "html"], // ✅ Add an HTML report for nice visualization
         all: true,
         include: ["src/**/*.{js,jsx,ts,tsx}"], // ✅ Source files for coverage
         exclude: [
@@ -129,9 +129,9 @@ export default defineConfig(({ mode }) => {
         ],
       },
     },
-    esbuild: {
-      drop: buildDrop,
-    },
+    // esbuild: {
+    //   drop: buildDrop,
+    // },
     build: {
       outDir: "dist",
       server: {

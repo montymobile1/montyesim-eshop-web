@@ -5,6 +5,7 @@ import { useTranslation } from "react-i18next";
 const colorsMap = {
   success: "success",
   pending: "warning",
+  inactive: "warning",
   failed: "error",
   failure: "error",
 };
