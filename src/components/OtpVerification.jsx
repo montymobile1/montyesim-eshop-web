@@ -148,8 +148,8 @@ const OtpVerification = ({
             ...(login_type === "phone"
               ? { phone }
               : login_type === "email"
-              ? { email: email?.toLowerCase() }
-              : { email: email?.toLowerCase(), phone }),
+              ? { user_email: email?.toLowerCase() }
+              : { user_email: email?.toLowerCase(), phone }),
             verification_pin: payload.otp.join(""),
             provider_token: "",
             provider_type: "",
@@ -284,7 +284,7 @@ const OtpVerification = ({
     );
   }, [errors, getValues()]);
 
- //EXPLANATION : PLEASE DON'T CHANGE THIS AS IT WILL BE APPLIED LATER
+  //EXPLANATION : PLEASE DON'T CHANGE THIS AS IT WILL BE APPLIED LATER
 
   // if (checkout && otp_channel?.length > 1 && !proceed) {
   //   return (
