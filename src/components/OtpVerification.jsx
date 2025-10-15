@@ -13,6 +13,7 @@ import { resendOrderOTP, userLogin, verifyOTP } from "../core/apis/authAPI";
 import { verifyOrderOTP } from "../core/apis/userAPI";
 import { dcbMessage } from "../core/variables/ProjectVariables";
 import { SignIn } from "../redux/reducers/authReducer";
+import i18n from "../i18n";
 
 const schema = ({ t }) =>
   yup.object().shape({
@@ -162,6 +163,9 @@ const OtpVerification = ({
           if (checkout) {
             handleSuccessOrder();
           } else {
+            i18n.changeLanguage(
+              res?.data?.data?.user_info?.language?.toLowerCase()
+            );
             dispatch(SignIn({ ...res?.data?.data }));
           }
         } else {
