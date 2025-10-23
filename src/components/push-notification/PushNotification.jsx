@@ -105,7 +105,7 @@ const PushNotification = () => {
   }, [isAuthenticated]);
 
   onMessageListener().then((payload) => {
-    if (payload?.notification?.category == 2) {
+    if (payload?.data?.category == 2) {
       queryClient.invalidateQueries({ queryKey: ["my-esim"] });
       if (payload?.data?.iccid) {
         queryClient.invalidateQueries({

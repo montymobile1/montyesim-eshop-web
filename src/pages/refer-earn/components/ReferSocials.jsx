@@ -20,7 +20,9 @@ export default function ReferSocials() {
   const message = `${t("common.referral_message")} ${referralUrl}`;
 
   const shareUrl = {
-    whatsapp: `https://wa.me/?text=${encodeURIComponent(message)}`,
+    whatsapp: `https://api.whatsapp.com/send?text=${encodeURIComponent(
+      message
+    )}`,
     x: `https://twitter.com/intent/tweet?text=${encodeURIComponent(message)}`,
     linkedin: `https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(
       referralUrl

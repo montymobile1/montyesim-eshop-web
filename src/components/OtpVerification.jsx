@@ -84,7 +84,6 @@ const OtpVerification = ({
       navigator.credentials
         .get({ otp: { transport: ["sms"] }, signal: ac.signal })
         .then((otp) => {
-          console.log(otp?.code, "the code from otp");
           reset({ otp: otp?.code?.split("") });
         })
         .catch((err) => console.error(err));

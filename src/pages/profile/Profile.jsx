@@ -133,6 +133,7 @@ const Profile = () => {
       email && email.trim() !== "" ? { ...rest, email: email } : rest;
     updateUserInfo({
       ...finalPayload,
+      currency: payload?.user_currency?.currency,
     })
       .then((res) => {
         const statusBool = res?.data?.status === "success";

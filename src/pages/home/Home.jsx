@@ -45,9 +45,9 @@ const Home = () => {
         <div className="relative h-full flex items-center">
           <div className="max-w-2xl text-white ml-[5%]">
             <h1 className="text-6xl font-bold mb-6 text-white">
-              Stay Connected
+              {t("home.stayConnected")}
               <br />
-              while Traveling!
+              {t("home.whileTraveling")}
             </h1>
             <Button
               component={Link}
@@ -91,14 +91,14 @@ const Home = () => {
             <div>
               <div className="flex flex-row items-end  gap-[0.5rem]">
                 <p className={"font-semibold text-content-600 text-lg"}>
-                  Easy and Fast
+                  {t("home.easyAndFast")}
                 </p>
                 <ConnectSVG flip={true} />
               </div>
               <h2 className="text-4xl font-bold mb-12">
-                Unlock endless
+                {t("home.unlockEndless")}
                 <br />
-                benefits
+                {t("home.benefits")}
               </h2>
 
               <div className="space-y-8">
@@ -117,8 +117,10 @@ const Home = () => {
                         "flex flex-1 flex-col gap-[0.3rem] text-content-600"
                       }
                     >
-                      <h3 className="text-xl font-bold ">{benefit.title}</h3>
-                      <p>{benefit.description}</p>
+                      <h3 className="text-xl font-bold ">
+                        {t(`home.${benefit.title}`)}
+                      </h3>
+                      <p>{t(`home.${benefit.description}`)}</p>
                     </div>
                   </div>
                 ))}
@@ -131,10 +133,11 @@ const Home = () => {
       <section className="py-24 bg-gray-50">
         <Container>
           <div className="text-center mb-16 flex flex-col gap-[1rem] items-center justify-center">
-            <h2 className="text-4xl font-bold">How to set up your eSIM?</h2>
-            <p className="text-gray-600">
-              Whether you're an iPhone or an Android user, here's how it works
-            </p>
+            <h2 className="text-4xl font-bold">
+              {" "}
+              {t("home.howToSetUpMontyEsim")}
+            </h2>
+            <p className="text-gray-600">{t("home.worksForAllUsers")}</p>
             <Button
               variant="contained"
               color="primary"
@@ -159,7 +162,13 @@ const Home = () => {
       {/* Contact Form Section */}
       <ContactForm bg={"bg-content-300 rounded-md p-10"} />
 
-      {supportPromo && <ReferrAndEarnSwiper />}
+      {supportPromo && (
+        <section className={"py-24"}>
+          <Container>
+            <ReferrAndEarnSwiper />
+          </Container>
+        </section>
+      )}
     </div>
   );
 };

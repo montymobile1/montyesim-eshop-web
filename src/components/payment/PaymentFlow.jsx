@@ -6,18 +6,14 @@ import { useTranslation } from "react-i18next";
 import { useSelector } from "react-redux";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { toast } from "react-toastify";
-import {
-  assignBundle,
-  assignTopupBundle,
-  cancelOrder,
-} from "../../core/apis/userAPI";
+import { assignBundle, assignTopupBundle } from "../../core/apis/userAPI";
 import OtpVerification from "../OtpVerification";
 import { FormRadioGroup } from "../shared/form-components/FormComponents";
+import NoDataFound from "../shared/no-data-found/NoDataFound";
 import { StripePayment } from "../stripe-payment/StripePayment";
 import ComingSoon from "../wallet/ComingSoon";
 import WalletPayment from "../wallet/WalletPayment";
 import LoadingPayment from "./LoadingPayment";
-import NoDataFound from "../shared/no-data-found/NoDataFound";
 
 const isSupportPromo = import.meta.env.VITE_SUPPORT_PROMO === "true";
 
@@ -104,6 +100,7 @@ const PaymentFlow = (props) => {
         }
       })
       .catch((e) => {
+        console.log(e, "checking cancel error 2", e);
         setLoading(false);
 
         toast?.error(e?.message || t("payment.failedToLoadPaymentInput"));
@@ -112,7 +109,6 @@ const PaymentFlow = (props) => {
 
   useEffect(() => {
     const currentPrice = state?.new_price ?? props?.bundle?.price;
-
     if (currentPrice == 0) {
       setSelectedType("card");
       setCheckedMethod(true);
@@ -162,7 +158,7 @@ const PaymentFlow = (props) => {
               <Button
                 variant={"contained"}
                 color="primary"
-                disabled={loading}
+                disabled={loading || !selectedType}
                 onClick={() => {
                   setCheckedMethod(true);
                   if (selectedType?.toLowerCase() !== "wallet") {
@@ -171,6 +167,7 @@ const PaymentFlow = (props) => {
                 }}
                 endIcon={
                   <ArrowForwardIosOutlinedIcon
+                    fontSize="small"
                     sx={{
                       fontSize: 16, // or any px you want
                       ...(localStorage.getItem("i18nextLng") === "ar"
@@ -183,7 +180,7 @@ const PaymentFlow = (props) => {
                   width: "50%",
                 }}
               >
-                {loading ? t("btn.Loading") : t("btn.Checkout")}
+                {loading ? t("btn.loading") : t("btn.Checkout")}
               </Button>
             </div>
           </div>

@@ -1,15 +1,12 @@
 //UTILITIES
-import { useEffect, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 import { useQuery } from "react-query";
 import { useDispatch, useSelector } from "react-redux";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
 //API
 import { getBundleById } from "../../core/apis/bundlesAPI";
 //REDUCER
-import {
-  fetchUserInfo,
-  LimitedSignOut,
-} from "../../redux/reducers/authReducer";
+import { LimitedSignOut } from "../../redux/reducers/authReducer";
 //COMPONENT
 import ArrowBackIosNewIcon from "@mui/icons-material/ArrowBackIosNew";
 import { Skeleton } from "@mui/material";
@@ -45,6 +42,7 @@ const Checkout = () => {
   }, [isAuthenticated, tmp]);
 
   const handleCancelOrder = async () => {
+    const currentPrice = state?.new_price ?? data?.price;
     if (orderId) {
       try {
         await cancelOrder(orderId);
@@ -55,9 +53,9 @@ const Checkout = () => {
     }
 
     if (checkedMethod && filteredPaymentTypes?.length !== 1) {
-      setCheckedMethod(false);
+      currentPrice == 0 ? navigate("/plans") : setCheckedMethod(false);
     } else {
-      navigate(-1);
+      currentPrice == 0 ? navigate("/plans") : navigate(-1);
       dispatch(LimitedSignOut());
     }
   };

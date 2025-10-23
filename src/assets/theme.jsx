@@ -193,6 +193,7 @@ export const appTheme = createTheme({
           width: "100%",
           whiteSpace: "nowrap",
           textTransform: "none",
+          display: "inline-block",
           boxShadow: "unset",
           textOverflow: "ellipsis",
           overflow: "hidden",

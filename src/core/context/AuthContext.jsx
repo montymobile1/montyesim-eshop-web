@@ -21,6 +21,7 @@ import { supabaseSignout, userLogout } from "../apis/authAPI";
 import { DetachDevice } from "../../redux/reducers/deviceReducer";
 import { messaging } from "../../../firebaseconfig";
 import { queryClient } from "../../main";
+import i18n from "../../i18n";
 
 const AuthContext = createContext();
 
@@ -52,17 +53,30 @@ export const AuthProvider = ({ children }) => {
 
   const displayUserInfo = useCallback(
     (data) => {
+      console.log(data, "dataa");
       setLoadingSocial(true);
       axios
-        .get(`${import.meta.env.VITE_API_URL}api/v1/auth/user-info`, {
-          headers: {
-            Authorization: `Bearer ${data?.session?.access_token}`,
-            "x-refresh-token": data?.session?.refresh_token,
-            "X-Timezone": Intl.DateTimeFormat().resolvedOptions().timeZone,
-            "X-Language": "en",
-            "x-device-id": sessionStorage.getItem("x-device-id") || "1234",
+        .post(
+          `${import.meta.env.VITE_API_URL}api/v1/auth/user-info`,
+          {
+            email: data?.session?.user?.user_metadata?.email,
+            msisdn: data?.session?.user?.user_metadata?.phone,
+            should_notify: false,
+            first_name: data?.session?.user?.user_metadata?.first_name,
+            last_name: data?.session?.user?.user_metadata?.last_name,
+            currency: data?.session?.user?.user_metadata?.currency,
+            language: localStorage.getItem("i18nextLng"),
           },
-        })
+          {
+            headers: {
+              Authorization: `Bearer ${data?.session?.access_token}`,
+              "x-refresh-token": data?.session?.refresh_token,
+              "X-Timezone": Intl.DateTimeFormat().resolvedOptions().timeZone,
+              "X-Language": "en",
+              "x-device-id": sessionStorage.getItem("x-device-id") || "1234",
+            },
+          }
+        )
         .then((res) => {
           if (res?.data?.status === "success") {
             dispatch(

@@ -147,7 +147,7 @@ To enable social login, configure the following platforms:
 
 - Enter your **Facebook App ID** and **Secret**.
 - Copy the **callback URL** provided by Supabase.
-- Add it to **Facebook App Settings > Valid OAuth Redirect URIs**.
+- Add it to **Facebook App Settings > Valid OAuth Redirect URIs** OR **facebook use cases**.
 
 2. Go to **Authentication > URL Configuration**
 

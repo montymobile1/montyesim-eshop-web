@@ -20,9 +20,18 @@ export const api = axios.create({
   },
   baseURL: import.meta.env.VITE_API_URL,
 });
-
+export const controllerMap = new Map();
 api.interceptors.request.use(
   (config) => {
+    const controller = new AbortController();
+    config.signal = controller.signal;
+
+    controllerMap.set(config.url, {
+      controller,
+      url: config.url,
+      method: config.method,
+    });
+
     const xDeviceId = sessionStorage.getItem("x-device-id") || "1234";
     // Set the accept-language header dynamically
     config.headers["accept-language"] = localStorage.getItem("i18nextLng");
@@ -51,7 +60,9 @@ api.interceptors.response.use(
   (response) => response,
   async (error) => {
     const { config } = error;
-    console.log(error, "errrorrr");
+    if (error.config?.url) {
+      controllerMap.delete(error.config.url);
+    }
     if (error?.response?.status === 401) {
       const authenticationStore = store?.getState()?.authentication;
       const refreshToken = authenticationStore?.tmp?.isAuthenticated
@@ -110,7 +121,6 @@ api.interceptors.response.use(
       deleteToken(messaging);
       supabaseSignout();
     } else {
-      console.log(error, "error from axios ");
       const backendMessage = error?.response?.data?.message || error?.message;
       error.message = backendMessage;
       return Promise.reject(error);

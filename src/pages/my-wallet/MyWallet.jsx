@@ -13,7 +13,7 @@ export default function MyWallet() {
   const userInfo = useSelector((state) => state.authentication.user_info);
 
   return (
-    <div className="bg-gray-50 px-6 pt-0 pb-6 flex flex-col gap-4">
+    <div className="pt-0 pb-6 flex flex-col gap-4">
       <h1 className="text-3xl font-bold text-gray-900">
         {t("myWallet.wallet")}
       </h1>

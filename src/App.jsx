@@ -9,8 +9,10 @@ import AppRouter from "./core/routes/AppRouter";
 import { fetchUserInfo, SignOut } from "./redux/reducers/authReducer";
 import { fetchCurrencyInfo } from "./redux/reducers/currencyReducer";
 import { setDayjsLocale } from "./components/dayjsSetup.js";
+import { useAbortOnRouteChange } from "./core/custom-hook/useAbortOnRouteChange.jsx";
 
 function App() {
+  useAbortOnRouteChange();
   const dispatch = useDispatch();
   const whatsapp_number = useSelector(
     (state) => state.currency?.whatsapp_number || ""

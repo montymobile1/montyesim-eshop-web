@@ -80,7 +80,11 @@ const BundleDetail = ({
 
   const handleCheckExist = () => {
     //order top-up
-    if (!tmp?.isAuthenticated && !isAuthenticated && (login_type === "phone" ||login_type === "email_phone") ) {
+    if (
+      !tmp?.isAuthenticated &&
+      !isAuthenticated &&
+      (login_type === "phone" || login_type === "email_phone")
+    ) {
       navigate(
         `/signin?next=${encodeURIComponent(
           `/checkout/${bundle?.bundle_code}`
@@ -154,7 +158,6 @@ const BundleDetail = ({
       bundle_code: bundle?.bundle_code,
     })
       .then((res) => {
-        console.log("res error", res);
         if (res?.data?.status?.toLowerCase() === "success") {
           setNewBundle(res?.data?.data || null);
           setAppliedCode(true);
@@ -165,7 +168,6 @@ const BundleDetail = ({
         }
       })
       .catch((error) => {
-        console.log("catch error", error);
         const status = error?.response?.data?.status || "";
         setCodeMessage({
           message: error?.response?.data?.message || error?.message || "",

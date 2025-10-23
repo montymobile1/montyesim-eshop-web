@@ -456,5 +456,22 @@
     "discount_percentage_description": "Your friends get {{amount}} off their first eSIM purchase using your referral code",
     "cashback_amount_description": "Your friends get {{amount}} cashback on their first eSIM purchase using your referral code",
     "cashback_percentage_description": "Your friends get {{amount}} cashback on their first eSIM purchase using your referral code"
+  },
+  "home": {
+    "stayConnected": "Stay Connected",
+    "whileTraveling": "while Traveling!",
+    "easyAndFast": "Easy and Fast",
+    "unlockEndless": "Unlock endless",
+    "benefits": "benefits",
+    "easyToAcquire": "Easy to acquire",
+    "easyToAcquireDesc": "Acquiring an eSIM is often easier and faster than getting a traditional SIM card. Plus, the switch to eSIM can be done online, in minutes with only a few taps.",
+    "travelHassleFree": "Travel hassle-free",
+    "travelHassleFreeDesc": "You no longer have to worry about waiting in lines at airports or visiting a store to get your own sim card. The eSIM is a real time saver!",
+    "aMoneySaver": "A money saver",
+    "aMoneySaverDesc": "In addition to making your trip easier, eSIM will spare you excessive data charges. With Monty eSIM, you get to browse the best bundles at the most affordable prices!",
+    "saveThePlanet": "You get to save the planet",
+    "saveThePlanetDesc": "This virtual tool reduces CO2 emissions and plastic waste helping the planet breathe again.",
+    "howToSetUpMontyEsim": "How to set up your eSIM?",
+    "worksForAllUsers": "Whether you're an iPhone or an Android user, here's how it works"
   }
 }
