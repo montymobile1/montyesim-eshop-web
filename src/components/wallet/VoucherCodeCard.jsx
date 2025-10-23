@@ -9,6 +9,7 @@ import { useDispatch } from "react-redux";
 import { fetchUserInfo } from "../../redux/reducers/authReducer";
 import { toast } from "react-toastify";
 import { redeemVoucher } from "../../core/apis/promotionsAPI";
+import { queryClient } from "../../main";
 
 export default function VoucherCodeCard() {
   const { t } = useTranslation();
@@ -46,6 +47,7 @@ export default function VoucherCodeCard() {
       .then((res) => {
         if (res?.data?.status === "success") {
           dispatch(fetchUserInfo());
+          queryClient.invalidateQueries({ queryKey: ["user-rewards"] });
           reset();
           toast.success(t("myWallet.voucher_successfully_redeemed"));
         } else {
