@@ -349,7 +349,10 @@ const Profile = () => {
                 disabled={isSubmitting || !isDirty}
                 variant={"contained"}
                 color="primary"
-                sx={{ width: "150px" }}
+                sx={{
+                  maxWidth: "150px",
+                  display: "inline-block",
+                }}
               >
                 {isSubmitting ? t("btn.savingChanges") : t("btn.saveChanges")}
               </Button>

@@ -67,6 +67,7 @@ const Checkout = () => {
 
     setTimeout(() => {
       queryClient.invalidateQueries({ queryKey: ["my-esim"] });
+      queryClient.invalidateQueries({ queryKey: ["user-rewards"] });
       if (iccid) {
         queryClient.invalidateQueries({
           queryKey: [`esim-detail-${iccid}`],
