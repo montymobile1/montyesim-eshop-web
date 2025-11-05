@@ -162,9 +162,6 @@ const OtpVerification = ({
           if (checkout) {
             handleSuccessOrder();
           } else {
-            i18n.changeLanguage(
-              res?.data?.data?.user_info?.language?.toLowerCase()
-            );
             dispatch(SignIn({ ...res?.data?.data }));
           }
         } else {

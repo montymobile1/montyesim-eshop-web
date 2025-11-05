@@ -4,6 +4,10 @@ export const supportEmail = "support@montyesim.com";
 export const supportPhone = "+44 207 370 53 10";
 export const supportWhatsappPhone = "+442073705310";
 export const onlyCountries = [];
+export const supportedLanguages = [
+  { code: "en", name: "English", flag: "EN" },
+  { code: "ar", name: "العربية", flag: "ع" },
+];
 export const supportedPrefix = [];
 export const excludedCountries = ["il"];
 export const dcbMessage = "dcbMessage";

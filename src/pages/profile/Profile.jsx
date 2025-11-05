@@ -21,8 +21,10 @@ import { UpdateCurrency } from "../../redux/reducers/currencyReducer";
 import { Info } from "@mui/icons-material";
 import { queryClient } from "../../main";
 import { useTranslation } from "react-i18next";
-import { languages } from "../../core/variables/StaticVariables";
-import { onlyCountries } from "../../core/variables/ProjectVariables";
+import {
+  onlyCountries,
+  supportedLanguages,
+} from "../../core/variables/ProjectVariables";
 
 const Profile = () => {
   const { t } = useTranslation();
@@ -134,6 +136,7 @@ const Profile = () => {
     updateUserInfo({
       ...finalPayload,
       currency: payload?.user_currency?.currency,
+      language: localStorage.getItem("i18nextLng"),
     })
       .then((res) => {
         const statusBool = res?.data?.status === "success";
@@ -143,7 +146,7 @@ const Profile = () => {
               "user_currency",
               payload?.user_currency?.currency
             );
-            languages?.map((el) => {
+            supportedLanguages?.map((el) => {
               localStorage.removeItem(`home_countries_cache_${el?.code}`);
             });
           } else {
@@ -175,9 +178,7 @@ const Profile = () => {
       should_notify: user_info?.should_notify || false,
       msisdn: user_info?.msisdn || "",
       user_currency: currencies
-        ? currencies?.find(
-            (el) => el?.currency == sessionStorage.getItem("user_currency")
-          )
+        ? currencies?.find((el) => el?.currency == user_info?.currency_code)
         : null,
     });
   }, [user_info, currencies]);

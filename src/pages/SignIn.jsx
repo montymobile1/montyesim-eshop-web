@@ -42,6 +42,7 @@ const SignIn = () => {
   const [showEmailSent, setShowEmailSent] = useState(false);
   const [showActiveOtpExist, setShowActiveOtpExist] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [selectedCountry, setSelectedCountry] = useState(null);
   const [otpExpiration, setOtpExpiration] = useState(200);
   const [otpRequested, setOtpRequested] = useState(false);
   const [info, setInfo] = useState(null);
@@ -73,8 +74,12 @@ const SignIn = () => {
           // If supportedPrefix is empty, skip additional prefix check
           if (!supportedPrefix || supportedPrefix.length === 0) return true;
 
-          // Validate first 2 digits after +963
-          const cleaned = value.replace(/^(\+?963)/, "");
+          // Validate first 2 digits after country dial code
+          const cleaned = value.replace(
+            new RegExp(`^\\+?${selectedCountry?.dialCode}`),
+            ""
+          );
+
           const prefix = cleaned.substring(0, 2);
 
           return supportedPrefix.includes(prefix);
@@ -297,7 +302,10 @@ const SignIn = () => {
                       }
                       disabled={false}
                       helperText={error?.message}
-                      onChange={(val, country) => onChange(val)}
+                      onChange={(val, country) => {
+                        setSelectedCountry(country);
+                        onChange(val);
+                      }}
                     />
                   );
                 }}

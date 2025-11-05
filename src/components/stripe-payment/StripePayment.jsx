@@ -113,8 +113,6 @@ const InjectedCheckout = ({
             toast.error(result.error?.message);
           } else {
             if (fromUpgradeWallet) {
-              dispatch(fetchUserInfo());
-              queryClient.invalidateQueries({ queryKey: ["user-rewards"] });
               toast.success(t("stripe.wallet_topped_up_successfully"));
               return onClose();
             }

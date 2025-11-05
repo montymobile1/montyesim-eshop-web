@@ -26,12 +26,6 @@ export const authResponsiveMenuItems = [
   { path: "/my-wallet", label: "myWallet", visible: isSupportPromo },
 ];
 
-export const languages = [
-  { code: "en", name: "English", flag: "EN" },
-  { code: "ar", name: "العربية", flag: "ع" },
-  // { code: "fr", name: "Français", flag: "FR" },
-];
-
 export const benefits = [
   {
     icon: <CheckCircleOutlineOutlinedIcon sx={{ color: "white" }} />,

@@ -1,5 +1,6 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { fetchUserInfoFromAPI } from "../redux-services/authServices";
+import i18n from "../../i18n";
 
 const initialState = {
   tmp: {
@@ -29,6 +30,16 @@ const AuthSlice = createSlice({
   initialState,
   reducers: {
     SignIn: (state, action) => {
+      const currencyCode = action?.payload?.user_info?.currency_code;
+
+      if (currencyCode) {
+        sessionStorage.setItem("user_currency", currencyCode);
+      } else {
+        sessionStorage.removeItem("user_currency");
+      }
+
+      i18n.changeLanguage(action?.payload?.user_info?.language?.toLowerCase());
+
       return {
         ...state,
         tmp: {

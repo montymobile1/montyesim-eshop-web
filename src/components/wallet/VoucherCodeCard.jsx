@@ -49,6 +49,7 @@ export default function VoucherCodeCard() {
           dispatch(fetchUserInfo());
           queryClient.invalidateQueries({ queryKey: ["user-rewards"] });
           reset();
+
           toast.success(t("myWallet.voucher_successfully_redeemed"));
         } else {
           toast.error(res?.data?.message);

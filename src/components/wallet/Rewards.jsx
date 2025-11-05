@@ -44,6 +44,8 @@ const Rewards = () => {
       return lastPage?.data?.length === 20 ? lastPage?.page + 1 : undefined;
     },
     select: (data) => data?.pages?.flatMap((page) => page.data),
+    cacheTime: 0,
+    staleTime: 0,
   });
 
   useEffect(() => {

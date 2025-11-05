@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { useTranslation } from "react-i18next";
 import ReferCard from "../../components/wallet/ReferCard";
 import VoucherCodeCard from "../../components/wallet/VoucherCodeCard";
@@ -6,11 +6,17 @@ import Wallet1 from "../../assets/images/wallet/wallet-icon-1.svg";
 import Wallet2 from "../../assets/images/wallet/wallet-icon-2.svg";
 import UpgradeWallet from "../../components/wallet/UpgradeWallet";
 import Rewards from "../../components/wallet/Rewards";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import { fetchUserInfo } from "../../redux/reducers/authReducer";
 
 export default function MyWallet() {
   const { t } = useTranslation();
+  const dispatch = useDispatch();
   const userInfo = useSelector((state) => state.authentication.user_info);
+
+  useEffect(() => {
+    dispatch(fetchUserInfo());
+  }, []);
 
   return (
     <div className="pt-0 pb-6 flex flex-col gap-4">

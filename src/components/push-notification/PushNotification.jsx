@@ -8,6 +8,7 @@ import { AttachDevice } from "../../redux/reducers/deviceReducer";
 import { Close } from "@mui/icons-material";
 import { useNotifications } from "../../core/context/NotificationContext";
 import { queryClient } from "../../main";
+import { fetchUserInfo } from "../../redux/reducers/authReducer";
 
 const PushNotification = () => {
   const dispatch = useDispatch();
@@ -112,6 +113,10 @@ const PushNotification = () => {
           queryKey: [`esim-detail-${payload?.data?.iccid}`],
         });
       }
+    }
+    if (payload?.data?.category == 9) {
+      dispatch(fetchUserInfo());
+      queryClient.invalidateQueries({ queryKey: ["user-rewards"] });
     }
     setNotification({
       title: payload?.notification?.title,

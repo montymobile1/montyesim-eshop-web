@@ -53,20 +53,11 @@ export const AuthProvider = ({ children }) => {
 
   const displayUserInfo = useCallback(
     (data) => {
-      console.log(data, "dataa");
       setLoadingSocial(true);
       axios
         .post(
           `${import.meta.env.VITE_API_URL}api/v1/auth/user-info`,
-          {
-            email: data?.session?.user?.user_metadata?.email,
-            msisdn: data?.session?.user?.user_metadata?.phone,
-            should_notify: false,
-            first_name: data?.session?.user?.user_metadata?.first_name,
-            last_name: data?.session?.user?.user_metadata?.last_name,
-            currency: data?.session?.user?.user_metadata?.currency,
-            language: localStorage.getItem("i18nextLng"),
-          },
+          {},
           {
             headers: {
               Authorization: `Bearer ${data?.session?.access_token}`,

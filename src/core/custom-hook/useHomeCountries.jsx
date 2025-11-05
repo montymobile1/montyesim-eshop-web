@@ -10,7 +10,6 @@ import {
 import { getHomePageContent } from "../apis/homeAPI";
 import { useQuery } from "react-query";
 import i18n from "../../i18n";
-import { languages } from "../variables/StaticVariables";
 
 export const VERSION_STORAGE_KEY = "app_bundles_version";
 

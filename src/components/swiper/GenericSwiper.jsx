@@ -11,8 +11,6 @@ const GenericSwiper = ({ slides }) => {
   const { pathname } = useLocation();
   const { t } = useTranslation();
 
-  console.log(slides);
-
   return (
     <Swiper
       key={localStorage.getItem("i18nextLng")}
