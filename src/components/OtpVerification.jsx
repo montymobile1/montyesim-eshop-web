@@ -14,6 +14,7 @@ import { verifyOrderOTP } from "../core/apis/userAPI";
 import { dcbMessage } from "../core/variables/ProjectVariables";
 import { SignIn } from "../redux/reducers/authReducer";
 import i18n from "../i18n";
+import NoDataFound from "./shared/no-data-found/NoDataFound";
 
 const schema = ({ t }) =>
   yup.object().shape({
@@ -39,13 +40,16 @@ const OtpVerification = ({
   verifyBy,
   handleSuccessOrder,
   checkout = false,
-  recallAssign,
+  loading = false,
+  errorAssign = false,
   otpRequested = false,
   otpExpiration,
 }) => {
   const { iccid } = useParams();
   const { t } = useTranslation();
-
+  const otp_expiration_time = useSelector(
+    (state) => state.currency?.otp_expiration_time
+  );
   const inputRefs = useRef([]);
   const navigate = useNavigate();
   const dispatch = useDispatch();
@@ -57,8 +61,9 @@ const OtpVerification = ({
   const [proceed] = useState(false);
 
   const [expiresAt, setExpiresAt] = useState(
-    Date.now() + (otpExpiration ?? orderDetail?.otp_expiration ?? 120) * 1000
+    Date.now() + (otpExpiration ?? orderDetail?.otp_expiration ?? 300) * 1000
   );
+
   const [timer, setTimer] = useState(
     Math.max(0, Math.floor((expiresAt - Date.now()) / 1000))
   );
@@ -90,7 +95,9 @@ const OtpVerification = ({
 
       setTimeout(() => ac.abort(), 60000);
     } else {
-      toast.error("Web OTP API not supported. Please enter OTP manually.");
+      toast.error(
+        "Autofill OTP not supported. Please enter your code manually."
+      );
     }
   };
 
@@ -110,6 +117,8 @@ const OtpVerification = ({
   };
 
   useEffect(() => {
+    if (loading) return;
+
     const interval = setInterval(() => {
       const remaining = Math.max(
         0,
@@ -124,7 +133,7 @@ const OtpVerification = ({
     }, 1000);
 
     return () => clearInterval(interval);
-  }, [expiresAt]);
+  }, [expiresAt, loading]);
 
   useEffect(() => {
     setVerifiedBy(otp_channel?.[0]);
@@ -208,7 +217,11 @@ const OtpVerification = ({
       resendOrderOTP(orderDetail?.order_id)
         .then((res) => {
           if (res?.data?.status === "success") {
-            const otpExpSec = res?.data?.data?.otp_expiration ?? 120;
+            const otpExpSec =
+              otp_expiration_time && otp_expiration_time !== ""
+                ? otp_expiration_time * 60 //in seconds
+                : 300;
+
             const newExpiresAt = Date.now() + otpExpSec * 1000;
             setExpiresAt(newExpiresAt);
             localStorage.setItem(
@@ -250,7 +263,7 @@ const OtpVerification = ({
       userLogin(requestPayload)
         .then((res) => {
           if (res?.data?.status === "success") {
-            const otpExpSec = res?.data?.data?.otp_expiration ?? 120;
+            const otpExpSec = res?.data?.data?.otp_expiration ?? 300;
             const newExpiresAt = Date.now() + otpExpSec * 1000;
             setExpiresAt(newExpiresAt);
             localStorage.setItem(
@@ -332,6 +345,23 @@ const OtpVerification = ({
   //     </div>
   //   );
   // } else
+
+  if (checkout) {
+    if (loading) {
+      return (
+        <div className={"w-full sm:basis-[50%] shrink-0"}>
+          <Skeleton variant="rectangular" height={150} />
+        </div>
+      );
+    } else if (errorAssign) {
+      return (
+        <div className={"flex flex-col gap-8 w-full sm:basis-[50%] shrink-0"}>
+          <NoDataFound text={t("stripe.failedToLoadPaymentInputs")} />
+        </div>
+      );
+    }
+  }
+
   return (
     <form
       onSubmit={handleSubmit(handleSubmitForm)}
@@ -416,37 +446,46 @@ const OtpVerification = ({
         </div>
 
         <div className="flex flex-row flex-wrap gap-[0.5rem] w-full justify-center text-center text-sm">
-          {!resend ? (
-            <>
-              {t("auth.didntReceiveCode")}{" "}
-              <span
-                role="button"
-                tabIndex={0}
-                onClick={handleResendOtp}
-                onKeyDown={(e) => {
-                  if (e.key === "Enter" || e.key === " ") handleResendOtp();
-                }}
-                className="text-secondary underline cursor-pointer"
-              >
-                {t("auth.resendNow")}
-              </span>
-            </>
+          {!loading ? (
+            !resend ? (
+              <>
+                {t("auth.didntReceiveCode")}{" "}
+                <span
+                  role="button"
+                  tabIndex={0}
+                  onClick={handleResendOtp}
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter" || e.key === " ") handleResendOtp();
+                  }}
+                  className="text-secondary underline cursor-pointer"
+                >
+                  {t("auth.resendNow")}
+                </span>
+              </>
+            ) : (
+              <p className="text-secondary font-bold">
+                {timer == null || isNaN(timer) || timer == 0 ? (
+                  <Skeleton
+                    variant="text"
+                    width={80}
+                    height={30}
+                    className="!bg-gray-300 rounded-md"
+                  />
+                ) : (
+                  <>
+                    {t("auth.resendCode")} {Math.floor(timer / 60)}:
+                    {(timer % 60).toString().padStart(2, "0")}
+                  </>
+                )}
+              </p>
+            )
           ) : (
-            <p className="text-secondary font-bold">
-              {timer == null || isNaN(timer) ? (
-                <Skeleton
-                  variant="text"
-                  width={80}
-                  height={30}
-                  className="!bg-gray-300 rounded-md"
-                />
-              ) : (
-                <>
-                  {t("auth.resendCode")} {Math.floor(timer / 60)}:
-                  {(timer % 60).toString().padStart(2, "0")}
-                </>
-              )}
-            </p>
+            <Skeleton
+              variant="text"
+              width={80}
+              height={30}
+              className="!bg-gray-300 rounded-md"
+            />
           )}
         </div>
       </div>

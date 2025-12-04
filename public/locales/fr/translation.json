@@ -72,8 +72,8 @@
     "sendMessage": "Envoyer le message",
     "payNow": "Payer maintenant",
     "cancel": "Annuler",
-    "savingChanges": "Enregistrement des modifications...",
-    "saveChanges": "Enregistrer les modifications",
+    "savingChanges": "Enregistrement...",
+    "saveChanges": "Enregistrer",
     "loading": "Chargement...",
     "Checkout": "Paiement"
   },
@@ -129,7 +129,8 @@
     "LPALink": "LPA:1",
     "instructions": "Instructions",
     "esim_instructions": "Paramètres > Réseau et Internet > SIM > Ajouter une eSIM > Scanner le code QR",
-    "esim_lpa_instructions": "Paramètres > Réseau et Internet > SIM > Ajouter une eSIM > Utiliser le code d'activation > Coller ce qui précède"
+    "esim_lpa_instructions": "Paramètres > Réseau et Internet > SIM > Ajouter une eSIM > Utiliser le code d'activation > Coller ce qui précède",
+    "installNowLinkonIOS": "Installer maintenant sur iOS"
   },
   "esim": {
     "title": "Mon eSIM",

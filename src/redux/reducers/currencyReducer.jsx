@@ -12,6 +12,7 @@ const initialState = {
   whatsapp_number: "",
   bundles_version: null,
   referral_amount: "",
+  otp_expiration_time: "",
 };
 
 //EXPLANATION: I moved the api to authServices to prevent circular dependency
@@ -51,10 +52,10 @@ const CurrencySlice = createSlice({
         let loginType = findByKey("login_type");
         let versionId = findByKey("CATALOG.BUNDLES_CACHE_VERSION");
         let whatsappNumber = findByKey("WHATSAPP_NUMBER");
-
+        let otp_expiration_time = findByKey("OTP_EXPIRATION_TIME");
         state.bundles_version = versionId?.value || null;
         state.login_type = loginType?.value || "email";
-
+        state.otp_expiration_time = otp_expiration_time?.value || "";
         state.otp_channel = import.meta.env.VITE_APP_OTP_CHANNEL
           ? import.meta.env.VITE_APP_OTP_CHANNEL.split(",")
           : ["email"];
@@ -80,6 +81,7 @@ const CurrencySlice = createSlice({
         //render config related to env even if configuration api failed
         state.login_type = "email";
         state.bundles_version = "";
+        state.otp_expiration_time = "";
         state.otp_channel = import.meta.env.VITE_APP_OTP_CHANNEL
           ? import.meta.env.VITE_APP_OTP_CHANNEL.split(",")
           : ["email"];

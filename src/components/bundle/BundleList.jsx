@@ -76,7 +76,9 @@ const BundleList = ({
   if (error) {
     return (
       <div className="grid grid-cols-1 gap-6 mb-6">
-        <NoDataFound text={t("bundles.failedToLoadBundles")} />
+        <NoDataFound
+          text={error?.message || t("bundles.failedToLoadBundles")}
+        />
       </div>
     );
   }
@@ -109,17 +111,22 @@ const BundleList = ({
           }
         )}
       >
-        {data?.map((bundleElement) => (
-          <BundleCard
-            iccid={bundleOrder?.iccid}
-            supportedCountries={supportedCountries}
-            key={`${countryData?.id}-${bundleElement?.bundle_code}`}
-            bundle={bundleElement}
-            countryData={!region ? countryData : null}
-            isLoading={false}
-            regionIcon={regionIcon}
-          />
-        ))}
+        {data?.map((bundleElement) => {
+          return (
+            <BundleCard
+              iccid={bundleOrder?.iccid}
+              supportedCountries={supportedCountries}
+              key={`${countryData?.id}-${bundleElement?.bundle_code}`}
+              bundle={bundleElement}
+              countryData={!region ? countryData : null}
+              isLoading={false}
+              regionIcon={regionIcon}
+              cruises={
+                bundleElement?.bundle_category?.type == "CRUISE" || false
+              }
+            />
+          );
+        })}
       </div>
     </div>
   );

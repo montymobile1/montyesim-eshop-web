@@ -19,6 +19,7 @@ import {
   IconButton,
   Skeleton,
 } from "@mui/material";
+import MouseIcon from "@mui/icons-material/Mouse";
 import { Link } from "react-router-dom";
 import { fetchUserInfo } from "../../redux/reducers/authReducer";
 
@@ -202,37 +203,16 @@ const OrderPopup = ({ id, onClose, orderData }) => {
                   >
                     {t("orders.iosDirectInstallation")}
                   </label>
-                  <div
-                    className={
-                      "flex flex-row justify-between items-center bg-white shadow-sm p-[0.8rem] rounded-md"
-                    }
+                  <Button
+                    sx={{ padding: "1rem" }}
+                    variant={"outlined"}
+                    href={`https://esimsetup.apple.com/esim_qrcode_provisioning?carddata=LPA:1$${
+                      data?.smdp_address || orderData?.smdp_address
+                    }$${orderData?.activation_code || data?.activation_code}`}
+                    target="_blank"
                   >
-                    <p className={"font-medium text-content-500 truncate "}>
-                      {isLoading ? (
-                        <Skeleton width={100} />
-                      ) : (
-                        `https://esimsetup.apple.com/esim_qrcode_provisioning?carddata=LPA:1$${
-                          data?.smdp_address || orderData?.smdp_address
-                        }$${
-                          orderData?.activation_code || data?.activation_code
-                        }`
-                      )}
-                    </p>
-                    <IconButton
-                      onClick={() => {
-                        navigator.clipboard.writeText(
-                          `https://esimsetup.apple.com/esim_qrcode_provisioning?carddata=LPA:1$${
-                            data?.smdp_address || orderData?.smdp_address
-                          }$${
-                            orderData?.activation_code || data?.activation_code
-                          }`
-                        );
-                        toast.success(t("btn.copiedSuccessfully"));
-                      }}
-                    >
-                      <ContentCopyIcon fontSize="small" color="primary" />
-                    </IconButton>
-                  </div>
+                    {t("orders.installNowLinkonIOS")}
+                  </Button>
                 </div>
                 <div className={"flex flex-col gap-[0.5rem] "}>
                   <label
@@ -249,7 +229,7 @@ const OrderPopup = ({ id, onClose, orderData }) => {
                     <div
                       className={"flex flex-row justify-between items-center "}
                     >
-                      <p className={"font-medium text-content-500 truncate "}>
+                      <div className={"font-medium text-content-500 truncate "}>
                         {isLoading ? (
                           <Skeleton width={100} />
                         ) : (
@@ -259,7 +239,7 @@ const OrderPopup = ({ id, onClose, orderData }) => {
                             orderData?.activation_code || data?.activation_code
                           }`
                         )}
-                      </p>
+                      </div>
 
                       <IconButton
                         onClick={() => {

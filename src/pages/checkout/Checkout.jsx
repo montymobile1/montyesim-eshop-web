@@ -144,36 +144,17 @@ const Checkout = () => {
           "flex flex-col-reverse items-start gap-4 w-full sm:flex-row sm:items-start sm:gap-4 sm:w-full"
         }
       >
-        {isLoading ? (
-          <div className={"w-full sm:basis-[50%] shrink-0"}>
-            {Array(2)
-              .fill()
-              ?.map((_, index) => (
-                <Skeleton
-                  variant="rectangular"
-                  height={150}
-                  key={`checkout-skeleton-${index}`}
-                />
-              ))}
-          </div>
-        ) : // :!data || error ? (
-        //   <div className={"w-full sm:basis-[50%] items-center justify-center"}>
-        //     <NoDataFound text={"Failed to load bunde checkout info"} />
-        //   </div>)
-        !confirmed ? (
-          <TmpLogin />
-        ) : (
-          <PaymentFlow
-            bundle={data}
-            filteredPaymentTypes={filteredPaymentTypes}
-            checkedMethod={checkedMethod}
-            setCheckedMethod={setCheckedMethod}
-            handleCancelOrder={handleCancelOrder}
-            handleSuccessOrder={handleSuccessOrder}
-            setOrderId={setOrderId}
-          />
-        )}
-        <PaymentSummary data={data} />
+        <PaymentFlow
+          bundle={data}
+          filteredPaymentTypes={filteredPaymentTypes}
+          checkedMethod={checkedMethod}
+          setCheckedMethod={setCheckedMethod}
+          handleCancelOrder={handleCancelOrder}
+          handleSuccessOrder={handleSuccessOrder}
+          setOrderId={setOrderId}
+          confirmed={confirmed}
+          bundleDataLoading={isLoading}
+        />
       </div>
     </div>
   );

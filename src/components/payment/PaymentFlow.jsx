@@ -1,5 +1,5 @@
 import ArrowForwardIosOutlinedIcon from "@mui/icons-material/ArrowForwardIosOutlined";
-import { Button } from "@mui/material";
+import { Button, Skeleton } from "@mui/material";
 import { loadStripe } from "@stripe/stripe-js";
 import { useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
@@ -14,6 +14,8 @@ import { StripePayment } from "../stripe-payment/StripePayment";
 import ComingSoon from "../wallet/ComingSoon";
 import WalletPayment from "../wallet/WalletPayment";
 import LoadingPayment from "./LoadingPayment";
+import PaymentSummary from "./PaymentSummary";
+import TmpLogin from "../tmp-login/TmpLogin";
 
 const isSupportPromo = import.meta.env.VITE_SUPPORT_PROMO === "true";
 
@@ -44,8 +46,12 @@ const PaymentFlow = (props) => {
     setOrderId,
     filteredPaymentTypes,
     handleSuccessOrder,
+    confirmed,
+    bundle,
+    bundleDataLoading,
   } = props;
 
+  const [errorAssign, setErrorAssign] = useState(false);
   const { related_search } = useSelector((state) => state.search);
   const { user_info } = useSelector((state) => state.authentication);
   const login_type = useSelector((state) => state?.currency?.login_type);
@@ -54,7 +60,7 @@ const PaymentFlow = (props) => {
   const [selectedType, setSelectedType] = useState(null);
   const [orderDetail, setOrderDetail] = useState(null);
   const [loading, setLoading] = useState(false);
-  const [otpRequested, setOtpRequested] = useState(false);
+
   const related_search_test = {
     related_search: {
       region: null,
@@ -89,7 +95,7 @@ const PaymentFlow = (props) => {
       .then((res) => {
         setOrderDetail(res?.data?.data);
         setOrderId(res?.data?.data?.order_id);
-        setOtpRequested(true);
+
         if (res?.data?.data?.payment_status == "COMPLETED") {
           handleSuccessOrder(res?.data?.data?.order_id);
         } else {
@@ -98,39 +104,51 @@ const PaymentFlow = (props) => {
 
           setLoading(false);
         }
+        setErrorAssign(false);
       })
       .catch((e) => {
-        console.log(e, "checking cancel error 2", e);
         setLoading(false);
-
+        setErrorAssign(true);
         toast?.error(e?.message || t("payment.failedToLoadPaymentInput"));
       });
   };
 
   useEffect(() => {
-    const currentPrice = state?.new_price ?? props?.bundle?.price;
-    if (currentPrice == 0) {
-      setSelectedType("card");
-      setCheckedMethod(true);
-      assignMethod("card");
-      return;
-    }
+    if (!bundleDataLoading && confirmed) {
+      const currentPrice = state?.new_price ?? props?.bundle?.price;
+      if (currentPrice == 0 && !checkedMethod) {
+        setSelectedType("card");
+        setCheckedMethod(true);
+        assignMethod("card");
+        return;
+      }
 
-    if (filteredPaymentTypes && filteredPaymentTypes?.length === 1) {
-      let one_type = filteredPaymentTypes?.[0]?.toLowerCase() || "dcb";
-      setSelectedType(one_type);
-      setCheckedMethod(true);
-      if (one_type?.toLowerCase() !== "wallet") {
-        assignMethod(filteredPaymentTypes?.[0]?.toLowerCase() || "dcb");
-      }
-    } else if (filteredPaymentTypes && filteredPaymentTypes?.length > 1) {
-      // Reset selectedType if it's no longer available in filtered list
-      if (selectedType && !filteredPaymentTypes.includes(selectedType)) {
-        setSelectedType(null);
-        setCheckedMethod(false);
+      if (
+        filteredPaymentTypes &&
+        filteredPaymentTypes?.length === 1 &&
+        !checkedMethod
+      ) {
+        let one_type = filteredPaymentTypes?.[0]?.toLowerCase() || "dcb";
+        setSelectedType(one_type);
+        setCheckedMethod(true);
+        if (one_type?.toLowerCase() !== "wallet") {
+          assignMethod(filteredPaymentTypes?.[0]?.toLowerCase() || "dcb");
+        }
+      } else if (filteredPaymentTypes && filteredPaymentTypes?.length > 1) {
+        // Reset selectedType if it's no longer available in filtered list
+        if (selectedType && !filteredPaymentTypes.includes(selectedType)) {
+          setSelectedType(null);
+          setCheckedMethod(false);
+        }
       }
     }
-  }, [filteredPaymentTypes, state?.new_price, props?.bundle?.price]);
+  }, [
+    filteredPaymentTypes,
+    state?.new_price,
+    props?.bundle?.price,
+    bundleDataLoading,
+    confirmed,
+  ]);
 
   // Handle cleanup when user navigates away or closes browser
 
@@ -143,81 +161,108 @@ const PaymentFlow = (props) => {
   }, [filteredPaymentTypes, selectedType]);
 
   return (
-    <div className={"flex flex-col gap-2 w-full sm:basis-[50%] shrink-0"}>
-      <h1>{t("checkout.paymentMethod")}</h1>
-      {!checkedMethod ? (
-        filteredPaymentTypes?.length !== 0 ? (
-          <div className={"flex flex-col gap-[1rem]"}>
-            <FormRadioGroup
-              data={filteredPaymentTypes}
-              value={selectedType}
-              onChange={(value) => setSelectedType(value)}
-            />
-
-            <div className={"flex flex-row "}>
-              <Button
-                variant={"contained"}
-                color="primary"
-                disabled={loading || !selectedType}
-                onClick={() => {
-                  setCheckedMethod(true);
-                  if (selectedType?.toLowerCase() !== "wallet") {
-                    assignMethod(selectedType);
-                  }
-                }}
-                endIcon={
-                  <ArrowForwardIosOutlinedIcon
-                    fontSize="small"
-                    sx={{
-                      fontSize: 16, // or any px you want
-                      ...(localStorage.getItem("i18nextLng") === "ar"
-                        ? { transform: "scale(-1,1)", marginRight: "10px" }
-                        : {}),
-                    }}
-                  />
-                }
-                sx={{
-                  width: "50%",
-                }}
-              >
-                {loading ? t("btn.loading") : t("btn.Checkout")}
-              </Button>
-            </div>
-          </div>
-        ) : (
-          <NoDataFound text={t("checkout.noPaymentMethodsFound")} />
-        )
+    <>
+      {bundleDataLoading ? (
+        <div className={"w-full sm:basis-[50%] shrink-0"}>
+          {Array(2)
+            .fill()
+            ?.map((_, index) => (
+              <Skeleton
+                variant="rectangular"
+                height={150}
+                key={`checkout-skeleton-${index}`}
+              />
+            ))}
+        </div>
+      ) : !confirmed ? (
+        <TmpLogin />
       ) : (
-        ""
-      )}
+        <div className={"flex flex-col gap-2 w-full sm:basis-[50%] shrink-0"}>
+          <h1>{t("checkout.paymentMethod")}</h1>
+          {!checkedMethod ? (
+            filteredPaymentTypes?.length !== 0 ? (
+              <div className={"flex flex-col gap-[1rem]"}>
+                <FormRadioGroup
+                  data={filteredPaymentTypes}
+                  value={selectedType}
+                  onChange={(value) => setSelectedType(value)}
+                />
 
-      {checkedMethod && (
-        <div className={"flex flex-col gap-[0.5rem]"}>
-          {Component && (
-            <Component
-              {...props}
-              clientSecret={clientSecret}
-              stripePromise={stripePromise}
-              key={orderDetail}
-              orderDetail={orderDetail}
-              related_search={related_search}
-              loading={loading}
-              verifyBy={
-                login_type == "phone" || login_type == "email_phone"
-                  ? "sms"
-                  : "email"
-              }
-              phone={user_info?.phone}
-              checkout={true}
-              recallAssign={() => assignMethod("wallet")}
-              handleSuccessOrder={() => {
-                handleSuccessOrder();
-              }}
-            />
+                <div className={"flex flex-row "}>
+                  <Button
+                    variant={"contained"}
+                    color="primary"
+                    disabled={loading || !selectedType}
+                    onClick={() => {
+                      setCheckedMethod(true);
+                      if (selectedType?.toLowerCase() !== "wallet") {
+                        assignMethod(selectedType);
+                      }
+                    }}
+                    endIcon={
+                      <ArrowForwardIosOutlinedIcon
+                        fontSize="small"
+                        sx={{
+                          fontSize: 16, // or any px you want
+                          ...(localStorage.getItem("i18nextLng") === "ar"
+                            ? { transform: "scale(-1,1)", marginRight: "10px" }
+                            : {}),
+                        }}
+                      />
+                    }
+                    sx={{
+                      width: "50%",
+                    }}
+                  >
+                    {loading ? t("btn.loading") : t("btn.Checkout")}
+                  </Button>
+                </div>
+              </div>
+            ) : (
+              <NoDataFound text={t("checkout.noPaymentMethodsFound")} />
+            )
+          ) : (
+            ""
+          )}
+
+          {checkedMethod && (
+            <div className={"flex flex-col gap-[0.5rem]"}>
+              {Component && (
+                <Component
+                  {...props}
+                  clientSecret={clientSecret}
+                  stripePromise={stripePromise}
+                  key={orderDetail}
+                  orderDetail={orderDetail}
+                  related_search={related_search}
+                  loading={loading}
+                  verifyBy={
+                    login_type == "phone" || login_type == "email_phone"
+                      ? "sms"
+                      : "email"
+                  }
+                  errorAssign={errorAssign}
+                  phone={user_info?.phone}
+                  checkout={true}
+                  recallAssign={() => assignMethod("wallet")}
+                  handleSuccessOrder={() => {
+                    handleSuccessOrder();
+                  }}
+                />
+              )}
+            </div>
           )}
         </div>
       )}
-    </div>
+      <PaymentSummary
+        data={bundle}
+        orderDetail={orderDetail}
+        loadingData={
+          (loading && selectedType?.toLowerCase() == "card") ||
+          bundleDataLoading
+        }
+      />
+    </>
   );
 };
 

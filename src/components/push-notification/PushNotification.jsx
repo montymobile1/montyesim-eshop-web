@@ -9,6 +9,7 @@ import { Close } from "@mui/icons-material";
 import { useNotifications } from "../../core/context/NotificationContext";
 import { queryClient } from "../../main";
 import { fetchUserInfo } from "../../redux/reducers/authReducer";
+import clsx from "clsx";
 
 const PushNotification = () => {
   const dispatch = useDispatch();
@@ -40,7 +41,10 @@ const PushNotification = () => {
       </div>
 
       <div
-        className={"flex flex-col gap-[0.5rem] cursor-pointer"}
+        className={clsx("flex flex-col gap-[0.5rem]", {
+          "cursor-pointer":
+            notification?.category == "9" || notification?.iccid,
+        })}
         onClick={() => {
           if (notification?.iccid) {
             navigate(`/esim/${notification?.iccid}`);

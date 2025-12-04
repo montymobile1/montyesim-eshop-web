@@ -117,10 +117,15 @@ const OrderCard = ({ order, myesim, refetchData }) => {
         <div className="flex flex-row justify-between items-start w-full">
           <div className="flex flex-row gap-6 items-center flex-1 min-w-0">
             <Avatar
-              src={order?.bundle_details?.icon}
+              src={
+                order?.bundle_details?.bundle_category?.type == "CRUISE"
+                  ? "/media/global.svg"
+                  : order?.bundle_details?.icon
+              }
               alt={
-                order?.bundle_details?.display_title ||
-                order?.bundle_details?.label_name ||
+                order?.bundle_details?.transaction_history?.[0]?.bundle
+                  ?.label ||
+                order?.bundle_details?.bundle_name ||
                 ""
               }
               sx={{ width: 45, height: 45 }}
@@ -130,8 +135,9 @@ const OrderCard = ({ order, myesim, refetchData }) => {
                 src={"/media/global.svg"}
                 className={"bg-white"}
                 alt={
-                  order?.bundle_details?.display_title ||
-                  order?.bundle_details?.label_name ||
+                  order?.bundle_details?.transaction_history?.[0]?.bundle
+                    ?.label ||
+                  order?.bundle_details?.bundle_name ||
                   ""
                 }
               />
@@ -140,8 +146,9 @@ const OrderCard = ({ order, myesim, refetchData }) => {
               <div className="w-full overflow-hidden">
                 <p className="text-xl font-bold text-primary truncate w-full flex items-center gap-[0.2rem]">
                   <span dir="ltr" className="truncate">
-                    {order?.bundle_details?.display_title ||
-                      order?.bundle_details?.label_name ||
+                    {order?.bundle_details?.transaction_history?.[0]?.bundle
+                      ?.label ||
+                      order?.bundle_details?.bundle_name ||
                       ""}{" "}
                   </span>
                   {myesim && !order?.bundle_details?.bundle_expired && (

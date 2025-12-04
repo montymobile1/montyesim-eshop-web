@@ -25,11 +25,13 @@ import {
   onlyCountries,
   supportedLanguages,
 } from "../../core/variables/ProjectVariables";
+import parsePhoneNumberFromString from "libphonenumber-js";
 
 const Profile = () => {
   const { t } = useTranslation();
   const dispatch = useDispatch();
   const { user_info } = useSelector((state) => state.authentication);
+  const [selectedCountry, setSelectedCountry] = useState("");
   const login_type = useSelector((state) => state?.currency?.login_type);
   const system_currency = useSelector(
     (state) => state.currency?.system_currency
@@ -89,8 +91,10 @@ const Profile = () => {
       })
       .nullable()
       .test("is-valid-phone", t("profile.errors.invalidPhone"), (value) => {
-        if (!value) return true;
-        return isValidPhoneNumber(value);
+        const phoneNumber = parsePhoneNumberFromString(value);
+        if (!value || !phoneNumber) return true;
+
+        return isValidPhoneNumber(value); // validate if actual number exists
       }),
 
     should_notify: yup.bool(),
@@ -114,6 +118,7 @@ const Profile = () => {
     control,
     handleSubmit,
     reset,
+    getValues,
     formState: { errors, isDirty },
   } = useForm({
     defaultValues: {
@@ -133,10 +138,14 @@ const Profile = () => {
     const { email, ...rest } = payload;
     const finalPayload =
       email && email.trim() !== "" ? { ...rest, email: email } : rest;
+
+    const value = parsePhoneNumberFromString(payload?.msisdn);
+
     updateUserInfo({
       ...finalPayload,
       currency: payload?.user_currency?.currency,
       language: localStorage.getItem("i18nextLng"),
+      msisdn: !value ? null : payload?.msisdn,
     })
       .then((res) => {
         const statusBool = res?.data?.status === "success";
@@ -176,7 +185,7 @@ const Profile = () => {
       first_name: user_info?.first_name || "",
       last_name: user_info?.last_name || "",
       should_notify: user_info?.should_notify || false,
-      msisdn: user_info?.msisdn || "",
+      msisdn: user_info?.msisdn || selectedCountry?.dialCode || "",
       user_currency: currencies
         ? currencies?.find((el) => el?.currency == user_info?.currency_code)
         : null,
@@ -198,27 +207,27 @@ const Profile = () => {
                 "grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 gap-[1rem]"
               }
             >
-              <div>
-                <label>{t("checkout.email")}</label>
-                <Controller
-                  render={({
-                    field: { onChange, value },
-                    fieldState: { error },
-                  }) => (
-                    <FormInput
-                      placeholder={t("checkout.enterEmail")}
-                      value={value}
-                      disabled={
-                        login_type == "email" || login_type == "email_phone"
-                      }
-                      helperText={error?.message}
-                      onChange={(value) => onChange(value)}
-                    />
-                  )}
-                  name="email"
-                  control={control}
-                />
-              </div>
+              {login_type != "phone" && (
+                <div>
+                  <label>{t("checkout.email")}</label>
+                  <Controller
+                    render={({
+                      field: { onChange, value },
+                      fieldState: { error },
+                    }) => (
+                      <FormInput
+                        placeholder={t("checkout.enterEmail")}
+                        value={value}
+                        disabled
+                        helperText={error?.message}
+                        onChange={(value) => onChange(value)}
+                      />
+                    )}
+                    name="email"
+                    control={control}
+                  />
+                </div>
+              )}
 
               <div>
                 <label>{t("profile.firstName")}</label>
@@ -273,7 +282,10 @@ const Profile = () => {
                         onlyCountries?.length !== 0 ? onlyCountries?.[0] : "lb"
                       }
                       helperText={error?.message}
-                      onChange={(value, country) => onChange(value)}
+                      onChange={(value, country) => {
+                        setSelectedCountry(country);
+                        onChange(value);
+                      }}
                     />
                   )}
                   name="msisdn"

@@ -9,10 +9,11 @@ import AppRouter from "./core/routes/AppRouter";
 import { fetchUserInfo, SignOut } from "./redux/reducers/authReducer";
 import { fetchCurrencyInfo } from "./redux/reducers/currencyReducer";
 import { setDayjsLocale } from "./components/dayjsSetup.js";
-import { useAbortOnRouteChange } from "./core/custom-hook/useAbortOnRouteChange.jsx";
+import { ToastContainer } from "react-toastify";
+import { useVisibleToastPosition } from "./core/custom-hook/useVisibleToastPosition.jsx";
 
 function App() {
-  useAbortOnRouteChange();
+  useVisibleToastPosition();
   const dispatch = useDispatch();
   const whatsapp_number = useSelector(
     (state) => state.currency?.whatsapp_number || ""
@@ -76,6 +77,19 @@ function App() {
           </svg>
         </a>
       )}
+      <ToastContainer
+        position="top-center"
+        autoClose={4000}
+        hideProgressBar={false}
+        newestOnTop
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        progressClassName="Toast__progress_bar"
+        closeButton={false}
+      />{" "}
     </div>
   );
 }

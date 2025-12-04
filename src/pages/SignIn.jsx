@@ -34,6 +34,7 @@ import {
   onlyCountries,
   supportedPrefix,
 } from "../core/variables/ProjectVariables";
+import parsePhoneNumberFromString from "libphonenumber-js";
 
 const SignIn = () => {
   const { t } = useTranslation();
@@ -42,7 +43,6 @@ const SignIn = () => {
   const [showEmailSent, setShowEmailSent] = useState(false);
   const [showActiveOtpExist, setShowActiveOtpExist] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [selectedCountry, setSelectedCountry] = useState(null);
   const [otpExpiration, setOtpExpiration] = useState(200);
   const [otpRequested, setOtpRequested] = useState(false);
   const [info, setInfo] = useState(null);
@@ -75,10 +75,8 @@ const SignIn = () => {
           if (!supportedPrefix || supportedPrefix.length === 0) return true;
 
           // Validate first 2 digits after country dial code
-          const cleaned = value.replace(
-            new RegExp(`^\\+?${selectedCountry?.dialCode}`),
-            ""
-          );
+          const phoneNumber = parsePhoneNumberFromString(value);
+          const cleaned = phoneNumber?.nationalNumber;
 
           const prefix = cleaned.substring(0, 2);
 
@@ -302,8 +300,7 @@ const SignIn = () => {
                       }
                       disabled={false}
                       helperText={error?.message}
-                      onChange={(val, country) => {
-                        setSelectedCountry(country);
+                      onChange={(val) => {
                         onChange(val);
                       }}
                     />

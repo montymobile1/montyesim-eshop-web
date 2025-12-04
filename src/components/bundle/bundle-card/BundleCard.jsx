@@ -31,7 +31,7 @@ const BundleCard = ({
   };
 
   const avatarSrc = useMemo(() => {
-    if (globalDisplay) return "/media/global.svg";
+    if (globalDisplay || cruises) return "/media/global.svg";
     else if (regionIcon)
       return regionIcon; //NOTES: requested to be done from frontend manually taken by props
     else return bundle?.icon;
@@ -52,21 +52,21 @@ const BundleCard = ({
                 <>
                   <Avatar
                     src={avatarSrc}
-                    alt={bundle?.display_title || ""}
+                    alt={bundle?.bundle_name || ""}
                     sx={{ width: 45, height: 45 }}
                   >
                     {/* fallback image */}
                     <img
                       src={"/media/global.svg"}
                       className={"bg-white"}
-                      alt={bundle?.display_title || ""}
+                      alt={bundle?.bundle_name || ""}
                     />
                   </Avatar>
                   <p
                     dir={"ltr"}
                     className="text-content-600 font-bold text-lg capitalize truncate"
                   >
-                    {bundle?.display_title}
+                    {bundle?.bundle_name}
                   </p>
                 </>
               )}

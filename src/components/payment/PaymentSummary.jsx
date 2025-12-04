@@ -1,8 +1,9 @@
+import { Skeleton } from "@mui/material";
 import React from "react";
 import { useTranslation } from "react-i18next";
 import { useLocation } from "react-router-dom";
 
-const PaymentSummary = ({ data }) => {
+const PaymentSummary = ({ data, orderDetail, loadingData }) => {
   const { t } = useTranslation();
   const location = useLocation();
   const state = location.state;
@@ -26,9 +27,9 @@ const PaymentSummary = ({ data }) => {
           <p
             dir={"ltr"}
             className={`flex-1 font-bold truncate ${
-              localStorage.getItem("i18nextLng") === "en"
-                ? "text-right"
-                : "text-left"
+              localStorage.getItem("i18nextLng") === "ar"
+                ? "text-left"
+                : "text-right"
             }`}
           >
             {data?.display_title || t("common.notAvailable")}
@@ -38,31 +39,63 @@ const PaymentSummary = ({ data }) => {
           <label className={"flex-1 font-semibold"}>
             {t("checkout.subtotal")}
           </label>
-          <p
-            dir={"ltr"}
-            className={`flex-1 font-bold ${
-              localStorage.getItem("i18nextLng") === "en"
-                ? "text-right"
-                : "text-left"
-            }`}
-          >
-            {state?.new_price_display || data?.price_display}
-          </p>
+          {loadingData ? (
+            <Skeleton width={100} />
+          ) : (
+            <p
+              dir={"ltr"}
+              className={`flex-1 font-bold ${
+                localStorage.getItem("i18nextLng") === "ar"
+                  ? "text-left"
+                  : "text-right"
+              }`}
+            >
+              {orderDetail?.has_tax
+                ? orderDetail?.subtotal_price_display
+                : state?.new_price_display || data?.price_display}
+            </p>
+          )}
+        </div>
+        <div className={"flex flex-row justify-between items-start gap-[1rem]"}>
+          <label className={"flex-1 font-semibold"}>
+            {t("checkout.estimatedTax")}
+          </label>
+          {loadingData ? (
+            <Skeleton width={100} />
+          ) : (
+            <p
+              dir={"ltr"}
+              className={`flex-1 font-bold ${
+                localStorage.getItem("i18nextLng") === "ar"
+                  ? "text-left"
+                  : "text-right"
+              }`}
+            >
+              {orderDetail?.has_tax ? orderDetail?.tax_price_display : "N/A"}
+            </p>
+          )}
         </div>
       </div>
+
       <hr />
       <div className={"flex flex-row justify-between items-start gap-[1rem]"}>
         <label className={"font-semibold"}>{t("checkout.total")}</label>
-        <p
-          dir={"ltr"}
-          className={`font-bold text-2xl ${
-            localStorage.getItem("i18nextLng") === "en"
-              ? "text-right"
-              : "text-left"
-          }`}
-        >
-          {state?.new_price_display || data?.price_display}
-        </p>
+        {loadingData ? (
+          <Skeleton width={100} />
+        ) : (
+          <p
+            dir={"ltr"}
+            className={`font-bold text-2xl ${
+              localStorage.getItem("i18nextLng") === "ar"
+                ? "text-left"
+                : "text-right"
+            }`}
+          >
+            {orderDetail?.has_tax
+              ? orderDetail?.total_price_display
+              : state?.new_price_display || data?.price_display}
+          </p>
+        )}
       </div>
     </div>
   );

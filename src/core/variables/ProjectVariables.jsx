@@ -7,6 +7,7 @@ export const onlyCountries = [];
 export const supportedLanguages = [
   { code: "en", name: "English", flag: "EN" },
   { code: "ar", name: "العربية", flag: "ع" },
+  { code: "fr", name: "Français", flag: "FR" },
 ];
 export const supportedPrefix = [];
 export const excludedCountries = ["il"];
