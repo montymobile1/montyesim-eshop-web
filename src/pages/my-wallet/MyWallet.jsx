@@ -20,9 +20,7 @@ export default function MyWallet() {
 
   return (
     <div className="pt-0 pb-6 flex flex-col gap-4">
-      <h1 className="text-3xl font-bold text-gray-900">
-        {t("myWallet.wallet")}
-      </h1>
+      <h1 className="text-3xl font-bold">{t("myWallet.wallet")}</h1>
       <div className="w-full mx-auto">
         <div className="relative bg-bgLight rounded-[30px] p-8 overflow-hidden shadow-sm">
           <div className="absolute -bottom-0 -left-8 opacity-20">

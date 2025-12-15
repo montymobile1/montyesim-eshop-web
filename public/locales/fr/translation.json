@@ -126,7 +126,7 @@
     "labelRequired": "Le libellé est un champ obligatoire",
     "qrcode_loading": "Récupération des données du code QR. Un instant...",
     "iosDirectInstallation": "Lien d'installation directe iOS (Pour iOS 17 ou version ultérieure uniquement)",
-    "LPALink": "LPA:1",
+    "LPALink": "Android",
     "instructions": "Instructions",
     "esim_instructions": "Paramètres > Réseau et Internet > SIM > Ajouter une eSIM > Scanner le code QR",
     "esim_lpa_instructions": "Paramètres > Réseau et Internet > SIM > Ajouter une eSIM > Utiliser le code d'activation > Coller ce qui précède",

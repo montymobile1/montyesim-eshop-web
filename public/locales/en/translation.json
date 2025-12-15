@@ -125,7 +125,7 @@
     "labelRequired": "Label is a required field",
     "qrcode_loading": "Fetching QR code data. Just a moment...",
     "iosDirectInstallation": "iOS Direct Installation Link (For iOS 17 or later only)",
-    "LPALink": "LPA:1",
+    "LPALink": "Android",
     "instructions": "Instructions",
     "esim_instructions": "Settings > Network & Internet > SIMs > Add eSIM > Scan QR Code",
     "esim_lpa_instructions": "Settings > Network & Internet > SIMs > Add eSIM > Use activation code > Paste the above",

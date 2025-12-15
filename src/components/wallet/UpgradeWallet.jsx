@@ -63,12 +63,10 @@ export default function UpgradeWallet() {
         className=" bg-white rounded-[20px] shadow-sm p-6 w-full flex flex-col h-full gap-2"
         onSubmit={handleSubmit(handleUpgrade)}
       >
-        <h2 className="text-xl font-bold text-gray-900">
-          {t("myWallet.upgradeWallet")}
-        </h2>
+        <h2 className="text-xl font-bold">{t("myWallet.upgradeWallet")}</h2>
         <p className="text-gray-700">{t("myWallet.enterAmountToAddFunds")}</p>
         <div>
-          <label className="block text-sm font-medium text-gray-800">
+          <label className="block text-sm font-medium">
             {t("myWallet.amountNumber")}
           </label>
 

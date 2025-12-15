@@ -65,13 +65,11 @@ export default function VoucherCodeCard() {
         onSubmit={handleSubmit(handleRedeem)}
         className="bg-white rounded-[20px] shadow-sm p-6 w-full flex flex-col h-full gap-2"
       >
-        <h2 className="text-xl font-bold text-gray-900">
-          {t("myWallet.voucherCode")}
-        </h2>
+        <h2 className="text-xl font-bold ">{t("myWallet.voucherCode")}</h2>
         <p className="text-gray-700">{t("myWallet.redeemInstruction")}</p>
 
         <div>
-          <label className="block text-sm font-medium text-gray-800">
+          <label className="block text-sm font-medium">
             {t("myWallet.voucherCode")}
           </label>
 

@@ -194,7 +194,7 @@
     "labelRequired": "حقل التسمية مطلوب",
     "qrcode_loading": "جارٍ تحميل بيانات رمز الاستجابة السريعة. لحظة من فضلك...",
     "iosDirectInstallation": "رابط التثبيت المباشر لنظام iOS (لـ iOS 17 أو أحدث فقط)",
-    "LPALink": "LPA:1",
+    "LPALink": "Android",
     "instructions": "تعليمات",
     "esim_instructions": "الإعدادات > الشبكة والإنترنت > شرائح SIM > إضافة eSIM > مسح رمز QR",
     "esim_lpa_instructions": "الإعدادات > الشبكة والإنترنت > شرائح SIM > إضافة eSIM > استخدام رمز التفعيل > لصق الرمز أعلاه",

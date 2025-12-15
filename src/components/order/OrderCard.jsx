@@ -259,33 +259,35 @@ const OrderCard = ({ order, myesim, refetchData }) => {
             }
             color="secondary"
           />
-          <Chip
-            onClick={handleClick}
-            sx={{
-              cursor:
-                order?.bundle_details?.countries?.length !== 0
-                  ? "pointer"
-                  : "default",
-            }}
-            aria-describedby={id}
-            icon={
-              <LanguageIcon
-                style={
-                  localStorage.getItem("i18nextLng") === "ar"
-                    ? { marginRight: "6px" }
-                    : {}
-                }
-              />
-            }
-            label={
-              <span dir={"ltr"}>
-                {`${order?.bundle_details?.countries?.length} ${t(
-                  "btn.countries"
-                )}`}
-              </span>
-            }
-            color="secondary"
-          />
+          {order?.bundle_details?.bundle_category?.type != "CRUISE" && (
+            <Chip
+              onClick={handleClick}
+              sx={{
+                cursor:
+                  order?.bundle_details?.countries?.length !== 0
+                    ? "pointer"
+                    : "default",
+              }}
+              aria-describedby={id}
+              icon={
+                <LanguageIcon
+                  style={
+                    localStorage.getItem("i18nextLng") === "ar"
+                      ? { marginRight: "6px" }
+                      : {}
+                  }
+                />
+              }
+              label={
+                <span dir={"ltr"}>
+                  {`${order?.bundle_details?.countries?.length} ${t(
+                    "btn.countries"
+                  )}`}
+                </span>
+              }
+              color="secondary"
+            />
+          )}
           {open && (
             <CustomPopover
               id={id}

@@ -28,17 +28,17 @@ export default function ReferAndEarn() {
   };
   return (
     <div className="px-6 pt-0 pb-6 flex flex-col gap-4">
-      <h1 className="text-3xl font-bold text-gray-900">
+      <h1 className="text-3xl font-bold ">
         {t("referAndEarn.referAndEarnTitle")}
       </h1>
       <div className="w-full mx-auto flex flex-col gap-4">
         <ReferrAndEarnSwiper />
 
         <div className={"flex flex-col gap-4"}>
-          <h2 className="text-xl font-bold text-gray-900">
+          <h2 className="text-xl font-bold ">
             {t("referAndEarn.shareYourReferralCode")}
           </h2>
-          <p className="text-gray-600">
+          <p>
             {data?.message}{" "}
             <Link
               to="/terms"
