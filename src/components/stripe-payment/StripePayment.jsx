@@ -2,8 +2,7 @@
 import { yupResolver } from "@hookform/resolvers/yup";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
-import { useDispatch } from "react-redux";
-import { useNavigate, useParams } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import { toast } from "react-toastify";
 import * as yup from "yup";
 //API
@@ -16,9 +15,7 @@ import {
   useStripe,
 } from "@stripe/react-stripe-js";
 import { useTranslation } from "react-i18next";
-import { fetchUserInfo } from "../../redux/reducers/authReducer";
 import NoDataFound from "../shared/no-data-found/NoDataFound";
-import { queryClient } from "../../main";
 
 const schema = yup.object().shape({
   card: yup.string().nullable(),
@@ -76,8 +73,6 @@ const InjectedCheckout = ({
   const { iccid } = useParams();
   const elements = useElements({ locale: localStorage.getItem("i18nextLng") });
   const stripe = useStripe();
-  const dispatch = useDispatch();
-  const navigate = useNavigate();
 
   const {
     control,
@@ -101,37 +96,32 @@ const InjectedCheckout = ({
       return;
     }
 
-    try {
-      setIsSubmitting(true);
-      stripe
-        .confirmPayment({
-          elements,
-          redirect: "if_required",
-        })
-        .then(function (result) {
-          if (result.error) {
-            toast.error(result.error?.message);
-          } else {
-            if (fromUpgradeWallet) {
-              toast.success(t("stripe.wallet_topped_up_successfully"));
-              return onClose();
-            }
-
-            handleSuccessOrder();
+    setIsSubmitting(true);
+    stripe
+      .confirmPayment({
+        elements,
+        redirect: "if_required",
+      })
+      .then(function (result) {
+        if (result.error) {
+          toast.error(result.error?.message);
+        } else {
+          if (fromUpgradeWallet) {
+            toast.success(t("stripe.wallet_topped_up_successfully"));
+            return onClose();
           }
-        })
-        .catch((error) => {
-          toast.error(error?.message || t("stripe.paymentConfirmationFailed"));
-        })
-        .finally(() =>
-          setTimeout(() => {
-            setIsSubmitting(false);
-          }, 5000)
-        );
-    } catch (error) {
-      toast.error(t("stripe.paymentConfirmationFailed"));
-      setIsSubmitting(false);
-    }
+
+          handleSuccessOrder();
+        }
+      })
+      .catch((error) => {
+        toast.error(error?.message || t("stripe.paymentConfirmationFailed"));
+      })
+      .finally(() =>
+        setTimeout(() => {
+          setIsSubmitting(false);
+        }, 5000)
+      );
   };
 
   const handleChange = (value) => {

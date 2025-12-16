@@ -1,5 +1,5 @@
-import { Card, CardContent, CircularProgress } from "@mui/material";
-import React, { useEffect } from "react";
+import { CircularProgress } from "@mui/material";
+import { useEffect } from "react";
 import { useTranslation } from "react-i18next";
 import { toast } from "react-toastify";
 

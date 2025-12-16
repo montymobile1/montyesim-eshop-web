@@ -58,17 +58,15 @@ const BundleList = ({
   if (isLoading) {
     return (
       <div className="bg-white shadow-sm p-4 rounded-md grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6 mb-6">
-        {Array(3)
-          .fill()
-          .map((_, index) => (
-            <BundleCard
-              regionIcon={null}
-              key={index}
-              bundle={null}
-              countryData={null}
-              isLoading={true}
-            />
-          ))}
+        {new Array(3).fill().map((_, index) => (
+          <BundleCard
+            regionIcon={null}
+            key={index}
+            bundle={null}
+            countryData={null}
+            isLoading={true}
+          />
+        ))}
       </div>
     );
   }

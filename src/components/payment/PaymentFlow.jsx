@@ -4,7 +4,7 @@ import { loadStripe } from "@stripe/stripe-js";
 import { useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useSelector } from "react-redux";
-import { useLocation, useNavigate, useParams } from "react-router-dom";
+import { useLocation, useParams } from "react-router-dom";
 import { toast } from "react-toastify";
 import { assignBundle, assignTopupBundle } from "../../core/apis/userAPI";
 import OtpVerification from "../OtpVerification";
@@ -37,7 +37,6 @@ const typeMap = {
 const PaymentFlow = (props) => {
   const { t } = useTranslation();
   const { iccid } = useParams();
-  const navigate = useNavigate();
   const location = useLocation();
   const state = location.state;
   const {
@@ -61,17 +60,18 @@ const PaymentFlow = (props) => {
   const [orderDetail, setOrderDetail] = useState(null);
   const [loading, setLoading] = useState(false);
 
-  const related_search_test = {
-    related_search: {
-      region: null,
-      countries: [
-        {
-          iso3_code: "AUT",
-          country_name: "Austria",
-        },
-      ],
-    },
-  };
+  // NOSONAR
+  // const related_search_test = {
+  //   related_search: {
+  //     region: null,
+  //     countries: [
+  //       {
+  //         iso3_code: "AUT",
+  //         country_name: "Austria",
+  //       },
+  //     ],
+  //   },
+  // };
 
   const assignMethod = (type) => {
     setLoading(true);
@@ -164,15 +164,14 @@ const PaymentFlow = (props) => {
     <>
       {bundleDataLoading ? (
         <div className={"w-full sm:basis-[50%] shrink-0"}>
-          {Array(2)
-            .fill()
-            ?.map((_, index) => (
-              <Skeleton
-                variant="rectangular"
-                height={150}
-                key={`checkout-skeleton-${index}`}
-              />
-            ))}
+          {Array.from({ length: 2 }).map((_, i) => (
+            <Skeleton
+              key={`skeleton-${i}`}
+              variant="rectangle"
+              height={150}
+              className="rounded-md"
+            />
+          ))}
         </div>
       ) : !confirmed ? (
         <TmpLogin />

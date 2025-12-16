@@ -1,28 +1,26 @@
-import React, { useEffect, useMemo, useState } from "react";
+import { Button, Skeleton } from "@mui/material";
+import { useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
-import Container from "../../components/Container";
-import { getMyEsim } from "../../core/apis/userAPI";
 import { useQuery } from "react-query";
+import { Link, useSearchParams } from "react-router-dom";
 import {
   CustomToggleButton,
   CustomToggleGroup,
 } from "../../assets/CustomComponents";
-import { Link, useLocation, useSearchParams } from "react-router-dom";
-import useQueryParams from "../../core/custom-hook/useQueryParams";
-import NoDataFound from "../../components/shared/no-data-found/NoDataFound";
 import { NoDataFoundSVG } from "../../assets/icons/Common";
-import { Button, Skeleton } from "@mui/material";
 import OrderCard from "../../components/order/OrderCard";
+import NoDataFound from "../../components/shared/no-data-found/NoDataFound";
+import { getMyEsim } from "../../core/apis/userAPI";
+import useQueryParams from "../../core/custom-hook/useQueryParams";
 
 const Esim = () => {
   const { t } = useTranslation();
-  const location = useLocation();
   const [searchParams] = useSearchParams();
   const [filters, setFilters] = useState({
     expired: searchParams.get("expired") || "false",
   });
 
-  const { data, isLoading, error, refetch } = useQuery({
+  const { data, isLoading, refetch } = useQuery({
     queryKey: ["my-esim"],
     queryFn: () => getMyEsim().then((res) => res?.data?.data),
   });
@@ -30,7 +28,7 @@ const Esim = () => {
   const handleQueryParams = useQueryParams(filters);
 
   const finalData = useMemo(() => {
-    const filtersValue = filters?.expired === "false" ? false : true;
+    const filtersValue = filters?.expired !== "false";
     return data?.filter((el) => el?.bundle_expired === filtersValue) || [];
   }, [filters?.expired, data]);
 
@@ -56,7 +54,7 @@ const Esim = () => {
         </CustomToggleButton>
       </CustomToggleGroup>
       {isLoading ? (
-        Array(4)
+        new Array(4)
           .fill()
           ?.map((_, index) => (
             <Skeleton

@@ -1,13 +1,11 @@
-import React, { useEffect, useState } from "react";
-import { useQuery } from "react-query";
-import { getTermsContent } from "../core/apis/homeAPI";
 import { Skeleton } from "@mui/material";
-import NoDataFound from "../components/shared/no-data-found/NoDataFound";
-import { ConnectSVG } from "../assets/icons/Home";
-import { ContentSkeletons } from "../components/shared/skeletons/HomePageSkeletons";
+import { useTranslation } from "react-i18next";
+import { useQuery } from "react-query";
 import { NoContentSVG } from "../assets/icons/Common";
 import EditorText from "../components/shared/editor-text/EditorText";
-import { useTranslation } from "react-i18next";
+import NoDataFound from "../components/shared/no-data-found/NoDataFound";
+import { ContentSkeletons } from "../components/shared/skeletons/HomePageSkeletons";
+import { getTermsContent } from "../core/apis/homeAPI";
 
 const Terms = () => {
   const { t } = useTranslation();

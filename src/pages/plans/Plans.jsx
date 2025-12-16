@@ -1,22 +1,21 @@
 //UTILITIES
-import React, { useEffect, useMemo, useState } from "react";
+import clsx from "clsx";
+import { useEffect, useMemo, useState } from "react";
+import { useDispatch } from "react-redux";
 import { useLocation, useNavigate, useSearchParams } from "react-router-dom";
 import { toast } from "react-toastify";
-import { useDispatch } from "react-redux";
-import clsx from "clsx";
 //REDUCER
 import { LimitedSignOut } from "../../redux/reducers/authReducer";
 import { AttachSearch, DetachSearch } from "../../redux/reducers/searchReducer";
 //API
 import { useHomeCountries } from "../../core/custom-hook/useHomeCountries";
 //COMPONENT
-import CountriesList from "../../components/country-section/CountriesList";
-import { CountriesSkeletons } from "../../components/shared/skeletons/HomePageSkeletons";
-import BundleCard from "../../components/bundle/bundle-card/BundleCard";
+import { Search } from "@mui/icons-material";
+import DirectionsBoatFilledOutlinedIcon from "@mui/icons-material/DirectionsBoatFilledOutlined";
+import TerrainOutlinedIcon from "@mui/icons-material/TerrainOutlined";
 import {
   Autocomplete,
   Badge,
-  Chip,
   FormControlLabel,
   IconButton,
   Radio,
@@ -24,16 +23,16 @@ import {
   Typography,
   useMediaQuery,
 } from "@mui/material";
-import { Search } from "@mui/icons-material";
-import { StyledTextField } from "../../assets/CustomComponents";
-import BundleList from "../../components/bundle/BundleList";
-import NoDataFound from "../../components/shared/no-data-found/NoDataFound";
-import useQueryParams from "../../core/custom-hook/useQueryParams";
-import PaymentCompletion from "../../components/payment/PaymentCompletion";
-import OrderPopup from "../../components/order/OrderPopup";
-import DirectionsBoatFilledOutlinedIcon from "@mui/icons-material/DirectionsBoatFilledOutlined";
-import TerrainOutlinedIcon from "@mui/icons-material/TerrainOutlined";
 import { useTranslation } from "react-i18next";
+import { StyledTextField } from "../../assets/CustomComponents";
+import BundleCard from "../../components/bundle/bundle-card/BundleCard";
+import BundleList from "../../components/bundle/BundleList";
+import CountriesList from "../../components/country-section/CountriesList";
+import OrderPopup from "../../components/order/OrderPopup";
+import PaymentCompletion from "../../components/payment/PaymentCompletion";
+import NoDataFound from "../../components/shared/no-data-found/NoDataFound";
+import { CountriesSkeletons } from "../../components/shared/skeletons/HomePageSkeletons";
+import useQueryParams from "../../core/custom-hook/useQueryParams";
 
 const Plans = (props) => {
   const { t } = useTranslation();
@@ -80,7 +79,7 @@ const Plans = (props) => {
     navigate(newValue === "land" ? `/plans/${newValue}` : "/plans");
   };
 
-  const [hoorayOpen, setHorrayOpen] = useState(
+  const [hoorayOpen, setHoorayOpen] = useState(
     searchParams.get("order_id") || false
   );
 
@@ -300,11 +299,12 @@ const Plans = (props) => {
                       setFilters({ ...filters, type: "" });
                       setActiveTab("countries");
                     }}
-                    className={`px-2 py-1 rounded text-base font-bold transition-colors ${
-                      activeTab === "countries"
-                        ? "bg-primary text-white"
-                        : "text-primary"
-                    }`}
+                    className={clsx(
+                      `px-2 py-1 rounded text-base font-bold transition-colors`,
+                      {
+                        "bg-primary text-white": activeTab === "countries",
+                      }
+                    )}
                   >
                     {t("btn.countries")}
                   </button>
@@ -318,11 +318,12 @@ const Plans = (props) => {
                         country_codes: "",
                       });
                     }}
-                    className={`px-2 py-1 rounded text-base font-bold transition-colors ${
-                      activeTab === "regions"
-                        ? "bg-primary text-white"
-                        : "text-primary"
-                    }`}
+                    className={clsx(
+                      `px-2 py-1 rounded text-base font-bold transition-colors text-primary`,
+                      {
+                        "bg-primary text-white": activeTab === "regions",
+                      }
+                    )}
                   >
                     {t("btn.regions")}
                   </button>
@@ -335,11 +336,12 @@ const Plans = (props) => {
                       });
                       setActiveTab("global");
                     }}
-                    className={`px-2 py-1 rounded text-base font-bold transition-colors ${
-                      activeTab === "global"
-                        ? "bg-primary text-white"
-                        : "text-primary"
-                    }`}
+                    className={clsx(
+                      `px-2 py-1 rounded text-base font-bold transition-colors`,
+                      {
+                        "bg-primary text-white": activeTab === "global",
+                      }
+                    )}
                   >
                     {t("btn.global")}
                   </button>
@@ -385,7 +387,7 @@ const Plans = (props) => {
       {searchParams.get("order_id") && hoorayOpen && (
         <PaymentCompletion
           setOpenOrderDetail={() => {
-            setHorrayOpen(false);
+            setHoorayOpen(false);
             setOpenOrderDetail(true);
           }}
         />

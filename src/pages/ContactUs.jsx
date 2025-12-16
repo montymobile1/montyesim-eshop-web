@@ -1,23 +1,18 @@
-import React, { useState, useEffect } from "react";
-import RemoveIcon from "@mui/icons-material/Remove";
 import AddIcon from "@mui/icons-material/Add";
-import ContactForm from "../components/ContactForm";
-import { getFAQContent } from "../core/apis/homeAPI";
+import RemoveIcon from "@mui/icons-material/Remove";
+import { useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { useQuery } from "react-query";
+import { ConnectSVG } from "../assets/icons/Home";
+import ContactForm from "../components/ContactForm";
+import EditorText from "../components/shared/editor-text/EditorText";
 import NoDataFound from "../components/shared/no-data-found/NoDataFound";
 import { FAQSkeletons } from "../components/shared/skeletons/HomePageSkeletons";
-import { ConnectSVG } from "../assets/icons/Home";
-import EditorText from "../components/shared/editor-text/EditorText";
-import { useSelector } from "react-redux";
-import { useTranslation } from "react-i18next";
+import { getFAQContent } from "../core/apis/homeAPI";
 
 const ContactUs = () => {
   const { t } = useTranslation();
-  const {
-    data: faqs,
-    isLoading,
-    error,
-  } = useQuery({
+  const { data: faqs, isLoading } = useQuery({
     queryKey: ["faq"],
     queryFn: () =>
       getFAQContent().then((res) => {
@@ -69,12 +64,16 @@ const ContactUs = () => {
             ) : (
               content?.map((faq, index) => (
                 <div
-                  key={index}
+                  key={faq?.id}
                   className="bg-white rounded-2xl shadow-sm transition-all duration-200"
                 >
                   <button
                     onClick={() => toggleFaq(index)}
-                    className={`w-full px-6 py-4 flex items-center justify-between ${localStorage.getItem("i18nextLng") === "ar" ? "text-right" : "text-left"}`}
+                    className={`w-full px-6 py-4 flex items-center justify-between ${
+                      localStorage.getItem("i18nextLng") === "ar"
+                        ? "text-right"
+                        : "text-left"
+                    }`}
                   >
                     <span className="font-medium text-gray-900">
                       {faq?.question}

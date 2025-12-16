@@ -1,26 +1,8 @@
 import { api } from "./axios";
 
-export const validateReferral = async (payload) => {
-  try {
-    const res = await api.post(`api/v1/promotion/referral_code`, payload);
-    return res;
-  } catch (error) {
-    throw error;
-  }
-};
-
 export const validatePromo = async (payload) => {
   try {
     const res = await api.post(`api/v1/promotion/validation`, payload);
-    return res;
-  } catch (error) {
-    throw error;
-  }
-};
-
-export const assignReferral = async (payload) => {
-  try {
-    const res = await api.post(`api/v1/promotion/referral_code`, payload);
     return res;
   } catch (error) {
     throw error;

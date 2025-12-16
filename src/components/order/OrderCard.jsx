@@ -59,11 +59,7 @@ const OrderCard = ({ order, myesim, refetchData }) => {
     enabled: !!collapseElement && !myesim,
   });
 
-  const {
-    data: consumptionData,
-    isLoading: consumptionLoading,
-    error: consumptionError,
-  } = useQuery({
+  const { data: consumptionData, isLoading: consumptionLoading } = useQuery({
     queryKey: [
       `my-esim-consumption-${order?.bundle_details?.iccid}`,
       openConsumption,
@@ -206,7 +202,7 @@ const OrderCard = ({ order, myesim, refetchData }) => {
                 style={
                   localStorage.getItem("i18nextLng") === "ar"
                     ? { marginRight: "6px" }
-                    : {}
+                    : undefined
                 }
               />
             }
@@ -221,7 +217,7 @@ const OrderCard = ({ order, myesim, refetchData }) => {
                 style={
                   localStorage.getItem("i18nextLng") === "ar"
                     ? { marginRight: "6px" }
-                    : {}
+                    : undefined
                 }
                 fontSize="small"
               />
@@ -247,7 +243,7 @@ const OrderCard = ({ order, myesim, refetchData }) => {
                 style={
                   localStorage.getItem("i18nextLng") === "ar"
                     ? { marginRight: "6px" }
-                    : {}
+                    : undefined
                 }
                 fontSize="small"
               />
@@ -274,7 +270,7 @@ const OrderCard = ({ order, myesim, refetchData }) => {
                   style={
                     localStorage.getItem("i18nextLng") === "ar"
                       ? { marginRight: "6px" }
-                      : {}
+                      : undefined
                   }
                 />
               }
@@ -408,7 +404,7 @@ const OrderCard = ({ order, myesim, refetchData }) => {
                         style={
                           localStorage.getItem("i18nextLng") === "ar"
                             ? { marginLeft: "8px" }
-                            : {}
+                            : undefined
                         }
                       />
                     }
@@ -538,7 +534,7 @@ const OrderCard = ({ order, myesim, refetchData }) => {
                       style={
                         localStorage.getItem("i18nextLng") === "ar"
                           ? { marginLeft: "8px" }
-                          : {}
+                          : undefined
                       }
                       fontSize="small"
                     />
@@ -558,7 +554,7 @@ const OrderCard = ({ order, myesim, refetchData }) => {
                       style={
                         localStorage.getItem("i18nextLng") === "ar"
                           ? { marginLeft: "8px" }
-                          : {}
+                          : undefined
                       }
                       fontSize="small"
                     />
@@ -578,7 +574,7 @@ const OrderCard = ({ order, myesim, refetchData }) => {
                       style={
                         localStorage.getItem("i18nextLng") === "ar"
                           ? { marginLeft: "8px" }
-                          : {}
+                          : undefined
                       }
                       fontSize="small"
                     />

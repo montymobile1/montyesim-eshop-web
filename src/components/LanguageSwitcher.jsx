@@ -1,14 +1,13 @@
-import React, { useState, useRef, useEffect } from "react";
-import { useTranslation } from "react-i18next";
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 import clsx from "clsx";
+import { useEffect, useRef, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { useDispatch, useSelector } from "react-redux";
-import { setDirection } from "../redux/reducers/directionSlice.jsx";
-import { queryClient } from "../main.jsx";
-import i18next from "i18next";
 import { updateUserInfo } from "../core/apis/authAPI.jsx";
-import { UpdateAuthInfo } from "../redux/reducers/authReducer.jsx";
 import { supportedLanguages } from "../core/variables/ProjectVariables.jsx";
+import { queryClient } from "../main.jsx";
+import { UpdateAuthInfo } from "../redux/reducers/authReducer.jsx";
+import { setDirection } from "../redux/reducers/directionSlice.jsx";
 
 const LanguageSwitcher = () => {
   const [openModal, setOpenModal] = useState(false);

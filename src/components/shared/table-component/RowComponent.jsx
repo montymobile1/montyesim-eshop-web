@@ -26,11 +26,8 @@ export function RowComponent(props) {
     colSpan,
     openCollapse,
   } = props;
-  //VARIABLES
 
   const [open] = useState(openCollapse);
-
-  //FUNCTIONS
 
   return (
     <>
@@ -38,7 +35,7 @@ export function RowComponent(props) {
         className={handleHover ? "cursor-pointer tableRow" : "tableRow"}
         hover={handleHover}
         onClick={handleHover ? (e) => handleHover(row?.id) : null}
-        key={keyProps ? keyProps : row?.id}
+        key={keyProps || row?.id}
       >
         {children}
 

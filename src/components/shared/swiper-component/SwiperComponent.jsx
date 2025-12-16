@@ -1,12 +1,11 @@
 //UTILTIIES
-import React, { useCallback, useEffect, useState } from "react";
-import { Swiper } from "swiper/react";
 import clsx from "clsx";
+import { useCallback, useEffect, useState } from "react";
 import { Navigation, Pagination } from "swiper/modules";
+import { Swiper } from "swiper/react";
 //COMPONENT
 import ArrowBackIosIcon from "@mui/icons-material/ArrowBackIos";
 import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
-import { useSelector } from "react-redux";
 
 const SwiperComponent = ({ slidesPerView, children, swiperRef }) => {
   const [isBeginning, setIsBeginning] = useState(true);

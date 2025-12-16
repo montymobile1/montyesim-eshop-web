@@ -5,7 +5,8 @@
     "pageNotFound": "Page non trouvée",
     "pageNotExistMessage": "Désolé, la page que vous recherchez n'existe pas.",
     "referral_message": "Découvrez ceci et utilisez mon code de parrainage :",
-    "noOptions": "Aucune option"
+    "noOptions": "Aucune option",
+    "notice": "Notification"
   },
   "account": {
     "delete_account": "Supprimer le compte",
@@ -75,7 +76,8 @@
     "savingChanges": "Enregistrement...",
     "saveChanges": "Enregistrer",
     "loading": "Chargement...",
-    "Checkout": "Paiement"
+    "Checkout": "Paiement",
+    "ok": "D'accord"
   },
   "orders": {
     "plan_history": "Historique du forfait",
@@ -130,7 +132,8 @@
     "instructions": "Instructions",
     "esim_instructions": "Paramètres > Réseau et Internet > SIM > Ajouter une eSIM > Scanner le code QR",
     "esim_lpa_instructions": "Paramètres > Réseau et Internet > SIM > Ajouter une eSIM > Utiliser le code d'activation > Coller ce qui précède",
-    "installNowLinkonIOS": "Installer maintenant sur iOS"
+    "installNowLinkonIOS": "Installer maintenant sur iOS",
+    "transaction_expired": "Votre transaction a expiré. Vous allez être redirigé vers la page des plans."
   },
   "esim": {
     "title": "Mon eSIM",

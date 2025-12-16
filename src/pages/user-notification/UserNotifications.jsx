@@ -53,7 +53,7 @@ const UserNotifications = () => {
     <div className={"flex flex-col gap-[1rem]"}>
       <h1>{t("notifications.title")}</h1>
       {isLoading ? (
-        Array(4)
+        new Array(4)
           .fill()
           ?.map((_, index) => (
             <Skeleton
@@ -74,8 +74,8 @@ const UserNotifications = () => {
         />
       ) : (
         <>
-          {notifications?.map((el, index) => (
-            <Card key={index}>
+          {notifications?.map((el) => (
+            <Card key={el?.notification_id}>
               <CardContent className={"w-full flex flex-col gap-[0.5rem]"}>
                 <div
                   className={
@@ -103,15 +103,14 @@ const UserNotifications = () => {
           <div ref={ref}></div>
           {isFetchingNextPage &&
             !isLoading &&
-            Array(4)
-              .fill()
-              ?.map((skeleton) => (
-                <Skeleton
-                  variant="rectangle"
-                  height={100}
-                  className={"rounded-md"}
-                />
-              ))}
+            Array.from({ length: 4 }).map((_, i) => (
+              <Skeleton
+                key={`skeleton-${i}`}
+                variant="rectangle"
+                height={100}
+                className="rounded-md"
+              />
+            ))}
         </>
       )}
     </div>

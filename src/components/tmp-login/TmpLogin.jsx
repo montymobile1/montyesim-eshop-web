@@ -28,9 +28,7 @@ const TmpLogin = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const dispatch = useDispatch();
 
-  const { login_type, otp_channel, social_login } = useSelector(
-    (state) => state.currency
-  );
+  const { login_type, otp_channel } = useSelector((state) => state.currency);
   const schema = ({ t }) =>
     yup.object().shape({
       phone: yup
@@ -44,8 +42,6 @@ const TmpLogin = () => {
         })
         .test("is-valid-phone", t("auth.invalidPhoneNumber"), (value) => {
           if (!value) return true;
-
-          const countryCode = this.parent.countryCode;
 
           if (!isValidPhoneNumber(value)) {
             return false;
@@ -80,13 +76,7 @@ const TmpLogin = () => {
       }),
     });
 
-  const {
-    control,
-    handleSubmit,
-    reset,
-    getValues,
-    formState: { errors },
-  } = useForm({
+  const { control, handleSubmit } = useForm({
     defaultValues: {
       email: "",
       phone: "",
@@ -188,6 +178,7 @@ const TmpLogin = () => {
                         alignItems: "center !important",
                         whiteSpace: "nowrap",
                       }}
+                      key={channel}
                       value={channel}
                       label={
                         <div className="flex flex-row gap-[0.5rem] items-center">

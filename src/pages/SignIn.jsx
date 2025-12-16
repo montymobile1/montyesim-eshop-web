@@ -109,14 +109,7 @@ const SignIn = () => {
       }),
     });
 
-  const {
-    control,
-    handleSubmit,
-    reset,
-    getValues,
-    getValue,
-    formState: { errors },
-  } = useForm({
+  const { control, handleSubmit, getValues } = useForm({
     defaultValues: {
       email: "",
       phone: "",
@@ -174,7 +167,7 @@ const SignIn = () => {
         if (e?.response?.status === 429) {
           const saved = localStorage.getItem(storageKey);
           if (saved) {
-            const { otpExpSec, expiresAt } = JSON.parse(saved);
+            const { expiresAt } = JSON.parse(saved);
             const remaining = Math.max(
               0,
               Math.floor((expiresAt - Date.now()) / 1000)

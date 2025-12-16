@@ -45,10 +45,10 @@ function App() {
       getDeviceId();
     }
     dispatch(fetchCurrencyInfo());
-    if (!isAuthenticated) {
-      dispatch(SignOut());
-    } else {
+    if (isAuthenticated) {
       dispatch(fetchUserInfo());
+    } else {
+      dispatch(SignOut());
     }
   }, [dispatch]);
 

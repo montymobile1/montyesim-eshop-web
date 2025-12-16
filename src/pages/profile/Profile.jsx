@@ -101,11 +101,7 @@ const Profile = () => {
     default_currency: yup.object().nullable(),
   });
 
-  const {
-    data: currencies,
-    isLoading,
-    error,
-  } = useQuery({
+  const { data: currencies, isLoading } = useQuery({
     queryKey: ["active-currencies"],
     queryFn: () =>
       getActiveCurrencies().then((res) => {
@@ -118,8 +114,7 @@ const Profile = () => {
     control,
     handleSubmit,
     reset,
-    getValues,
-    formState: { errors, isDirty },
+    formState: { isDirty },
   } = useForm({
     defaultValues: {
       email: user_info?.email || "",
@@ -155,7 +150,7 @@ const Profile = () => {
               "user_currency",
               payload?.user_currency?.currency
             );
-            supportedLanguages?.map((el) => {
+            supportedLanguages?.forEach((el) => {
               localStorage.removeItem(`home_countries_cache_${el?.code}`);
             });
           } else {

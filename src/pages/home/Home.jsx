@@ -102,8 +102,11 @@ const Home = () => {
               </h2>
 
               <div className="space-y-8">
-                {benefits?.map((benefit, index) => (
-                  <div key={index} className="flex flex-row gap-[1rem]">
+                {benefits?.map((benefit) => (
+                  <div
+                    key={benefit?.title}
+                    className="flex flex-row gap-[1rem]"
+                  >
                     <div
                       className={clsx(
                         benefit.bg,

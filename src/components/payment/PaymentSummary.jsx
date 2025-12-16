@@ -1,4 +1,5 @@
 import { Skeleton } from "@mui/material";
+import clsx from "clsx";
 import React from "react";
 import { useTranslation } from "react-i18next";
 import { useLocation } from "react-router-dom";
@@ -44,11 +45,9 @@ const PaymentSummary = ({ data, orderDetail, loadingData }) => {
           ) : (
             <p
               dir={"ltr"}
-              className={`flex-1 font-bold ${
-                localStorage.getItem("i18nextLng") === "ar"
-                  ? "text-left"
-                  : "text-right"
-              }`}
+              className={clsx(`flex-1 font-bold text-right`, {
+                "!text-left": localStorage.getItem("i18nextLng") === "ar",
+              })}
             >
               {orderDetail?.has_tax
                 ? orderDetail?.subtotal_price_display
@@ -65,11 +64,9 @@ const PaymentSummary = ({ data, orderDetail, loadingData }) => {
           ) : (
             <p
               dir={"ltr"}
-              className={`flex-1 font-bold ${
-                localStorage.getItem("i18nextLng") === "ar"
-                  ? "text-left"
-                  : "text-right"
-              }`}
+              className={clsx(`flex-1 font-bold text-right`, {
+                "!text-left": localStorage.getItem("i18nextLng") === "ar",
+              })}
             >
               {orderDetail?.has_tax ? orderDetail?.tax_price_display : "N/A"}
             </p>
@@ -85,11 +82,9 @@ const PaymentSummary = ({ data, orderDetail, loadingData }) => {
         ) : (
           <p
             dir={"ltr"}
-            className={`font-bold text-2xl ${
-              localStorage.getItem("i18nextLng") === "ar"
-                ? "text-left"
-                : "text-right"
-            }`}
+            className={clsx(`text-2xl font-bold text-right`, {
+              "!text-left": localStorage.getItem("i18nextLng") === "ar",
+            })}
           >
             {orderDetail?.has_tax
               ? orderDetail?.total_price_display

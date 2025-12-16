@@ -12,9 +12,8 @@ import { getReferEarnContent } from "../../core/apis/homeAPI";
 export default function ReferAndEarn() {
   const { t } = useTranslation();
   const userInfo = useSelector((state) => state.authentication.user_info);
-  const systemSettings = useSelector((state) => state.currency || null);
 
-  const { data, isLoading, error } = useQuery({
+  const { data } = useQuery({
     queryKey: ["refer-earn-phrase"],
     queryFn: () =>
       getReferEarnContent().then((res) => {

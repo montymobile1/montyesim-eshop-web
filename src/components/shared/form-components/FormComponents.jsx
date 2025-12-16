@@ -69,16 +69,7 @@ export const FormInput = (props) => {
 };
 
 export const FormTextArea = (props) => {
-  const {
-    rows,
-    label,
-    value,
-    required,
-    onChange,
-    helperText,
-    placeholder,
-    disabled,
-  } = props;
+  const { rows, value, onChange, helperText, placeholder, disabled } = props;
 
   const handleOnChange = (e) => {
     onChange(e.target.value);
@@ -90,7 +81,7 @@ export const FormTextArea = (props) => {
       variant="outlined"
       multiline
       className="text-area-field"
-      rows={rows ? rows : 4}
+      rows={rows || 4}
       size="small"
       value={value}
       placeholder={placeholder}
@@ -176,7 +167,7 @@ export const FormDropdownList = (props) => {
     accessValue = "id",
   } = props;
   const { placeholder, variant, disabled, required } = props;
-  const { value, filterDropdown } = props;
+  const { value } = props;
 
   const [val, setVal] = useState(null);
   useEffect(() => {
@@ -261,8 +252,6 @@ export const FormPhoneInput = ({
   countries = [],
   ...props
 }) => {
-  const currentLang = localStorage.getItem("i18nextLng") || "en";
-
   return (
     <FormGroup aria-label="position" row className="w-full">
       <PhoneInput

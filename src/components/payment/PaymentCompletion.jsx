@@ -1,7 +1,5 @@
 import { Dialog, DialogContent, LinearProgress } from "@mui/material";
-import { CheckCircleOutline } from "@mui/icons-material";
-import React, { useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useEffect } from "react";
 import { useTranslation } from "react-i18next";
 import { SuccessfulPaymentSVG } from "../../assets/icons/Payment";
 

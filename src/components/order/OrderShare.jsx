@@ -1,10 +1,8 @@
 import { Close } from "@mui/icons-material";
 import { Button, Dialog, DialogContent, IconButton } from "@mui/material";
-import React from "react";
 import { useTranslation } from "react-i18next";
 import { toast } from "react-toastify";
 import { FormInput } from "../shared/form-components/FormComponents";
-import { useSelector } from "react-redux";
 
 const OrderShare = ({ onClose }) => {
   const { t } = useTranslation();

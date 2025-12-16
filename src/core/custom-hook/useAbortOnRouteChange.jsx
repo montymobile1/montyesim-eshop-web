@@ -7,7 +7,7 @@ export const useAbortOnRouteChange = () => {
 
   useEffect(() => {
     controllerMap.forEach((entry, key) => {
-      const { controller, url, method } = entry;
+      const { controller, url } = entry;
 
       const shouldAbort =
         url?.toLowerCase() === "api/v1/user/bundle/assign" ||

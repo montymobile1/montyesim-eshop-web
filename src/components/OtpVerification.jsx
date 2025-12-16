@@ -7,14 +7,14 @@ import * as yup from "yup";
 import { Button, Skeleton, TextField } from "@mui/material";
 import clsx from "clsx";
 import { useDispatch, useSelector } from "react-redux";
-import { useNavigate, useParams } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import { toast } from "react-toastify";
 import { resendOrderOTP, userLogin, verifyOTP } from "../core/apis/authAPI";
 import { verifyOrderOTP } from "../core/apis/userAPI";
 import { dcbMessage } from "../core/variables/ProjectVariables";
 import { SignIn } from "../redux/reducers/authReducer";
-import i18n from "../i18n";
 import NoDataFound from "./shared/no-data-found/NoDataFound";
+import TransactionExpired from "./TransactionExpired";
 
 const schema = ({ t }) =>
   yup.object().shape({
@@ -50,15 +50,17 @@ const OtpVerification = ({
   const otp_expiration_time = useSelector(
     (state) => state.currency?.otp_expiration_time
   );
+
+  const transaction_expiry_time = useSelector(
+    (state) => state.currency?.transaction_expiry_time
+  );
   const inputRefs = useRef([]);
-  const navigate = useNavigate();
   const dispatch = useDispatch();
 
   const [isVerifying, setIsVerifying] = useState(false);
+  const [openTransactionExpired, setTransactionExpired] = useState(false);
   const [resend, setResend] = useState(true);
   const { login_type, otp_channel } = useSelector((state) => state.currency);
-  const [_, setVerifiedBy] = useState("email");
-  const [proceed] = useState(false);
 
   const [expiresAt, setExpiresAt] = useState(
     Date.now() + (otpExpiration ?? orderDetail?.otp_expiration ?? 300) * 1000
@@ -67,6 +69,15 @@ const OtpVerification = ({
   const [timer, setTimer] = useState(
     Math.max(0, Math.floor((expiresAt - Date.now()) / 1000))
   );
+
+  // Transaction expiry tracking for checkout
+  const [transactionCreatedAt] = useState(Date.now());
+  const [transactionExpiresAt] = useState(() => {
+    if (checkout && transaction_expiry_time && transaction_expiry_time !== "") {
+      return Date.now() + transaction_expiry_time * 60 * 1000; // Convert minutes to milliseconds
+    }
+    return null;
+  });
 
   const {
     control,
@@ -135,9 +146,31 @@ const OtpVerification = ({
     return () => clearInterval(interval);
   }, [expiresAt, loading]);
 
+  // Transaction expiry timer for checkout
   useEffect(() => {
-    setVerifiedBy(otp_channel?.[0]);
-  }, [otp_channel]);
+    if (
+      !checkout ||
+      !transactionExpiresAt ||
+      transactionExpiresAt == "" ||
+      loading
+    )
+      return;
+
+    const interval = setInterval(() => {
+      const remaining = Math.max(
+        0,
+        Math.floor((transactionExpiresAt - Date.now()) / 1000)
+      );
+      console.log(remaining, "remaininggg");
+      if (remaining === 0) {
+        setTransactionExpired(true);
+        handleCancelOrder();
+        clearInterval(interval);
+      }
+    }, 1000);
+
+    return () => clearInterval(interval);
+  }, [checkout, transactionExpiresAt, loading]);
 
   const handleSubmitForm = (payload) => {
     setIsVerifying(true);
@@ -297,55 +330,6 @@ const OtpVerification = ({
     );
   }, [errors, getValues()]);
 
-  //EXPLANATION : PLEASE DON'T CHANGE THIS AS IT WILL BE APPLIED LATER
-
-  // if (checkout && otp_channel?.length > 1 && !proceed) {
-  //   return (
-  //     <div className={"flex flex-col gap-[1rem]"}>
-  //       <RadioGroup
-  //         name="use-radio-group"
-  //         value={verifiedBy}
-  //         onChange={(e) => setVerifiedBy(e.target.value)}
-  //         row
-  //         sx={{ columnGap: 2, flexWrap: "nowrap", overflowX: "auto" }}
-  //       >
-  //         {otp_channel?.map((channel) => (
-  //           <FormControlLabel
-  //             sx={{
-  //               alignItems: "center !important",
-  //               whiteSpace: "nowrap",
-  //             }}
-  //             value={channel}
-  //             label={
-  //               <div className="flex flex-row gap-[0.5rem] items-center">
-  //                 <Typography
-  //                   fontWeight={"bold"}
-  //                   color="primary"
-  //                   fontSize={"1rem"}
-  //                 >
-  //                   Verify by {channel}
-  //                 </Typography>
-  //               </div>
-  //             }
-  //             control={<Radio checked={verifiedBy === channel} />}
-  //           />
-  //         ))}
-  //       </RadioGroup>
-  //       <div className={"flex flex-row justify-center sm:justify-start "}>
-  //         <Button
-  //           onClick={() => setProceed(true)}
-  //           color="primary"
-  //           type="submit"
-  //           variant="contained"
-  //           sx={{ width: "30%" }}
-  //         >
-  //           Confirm
-  //         </Button>
-  //       </div>
-  //     </div>
-  //   );
-  // } else
-
   if (checkout) {
     if (loading) {
       return (
@@ -363,32 +347,39 @@ const OtpVerification = ({
   }
 
   return (
-    <form
-      onSubmit={handleSubmit(handleSubmitForm)}
-      className={clsx("w-full max-w-md flex flex-col gap-[2rem] sm:px-unset", {
-        "px-8 mx-auto": !checkout,
-      })}
-    >
-      <h1 className="font-bold text-center text-primary">
-        {t("auth.verifyEmail", { verifyBy: t(`auth.${verifyBy}`) })}
-      </h1>
-      <p className="text-center font-semibold text-content-600">
-        {checkout
-          ? t(`auth.${dcbMessage}`, { verifyBy: t(`auth.${verifyBy}`) })
-          : t("auth.verificationCodeSent", { verifyBy: t(`auth.${verifyBy}`) })}
-        <br />
-        <span dir="ltr" className="font-medium">
-          {login_type === "phone" || login_type === "email_phone"
-            ? phone?.toLowerCase() || ""
-            : email?.toLowerCase() || ""}
-        </span>
-      </p>
+    <>
+      {openTransactionExpired && (
+        <TransactionExpired orderDetail={orderDetail} />
+      )}
+      <form
+        onSubmit={handleSubmit(handleSubmitForm)}
+        className={clsx(
+          "w-full max-w-md flex flex-col gap-[2rem] sm:px-unset",
+          {
+            "px-8 mx-auto": !checkout,
+          }
+        )}
+      >
+        <h1 className="font-bold text-center text-primary">
+          {t("auth.verifyEmail", { verifyBy: t(`auth.${verifyBy}`) })}
+        </h1>
+        <p className="text-center font-semibold text-content-600">
+          {checkout
+            ? t(`auth.${dcbMessage}`, { verifyBy: t(`auth.${verifyBy}`) })
+            : t("auth.verificationCodeSent", {
+                verifyBy: t(`auth.${verifyBy}`),
+              })}
+          <br />
+          <span dir="ltr" className="font-medium">
+            {login_type === "phone" || login_type === "email_phone"
+              ? phone?.toLowerCase() || ""
+              : email?.toLowerCase() || ""}
+          </span>
+        </p>
 
-      {/* OTP Input */}
-      <div className="flex justify-center gap-2" dir="ltr">
-        {Array(6)
-          .fill()
-          .map((digit, index) => (
+        {/* OTP Input */}
+        <div className="flex justify-center gap-2" dir="ltr">
+          {new Array(6).fill().map((digit, index) => (
             <Controller
               key={`otp-${index}`}
               name={`otp.[${index}]`}
@@ -421,75 +412,76 @@ const OtpVerification = ({
               )}
             />
           ))}
-      </div>
+        </div>
 
-      <div className={"flex flex-col gap-[0.5rem]"}>
-        <div className={"flex flex-row gap-[0.5rem]"}>
-          <Button
-            type={"submit"}
-            color="primary"
-            variant="contained"
-            disabled={isVerifying || shouldBeDisabled}
-          >
-            {isVerifying ? t("auth.verifying") : t("auth.verify")}
-          </Button>
-          {checkout && (
+        <div className={"flex flex-col gap-[0.5rem]"}>
+          <div className={"flex flex-row gap-[0.5rem]"}>
             <Button
-              type={"button"}
-              color="secondary"
+              type={"submit"}
+              color="primary"
               variant="contained"
-              onClick={() => handleCancelOrder()}
+              disabled={isVerifying || shouldBeDisabled}
             >
-              {t("btn.cancel")}
+              {isVerifying ? t("auth.verifying") : t("auth.verify")}
             </Button>
-          )}
-        </div>
+            {checkout && (
+              <Button
+                type={"button"}
+                color="secondary"
+                variant="contained"
+                onClick={() => handleCancelOrder()}
+              >
+                {t("btn.cancel")}
+              </Button>
+            )}
+          </div>
 
-        <div className="flex flex-row flex-wrap gap-[0.5rem] w-full justify-center text-center text-sm">
-          {!loading ? (
-            !resend ? (
-              <>
-                {t("auth.didntReceiveCode")}{" "}
-                <span
-                  role="button"
-                  tabIndex={0}
-                  onClick={handleResendOtp}
-                  onKeyDown={(e) => {
-                    if (e.key === "Enter" || e.key === " ") handleResendOtp();
-                  }}
-                  className="text-secondary underline cursor-pointer"
-                >
-                  {t("auth.resendNow")}
-                </span>
-              </>
+          <div className="flex flex-row flex-wrap gap-[0.5rem] w-full justify-center text-center text-sm">
+            {!loading ? (
+              !resend ? (
+                <>
+                  {t("auth.didntReceiveCode")}{" "}
+                  <span
+                    role="button"
+                    tabIndex={0}
+                    onClick={handleResendOtp}
+                    onKeyDown={(e) => {
+                      if (e.key === "Enter" || e.key === " ") handleResendOtp();
+                    }}
+                    className="text-secondary underline cursor-pointer"
+                  >
+                    {t("auth.resendNow")}
+                  </span>
+                </>
+              ) : (
+                <p className="text-secondary font-bold">
+                  {timer == null || Number.isNaN(timer) || timer == 0 ? (
+                    <Skeleton
+                      variant="text"
+                      width={80}
+                      height={30}
+                      className="!bg-gray-300 rounded-md"
+                    />
+                  ) : (
+                    <>
+                      {t("auth.resendCode")} {Math.floor(timer / 60)}:
+                      {(timer % 60).toString().padStart(2, "0")}
+                    </>
+                  )}
+                </p>
+              )
             ) : (
-              <p className="text-secondary font-bold">
-                {timer == null || isNaN(timer) || timer == 0 ? (
-                  <Skeleton
-                    variant="text"
-                    width={80}
-                    height={30}
-                    className="!bg-gray-300 rounded-md"
-                  />
-                ) : (
-                  <>
-                    {t("auth.resendCode")} {Math.floor(timer / 60)}:
-                    {(timer % 60).toString().padStart(2, "0")}
-                  </>
-                )}
-              </p>
-            )
-          ) : (
-            <Skeleton
-              variant="text"
-              width={80}
-              height={30}
-              className="!bg-gray-300 rounded-md"
-            />
-          )}
+              <Skeleton
+                variant="text"
+                width={80}
+                height={30}
+                className="!bg-gray-300 rounded-md"
+              />
+            )}
+          </div>
         </div>
-      </div>
-    </form>
+      </form>
+    </>
   );
 };
 

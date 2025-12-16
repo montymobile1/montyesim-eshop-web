@@ -54,27 +54,18 @@ const BundleDetail = ({
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [checkingCode, setCheckingCode] = useState(false);
   const [appliedCode, setAppliedCode] = useState(false);
-  const [isReferral, setIsReferral] = useState(false);
   const [newBundle, setNewBundle] = useState("");
   const [selectedBundle, setSelectedBundle] = useState("");
   const [codeMessage, setCodeMessage] = useState({
     message: "",
     status: "",
   });
-  const {
-    control,
-    handleSubmit,
-    reset,
-    watch,
-    getValues,
-    setValue,
-    formState: { errors },
-  } = useForm({
+  const { control, handleSubmit, reset, watch, getValues } = useForm({
     defaultValues: {
       code: "",
       referral: false,
     },
-    resolver: yupResolver(schema({ t })),
+    resolver: yupResolver(schema()),
     mode: "all",
   });
 

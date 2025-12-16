@@ -1,10 +1,7 @@
 import React from "react";
-import { useTranslation } from "react-i18next";
 import dayjs from "dayjs";
 
 const CashbackCard = ({ is_referral, amount, name, promotion_name, date }) => {
-  const { t } = useTranslation();
-
   return (
     <div className="w-full p-4  rounded-xl shadow-sm bg-white space-y-2">
       <div className="flex justify-between items-center">

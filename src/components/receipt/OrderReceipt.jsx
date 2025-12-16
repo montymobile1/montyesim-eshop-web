@@ -1,6 +1,5 @@
 import { Close } from "@mui/icons-material";
 import {
-  Button,
   Dialog,
   DialogContent,
   IconButton,
@@ -13,10 +12,9 @@ import {
   TableHead,
   TableRow,
 } from "@mui/material";
-import React, { useMemo } from "react";
+import { useMemo } from "react";
 import { useTranslation } from "react-i18next";
 import NoDataFound from "../shared/no-data-found/NoDataFound";
-import { useSelector } from "react-redux";
 
 const OrderReceipt = ({ order, onClose, isLoading }) => {
   const { t } = useTranslation();
@@ -66,8 +64,11 @@ const OrderReceipt = ({ order, onClose, isLoading }) => {
         </div>
         {isLoading || (!isLoading && order) ? (
           <>
-            {Object.keys(orderDisplay)?.map((orderElement, index) => (
-              <div key={index} className={"flex flex-col gap-[1rem]"}>
+            {Object.keys(orderDisplay)?.map((orderElement) => (
+              <div
+                key={order?.order_number}
+                className={"flex flex-col gap-[1rem]"}
+              >
                 <div className={"flex flex-col gap-[0.5rem]"}>
                   <label className={"text-title"}>{orderElement}</label>
                   <p className={"text-primary font-bold break-words"}>

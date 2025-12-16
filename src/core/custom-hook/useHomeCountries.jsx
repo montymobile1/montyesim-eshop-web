@@ -1,15 +1,12 @@
-import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
-import { queryClient } from "../../main";
 import {
-  clearCacheIfVersionChanged,
   getStoredVersion,
   setStoredVersion,
 } from "../version-storage/versionStorage";
 
-import { getHomePageContent } from "../apis/homeAPI";
 import { useQuery } from "react-query";
 import i18n from "../../i18n";
+import { getHomePageContent } from "../apis/homeAPI";
 
 export const VERSION_STORAGE_KEY = "app_bundles_version";
 

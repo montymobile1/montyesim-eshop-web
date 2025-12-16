@@ -4,7 +4,8 @@
     "notAvailable": "N/A",
     "pageNotFound": "Page Not Found",
     "pageNotExistMessage": "Sorry, the page you are looking for doesn't exist.",
-    "referral_message": "Check this out and use my referral code:"
+    "referral_message": "Check this out and use my referral code:",
+    "notice": "Notice"
   },
   "account": {
     "delete_account": "Delete Account",
@@ -74,7 +75,8 @@
     "savingChanges": "Saving...",
     "saveChanges": "Save",
     "loading": "Loading...",
-    "Checkout": "Checkout"
+    "Checkout": "Checkout",
+    "ok": "Ok"
   },
   "orders": {
     "plan_history": "Plan History",
@@ -129,7 +131,8 @@
     "instructions": "Instructions",
     "esim_instructions": "Settings > Network & Internet > SIMs > Add eSIM > Scan QR Code",
     "esim_lpa_instructions": "Settings > Network & Internet > SIMs > Add eSIM > Use activation code > Paste the above",
-    "installNowLinkonIOS": "Install now link on iOS"
+    "installNowLinkonIOS": "Install now link on iOS",
+    "transaction_expired": "Your transaction has expired. You will be redirected to the plans page."
   },
   "esim": {
     "title": "My eSIM",

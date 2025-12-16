@@ -1,15 +1,9 @@
-import React, { useMemo, useState, useEffect } from "react";
+import React, { useEffect } from "react";
 import { getUserRewards } from "../../core/apis/promotionsAPI";
 import { useInView } from "react-intersection-observer";
-import { Grid, Skeleton } from "@mui/material";
+import { Skeleton } from "@mui/material";
 import { useTranslation } from "react-i18next";
-import {
-  CustomToggleButton,
-  CustomToggleGroup,
-} from "../../assets/CustomComponents";
-import { useSearchParams } from "react-router-dom";
 import { useInfiniteQuery } from "react-query";
-import useQueryParams from "../../core/custom-hook/useQueryParams";
 import CashbackCard from "./CashbackCard.jsx";
 import NoDataFound from "../shared/no-data-found/NoDataFound.jsx";
 import { NoDataFoundSVG } from "../../assets/icons/Common.jsx";
@@ -32,11 +26,9 @@ const Rewards = () => {
 
   const {
     data: rewards,
-    error,
     fetchNextPage,
     isLoading,
     hasNextPage,
-    isFetchingNextPage,
   } = useInfiniteQuery({
     queryKey: ["user-rewards"],
     queryFn: fetchData,
@@ -62,7 +54,7 @@ const Rewards = () => {
 
       <div className={"flex flex-col gap-2"}>
         {isLoading ? (
-          Array(4)
+          new Array(4)
             .fill()
             ?.map((el) => <Skeleton variant={"rectangular"} height={"50px"} />)
         ) : rewards?.length > 0 ? (

@@ -85,6 +85,7 @@ api.interceptors.response.use(
         .then((res) => {
           const newToken = res?.data?.data?.access_token;
           config.headers.Authorization = `Bearer ${newToken}`;
+
           if (authenticationStore?.tmp?.isAuthenticated) {
             store.dispatch(
               LimitedSignIn({

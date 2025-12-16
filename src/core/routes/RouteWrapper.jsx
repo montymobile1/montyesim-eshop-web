@@ -33,7 +33,7 @@ const RouteWrapper = ({ layout, element, isPrivate, isAuthRestricted }) => {
     );
   }
 
-  const Layout = layout ? layout : isAuthenticated ? AuthLayout : MainLayout;
+  const Layout = layout || (isAuthenticated ? AuthLayout : MainLayout);
 
   return (
     <Layout

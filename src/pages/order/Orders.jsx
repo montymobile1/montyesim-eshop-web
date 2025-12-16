@@ -4,7 +4,6 @@ import { useInView } from "react-intersection-observer";
 import { useTranslation } from "react-i18next";
 import { useInfiniteQuery } from "react-query";
 //COMPONENT
-import Container from "../../components/Container";
 import { Skeleton } from "@mui/material";
 import { getOrdersHistory } from "../../core/apis/userAPI";
 import NoDataFound from "../../components/shared/no-data-found/NoDataFound";
@@ -44,8 +43,6 @@ const Orders = () => {
     select: (data) => data.pages.flatMap((page) => page.data),
   });
 
-  // const orders = [];
-
   useEffect(() => {
     if (inView && hasNextPage) {
       fetchNextPage();
@@ -60,7 +57,7 @@ const Orders = () => {
 
       <div className={"flex flex-col gap-[1rem]"}>
         {isLoading ? (
-          Array(4)
+          new Array(4)
             .fill()
             ?.map((_, index) => (
               <Skeleton
@@ -85,15 +82,14 @@ const Orders = () => {
             <div ref={ref}></div>
             {isFetchingNextPage &&
               !isLoading &&
-              Array(4)
-                .fill()
-                ?.map((skeleton) => (
-                  <Skeleton
-                    variant="rectangle"
-                    height={100}
-                    className={"rounded-md"}
-                  />
-                ))}
+              Array.from({ length: 4 }).map((_, i) => (
+                <Skeleton
+                  key={`skeleton-${i}`}
+                  variant="rectangle"
+                  height={100}
+                  className="rounded-md"
+                />
+              ))}
           </>
         )}
       </div>

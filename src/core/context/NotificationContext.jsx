@@ -1,5 +1,4 @@
-import React from "react";
-import { createContext, useContext, useEffect, useMemo } from "react";
+import React, { createContext, useContext, useEffect, useMemo } from "react";
 import { getUserNotifications } from "../apis/userAPI";
 import { useSelector } from "react-redux";
 import { useQuery } from "react-query";
@@ -28,7 +27,7 @@ export const NotificationProvider = ({ children }) => {
   });
 
   const checkUnread = useMemo(() => {
-    return notifications?.some((el) => el?.status == false);
+    return notifications?.some((el) => !el?.status);
   }, [notifications]);
 
   useEffect(() => {

@@ -1,9 +1,4 @@
-import React from "react";
-import { LoaderSVG } from "../assets/icons/Common";
-import {
-  LazyLoadComponent,
-  LazyLoadImage,
-} from "react-lazy-load-image-component";
+import { LazyLoadImage } from "react-lazy-load-image-component";
 
 const SuspenseLoading = () => {
   return (

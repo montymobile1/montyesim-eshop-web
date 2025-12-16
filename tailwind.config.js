@@ -128,44 +128,44 @@ export default {
         ".font-semibold": {
           fontFamily: theme("fontFamily.quicksandSemibold"),
         },
-      }),
-        addBase({
-          ":root": {
-            "--error": theme("colors.error"),
-            "--warning": theme("colors.warning"),
-            "--success": theme("colors.success"),
-          },
-          body: {
-            color: "#122644",
-            fontSize: "1rem",
-            fontFamily: "quicksand-regular",
-          },
-          h1: {
-            fontSize: "1.5rem",
-            color: "#A28B6F",
-            fontFamily: "quicksand-bold",
-          },
-          h2: {
-            color: "#A28B6F",
-          },
-          h4: {
-            color: "#A28B6F",
-          },
-          h3: {
-            fontSize: "1.25",
-            color: "#A28B6F",
-            fontFamily: "quicksand-bold",
-          },
+      });
+      addBase({
+        ":root": {
+          "--error": theme("colors.error"),
+          "--warning": theme("colors.warning"),
+          "--success": theme("colors.success"),
+        },
+        body: {
+          color: "#122644",
+          fontSize: "1rem",
+          fontFamily: "quicksand-regular",
+        },
+        h1: {
+          fontSize: "1.5rem",
+          color: "#A28B6F",
+          fontFamily: "quicksand-bold",
+        },
+        h2: {
+          color: "#A28B6F",
+        },
+        h4: {
+          color: "#A28B6F",
+        },
+        h3: {
+          fontSize: "1.25",
+          color: "#A28B6F",
+          fontFamily: "quicksand-bold",
+        },
 
-          h6: {
-            color: "#A28B6F",
-            fontFamily: "quicksand-semibold",
-          },
-          label: {
-            fontFamily: "quicksand-semibold",
-            color: "#122644",
-          },
-        });
+        h6: {
+          color: "#A28B6F",
+          fontFamily: "quicksand-semibold",
+        },
+        label: {
+          fontFamily: "quicksand-semibold",
+          color: "#122644",
+        },
+      });
     },
   ],
 };

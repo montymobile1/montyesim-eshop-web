@@ -73,7 +73,8 @@
     "notAvailable": "غير متوفر",
     "pageNotFound": "الصفحة غير موجودة",
     "pageNotExistMessage": "عذرًا، الصفحة التي تبحث عنها غير موجودة.",
-    "referral_message": "تحقق من هذا واستخدم رمز الإحالة الخاص بي:"
+    "referral_message": "تحقق من هذا واستخدم رمز الإحالة الخاص بي:",
+    "notice": "إشعار"
   },
   "account": {
     "delete_account": "حذف الحساب",
@@ -143,7 +144,8 @@
     "savingChanges": "جاري الحفظ…",
     "saveChanges": "حفظ ",
     "loading": "جارٍ التحميل...",
-    "Checkout": "الدفع"
+    "Checkout": "الدفع",
+    "ok": "حسناً"
   },
   "orders": {
     "plan_history": "سجل الباقات",
@@ -198,7 +200,8 @@
     "instructions": "تعليمات",
     "esim_instructions": "الإعدادات > الشبكة والإنترنت > شرائح SIM > إضافة eSIM > مسح رمز QR",
     "esim_lpa_instructions": "الإعدادات > الشبكة والإنترنت > شرائح SIM > إضافة eSIM > استخدام رمز التفعيل > لصق الرمز أعلاه",
-    "installNowLinkonIOS": "ثبّت الآن على نظام iOS"
+    "installNowLinkonIOS": "ثبّت الآن على نظام iOS",
+    "transaction_expired": "انتهت صلاحية معاملتك. سيتم توجيهك إلى صفحة الباقات."
   },
   "esim": {
     "title": "شريحتي الإلكترونية",

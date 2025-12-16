@@ -12,7 +12,6 @@ import Checkout from "../../pages/checkout/Checkout";
 import PageNotFound from "../../components/shared/page-not-found/PageNotFound";
 import Plans from "../../pages/plans/Plans";
 import PlansWrapper from "../../pages/plans/PlansWrapper";
-import OrderDetails from "../../pages/order/detail/OrderDetails";
 import MainLayout from "../../components/layout/MainLayout";
 import AuthValidation from "../../pages/auth-validation/AuthValidation";
 import Profile from "../../pages/profile/Profile";
@@ -110,11 +109,7 @@ export const allRoutes = [
   { path: "/esim", element: <Esim />, isPrivate: true },
   { path: "/esim/:iccid", element: <EsimDetail />, isPrivate: true },
   { path: "/orders", element: <Orders />, isPrivate: true },
-  {
-    path: "/order/:id",
-    element: <OrderDetails />,
-    isPrivate: true,
-  },
+
   {
     path: "/profile",
     element: <Profile />,

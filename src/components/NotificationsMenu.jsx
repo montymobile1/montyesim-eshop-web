@@ -57,7 +57,7 @@ const NotificationsMenuBody = () => {
       </div>
 
       {isLoading &&
-        Array(2)
+        new Array(2)
           .fill()
           ?.map((el, index) => (
             <Skeleton

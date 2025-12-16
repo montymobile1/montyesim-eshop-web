@@ -1,6 +1,7 @@
 //UTILITIES
-import React, { useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 //COMPONENT
+import DoDisturbIcon from "@mui/icons-material/DoDisturb";
 import {
   Avatar,
   AvatarGroup,
@@ -9,10 +10,8 @@ import {
   CardContent,
   Skeleton,
 } from "@mui/material";
-import BundleDetail from "../detail/BundleDetail";
-import DoDisturbIcon from "@mui/icons-material/DoDisturb";
 import { useTranslation } from "react-i18next";
-import i18next from "i18next";
+import BundleDetail from "../detail/BundleDetail";
 
 const BundleCard = ({
   bundle,

@@ -8,7 +8,6 @@ import { topupWallet } from "../../core/apis/walletAPI";
 import { StripePayment } from "../stripe-payment/StripePayment";
 import { Button, CircularProgress, Dialog, DialogContent } from "@mui/material";
 import { loadStripe } from "@stripe/stripe-js";
-import * as Yup from "yup";
 import { toast } from "react-toastify";
 import { useSelector } from "react-redux";
 
@@ -22,7 +21,8 @@ export default function UpgradeWallet() {
     (state) => state.authentication?.user_info || null
   );
   const schema = yup.object().shape({
-    amount: Yup.number()
+    amount: yup
+      .number()
       .nullable()
       .typeError(t("myWallet.amountMustBeNumber"))
       .positive(t("myWallet.amountMustBeGreaterThanZero"))
@@ -32,8 +32,7 @@ export default function UpgradeWallet() {
   const {
     control,
     handleSubmit,
-    getValues,
-    formState: { errors },
+
     reset,
   } = useForm({
     defaultValues: {

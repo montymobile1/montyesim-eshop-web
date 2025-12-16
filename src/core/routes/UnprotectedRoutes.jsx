@@ -10,7 +10,7 @@ const UnprotectedRoute = ({ children }) => {
     if (!loading && user_info) {
       navigate("/dashboard");
     }
-  }, [user_info, , loading, router]);
+  }, [user_info, loading, router]);
 
   if (loading) return <p>Loading...</p>;
 

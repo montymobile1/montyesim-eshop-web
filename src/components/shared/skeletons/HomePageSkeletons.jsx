@@ -4,16 +4,14 @@ import React from "react";
 export const CountriesSkeletons = () => {
   return (
     <div className="grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-      {Array(9)
-        .fill()
-        .map((_, index) => (
-          <Skeleton
-            key={index}
-            variant="rectangular"
-            height={100}
-            className="rounded-lg"
-          />
-        ))}
+      {new Array(9).fill().map((_, index) => (
+        <Skeleton
+          key={index}
+          variant="rectangular"
+          height={100}
+          className="rounded-lg"
+        />
+      ))}
     </div>
   );
 };

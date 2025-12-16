@@ -1,18 +1,16 @@
-import React from "react";
-import { Link } from "react-router-dom";
-import PhoneOutlinedIcon from "@mui/icons-material/PhoneOutlined";
 import MailOutlinedIcon from "@mui/icons-material/MailOutlined";
+import PhoneOutlinedIcon from "@mui/icons-material/PhoneOutlined";
 import RoomOutlinedIcon from "@mui/icons-material/RoomOutlined";
-import Container from "../Container";
+import { useTranslation } from "react-i18next";
+import { useSelector } from "react-redux";
+import { Link } from "react-router-dom";
 import {
   footerProjectName,
   supportAddress,
   supportEmail,
   supportMap,
-  supportPhone,
 } from "../../core/variables/ProjectVariables";
-import { useTranslation } from "react-i18next";
-import { useSelector } from "react-redux";
+import Container from "../Container";
 const Footer = () => {
   const { t } = useTranslation();
 

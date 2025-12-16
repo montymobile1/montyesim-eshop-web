@@ -35,4 +35,5 @@ i18n
     },
   });
 
+// NOSONAR — i18n must be initialized before export
 export default i18n;

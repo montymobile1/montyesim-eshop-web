@@ -9,11 +9,8 @@ import { getBundleById } from "../../core/apis/bundlesAPI";
 import { LimitedSignOut } from "../../redux/reducers/authReducer";
 //COMPONENT
 import ArrowBackIosNewIcon from "@mui/icons-material/ArrowBackIosNew";
-import { Skeleton } from "@mui/material";
 import { useTranslation } from "react-i18next";
 import PaymentFlow from "../../components/payment/PaymentFlow";
-import PaymentSummary from "../../components/payment/PaymentSummary";
-import TmpLogin from "../../components/tmp-login/TmpLogin";
 import { cancelOrder } from "../../core/apis/userAPI";
 import { queryClient } from "../../main";
 
@@ -32,7 +29,7 @@ const Checkout = () => {
 
   const state = location.state;
 
-  const { data, isLoading, error } = useQuery({
+  const { data, isLoading } = useQuery({
     queryKey: [`${id}-details`],
     queryFn: () => getBundleById(id).then((res) => res?.data?.data),
     enabled: !!id,

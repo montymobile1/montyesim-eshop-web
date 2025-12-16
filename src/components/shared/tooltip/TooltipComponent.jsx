@@ -8,9 +8,6 @@ const TooltipComponent = ({ title, children }) => {
     setOpen(false);
   };
 
-  const handleTooltipOpen = () => {
-    setOpen(true);
-  };
   const handleToggleTooltip = () => {
     setOpen(!open);
   };

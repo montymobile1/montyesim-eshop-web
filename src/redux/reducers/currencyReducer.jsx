@@ -13,6 +13,7 @@ const initialState = {
   bundles_version: null,
   referral_amount: "",
   otp_expiration_time: "",
+  transaction_expiry_time: null,
 };
 
 //EXPLANATION: I moved the api to authServices to prevent circular dependency
@@ -53,6 +54,7 @@ const CurrencySlice = createSlice({
         let versionId = findByKey("CATALOG.BUNDLES_CACHE_VERSION");
         let whatsappNumber = findByKey("WHATSAPP_NUMBER");
         let otp_expiration_time = findByKey("OTP_EXPIRATION_TIME");
+        let transaction_expiry_time = findByKey("transaction_expiry_time");
         state.bundles_version = versionId?.value || null;
         state.login_type = loginType?.value || "email";
         state.otp_expiration_time = otp_expiration_time?.value || "";
@@ -73,7 +75,7 @@ const CurrencySlice = createSlice({
         state.allowed_payment_types = paymentTypes?.value
           ? paymentTypes.value.split(",")
           : ["wallet"];
-
+        state.transaction_expiry_time = transaction_expiry_time?.value || null;
         state.referral_amount = referralAmount?.value || "";
         state.isLoading = false;
       })
@@ -95,7 +97,7 @@ const CurrencySlice = createSlice({
             ? true
             : false
           : true;
-
+        state.transaction_expiry_time = null;
         state.allowed_payment_types = ["dcb"];
         state.system_currency = "EUR";
         state.whatsapp_number = "";

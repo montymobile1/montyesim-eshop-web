@@ -19,7 +19,6 @@ import {
   IconButton,
   Skeleton,
 } from "@mui/material";
-import MouseIcon from "@mui/icons-material/Mouse";
 import { Link } from "react-router-dom";
 import { fetchUserInfo } from "../../redux/reducers/authReducer";
 
@@ -30,7 +29,7 @@ const OrderPopup = ({ id, onClose, orderData }) => {
     (state) => state.authentication
   );
 
-  const { data, isLoading, error } = useQuery({
+  const { data, isLoading } = useQuery({
     queryKey: [`${user_info?.id}-order-${id}`],
     queryFn: () => getOrderByID(id).then((res) => res?.data?.data),
     enabled: !!id,

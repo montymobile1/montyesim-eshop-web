@@ -1,17 +1,16 @@
 //UTILITIES
-import React, { useState } from "react";
-import * as yup from "yup";
-import { useForm, Controller } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
+import { useState } from "react";
+import { Controller, useForm } from "react-hook-form";
+import * as yup from "yup";
 //COMPONENT
-import { Button, Dialog, DialogContent, IconButton } from "@mui/material";
-import { FormInput } from "../shared/form-components/FormComponents";
-import { updateBundleLabelByIccid } from "../../core/apis/userAPI";
-import { toast } from "react-toastify";
-import { useTranslation } from "react-i18next";
 import { Close } from "@mui/icons-material";
-import { useSelector } from "react-redux";
+import { Button, Dialog, DialogContent, IconButton } from "@mui/material";
+import { useTranslation } from "react-i18next";
+import { toast } from "react-toastify";
+import { updateBundleLabelByIccid } from "../../core/apis/userAPI";
 import { queryClient } from "../../main";
+import { FormInput } from "../shared/form-components/FormComponents";
 
 const schema = ({ t }) =>
   yup.object().shape({
@@ -33,12 +32,7 @@ const OrderLabelChange = ({ refetch, onClose, bundle }) => {
   const { t } = useTranslation();
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const {
-    control,
-    handleSubmit,
-    reset,
-    formState: { errors },
-  } = useForm({
+  const { control, handleSubmit } = useForm({
     defaultValues: {
       label:
         bundle?.transaction_history?.[0]?.bundle?.label || bundle?.bundle_name,

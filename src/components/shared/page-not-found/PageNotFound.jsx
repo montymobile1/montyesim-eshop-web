@@ -1,7 +1,5 @@
-import React from "react";
-import { PageNotFoundSVG } from "../../../assets/icons/Home";
-import { SuccessfulPaymentSVG } from "../../../assets/icons/Payment";
 import { useTranslation } from "react-i18next";
+import { PageNotFoundSVG } from "../../../assets/icons/Home";
 
 const PageNotFound = () => {
   const { t } = useTranslation();
