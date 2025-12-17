@@ -87,7 +87,7 @@ export const FormTextArea = (props) => {
       placeholder={placeholder}
       onChange={handleOnChange}
       helperText={helperText}
-      disabled={disabled ? disabled : false}
+      disabled={disabled || false}
       spellCheck="false"
       slotProps={{
         input: {

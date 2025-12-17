@@ -60,7 +60,7 @@ const OrderReceipt = ({ order, onClose, isLoading }) => {
           </IconButton>
         </div>
         <div>
-          <img src={"/logo/logo.png"} className={"mt-2 h-16"} />
+          <img src={"/logo/logo.png"} className={"mt-2 h-16"} alt={"logo"} />
         </div>
         {isLoading || (!isLoading && order) ? (
           <>

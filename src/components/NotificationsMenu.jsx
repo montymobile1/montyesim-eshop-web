@@ -73,11 +73,11 @@ const NotificationsMenuBody = () => {
         <div className="space-y-4">
           {notifications?.map((notification, index) => (
             <div
-              key={`notification-${notification.iccid}-${index}`}
+              key={`notification-${notification.notification_id}`}
               className={`w-full ${
-                index !== notifications.length - 1
-                  ? "border-b border-gray-100 pb-4"
-                  : ""
+                index === notifications.length - 1
+                  ? ""
+                  : "border-b border-gray-100 pb-4"
               }`}
             >
               <h3 className={"truncate min-w-0"}>

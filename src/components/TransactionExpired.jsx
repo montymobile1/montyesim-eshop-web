@@ -1,9 +1,8 @@
 import { Button, Dialog, DialogContent } from "@mui/material";
-import React, { useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useEffect } from "react";
 import { useTranslation } from "react-i18next";
+import { useNavigate } from "react-router-dom";
 import { AttentionSVG } from "../assets/icons/Payment";
-import { cancelOrder } from "../core/apis/userAPI";
 
 const TransactionExpired = () => {
   const { t } = useTranslation();

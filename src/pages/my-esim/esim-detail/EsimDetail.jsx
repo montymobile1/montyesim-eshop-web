@@ -1,6 +1,6 @@
 //UTILITIES
 import React from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import { useQuery } from "react-query";
 //COMPONENT
 import ArrowBackIosNewIcon from "@mui/icons-material/ArrowBackIosNew";
@@ -27,17 +27,15 @@ const EsimDetail = (props) => {
 
   return (
     <div className={"flex flex-col gap-[1rem]"}>
-      <div
+      <Link
+        to="/esim"
         className={
           "flex flex-row gap-2 items-center font-semibold cursor-pointer"
         }
-        onClick={() => {
-          navigate("/esim");
-        }}
       >
         <ArrowBackIosNewIcon color="primary" fontSize="medium" />{" "}
         <h1>{t("esim.esim_detail")}</h1>
-      </div>
+      </Link>
       {!iccid ? (
         <NoDataFound
           image={<NoDataFoundSVG />}

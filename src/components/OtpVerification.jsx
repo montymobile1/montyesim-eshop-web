@@ -60,7 +60,7 @@ const OtpVerification = ({
   const [isVerifying, setIsVerifying] = useState(false);
   const [openTransactionExpired, setTransactionExpired] = useState(false);
   const [resend, setResend] = useState(true);
-  const { login_type, otp_channel } = useSelector((state) => state.currency);
+  const { login_type } = useSelector((state) => state.currency);
 
   const [expiresAt, setExpiresAt] = useState(
     Date.now() + (otpExpiration ?? orderDetail?.otp_expiration ?? 300) * 1000
@@ -71,7 +71,7 @@ const OtpVerification = ({
   );
 
   // Transaction expiry tracking for checkout
-  const [transactionCreatedAt] = useState(Date.now());
+
   const [transactionExpiresAt] = useState(() => {
     if (checkout && transaction_expiry_time && transaction_expiry_time !== "") {
       return Date.now() + transaction_expiry_time * 60 * 1000; // Convert minutes to milliseconds

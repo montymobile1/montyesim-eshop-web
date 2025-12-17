@@ -277,7 +277,7 @@ const BundleDetail = ({
                 selectedBundle?.validity > 1 ? "_plural" : ""
               }`,
               { count: selectedBundle?.validity }
-            )}` || ""}
+            )}`}
           </div>
         </div>
         <hr />
@@ -326,7 +326,7 @@ const BundleDetail = ({
                     (supportedCountries, index) => (
                       <div
                         className={"flex flex-row gap-[1rem] items-center"}
-                        key={`${index}`}
+                        key={supportedCountries?.id}
                       >
                         <Avatar
                           src={supportedCountries?.icon}
@@ -505,7 +505,10 @@ const BundleDetail = ({
               <Trans
                 i18nKey="bundles.findOut"
                 values={{ code: "*#06#", term: "EID" }}
-                components={[<span dir="ltr" />, <span dir="ltr" />]}
+                components={[
+                  <span dir="ltr" key={"span-1"} />,
+                  <span dir="ltr" key={"span-2"} />,
+                ]}
               />
             </p>
           </div>

@@ -769,7 +769,8 @@ export default Icons;`
                         className="w-5 h-5 rounded border-gray-300 text-blue-500 focus:ring-blue-500"
                       />
                     </div>
-                    <div
+                    <button
+                      type={"button"}
                       onClick={() => handleProductSelect(product)}
                       className={`cursor-pointer p-6 pl-14 transition-colors ${
                         selectedProducts.some((p) => p.id === product.id)
@@ -794,7 +795,7 @@ export default Icons;`
                       >
                         Learn more
                       </a>
-                    </div>
+                    </button>
                   </div>
                 ))}
               </div>
@@ -841,16 +842,14 @@ export default Icons;`
             <div className="grid grid-cols-1 md:grid-cols-2 gap-16 max-w-5xl mx-auto">
               {/* Left side - Logo Upload */}
               <div>
-                <div
+                <button
+                  type="button"
                   onClick={() => document.getElementById("logo-upload").click()}
                   className="cursor-pointer"
                 >
-                  <button
-                    type="button"
-                    className="mb-6 inline-flex px-6 py-3 bg-[#1e3a8a] text-white rounded-lg"
-                  >
+                  <div className="mb-6 inline-flex px-6 py-3 bg-[#1e3a8a] text-white rounded-lg">
                     Upload your logo
-                  </button>
+                  </div>
                   <div className="aspect-square bg-gray-100 rounded-lg flex items-center justify-center hover:bg-gray-200 transition-colors">
                     {logo ? (
                       <img
@@ -869,15 +868,16 @@ export default Icons;`
                           <path
                             d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"
                             strokeWidth="2"
-                            stroke-linecap="round"
-                            stroke-linejoin="round"
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
                           />
                         </svg>
                         <p className="text-center mt-2">Click to upload logo</p>
                       </div>
                     )}
                   </div>
-                </div>
+                </button>
+
                 <input
                   type="file"
                   id="logo-upload"

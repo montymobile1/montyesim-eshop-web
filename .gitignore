@@ -23,7 +23,7 @@ build/
 *.njsproj
 *.sln
 *.sw?
-.env.qa
+
 # Ignore all files in 'coverage'
 
 coverage/*

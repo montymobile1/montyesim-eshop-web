@@ -46,70 +46,76 @@ export default function ReferSocials() {
   return (
     <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-y-6 gap-x-6 justify-items-center">
       {/* WhatsApp */}
-      <div
-        className="flex flex-col items-center cursor-pointer"
+      <button
+        type={"button"}
+        className="flex flex-col gap-4 items-center"
         onClick={() => handleShare("whatsapp")}
       >
         <div className="bg-[#25D366] p-4 rounded-full shadow-sm">
           <WhatsAppIcon className="text-white" />
         </div>
-        <span className="mt-4 text-sm text-gray-600 font-medium">Whatsapp</span>
-      </div>
+        <span className="text-sm text-gray-600 font-medium">Whatsapp</span>
+      </button>
 
       {/* Facebook */}
-      <div
-        className="flex flex-col items-center cursor-pointer"
+      <button
+        type={"button"}
+        className="flex flex-col gap-4 items-center"
         onClick={() => handleShare("facebook")}
       >
         <div className="bg-[#1877F2] p-4 rounded-full shadow-[0_0_32px_#2a6a980d]">
           <FacebookIcon className="text-white" />
         </div>
-        <span className="mt-4 text-sm text-gray-600 font-medium">Facebook</span>
-      </div>
+        <span className="text-sm text-gray-600 font-medium">Facebook</span>
+      </button>
 
       {/* X (Twitter) */}
-      <div
-        className="flex flex-col items-center cursor-pointer"
+      <button
+        type={"button"}
+        className="flex flex-col gap-4  items-center"
         onClick={() => handleShare("x")}
       >
         <div className="bg-black p-4 rounded-full shadow-[0_0_32px_#2a6a980d]">
           <XIcon className="text-white" />
         </div>
-        <span className="mt-4 text-sm text-gray-600 font-medium">X</span>
-      </div>
+        <span className="text-sm text-gray-600 font-medium">X</span>
+      </button>
 
       {/* LinkedIn */}
-      <div
-        className="flex flex-col items-center cursor-pointer"
+      <button
+        type={"button"}
+        className="flex flex-col gap-4 items-center"
         onClick={() => handleShare("linkedin")}
       >
         <div className="bg-[#0077B5] p-4 rounded-full shadow-[0_0_32px_#2a6a980d]">
           <LinkedInIcon className="text-white" />
         </div>
-        <span className="mt-4 text-sm text-gray-600 font-medium">LinkedIn</span>
-      </div>
+        <span className="text-sm text-gray-600 font-medium">LinkedIn</span>
+      </button>
 
       {/* Telegram */}
-      <div
-        className="flex flex-col items-center cursor-pointer"
+      <button
+        type={"button"}
+        className="flex flex-col gap-4 items-center"
         onClick={() => handleShare("telegram")}
       >
         <div className="bg-[#54A9EB] p-4 rounded-full shadow-[0_0_32px_#2a6a980d]">
           <TelegramIcon className="text-white" />
         </div>
-        <span className="mt-4 text-sm text-gray-600 font-medium">Telegram</span>
-      </div>
+        <span className=" text-sm text-gray-600 font-medium">Telegram</span>
+      </button>
 
       {/* Email */}
-      <div
-        className="flex flex-col items-center cursor-pointer"
+      <button
+        type={"button"}
+        className="flex flex-col gap-4 items-center"
         onClick={() => handleShare("email")}
       >
         <div className="bg-white p-4 rounded-full shadow-[0_0_32px_#2a6a980d]">
           <EmailIcon className="text-black" />
         </div>
-        <span className="mt-4 text-sm text-gray-600 font-medium">Email</span>
-      </div>
+        <span className="text-sm text-gray-600 font-medium">Email</span>
+      </button>
     </div>
   );
 }

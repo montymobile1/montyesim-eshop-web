@@ -145,15 +145,15 @@ const BundleCard = ({
                       variant="circular"
                       width={20}
                       height={20}
-                      key={idx}
+                      key={`skeleton-${idx}`}
                     />
                   ))}
                 {!isLoading && bundle?.countries?.length === 0 ? (
                   <DoDisturbIcon color="primary" />
                 ) : (
-                  bundle?.countries?.map((supportedCountries, index) => (
+                  bundle?.countries?.map((supportedCountries) => (
                     <Avatar
-                      key={index}
+                      key={supportedCountries?.id}
                       alt={supportedCountries?.country}
                       src={supportedCountries?.icon}
                     />

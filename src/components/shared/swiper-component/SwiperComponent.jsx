@@ -50,60 +50,61 @@ const SwiperComponent = ({ slidesPerView, children, swiperRef }) => {
       >
         {children}
       </Swiper>
-      <>
-        <div className={`absolute cursor-pointer top-0 h-full z-[1] left-0`}>
-          <div
-            className={"flex items-center h-[100%]"}
-            onClick={() => {
-              if (localStorage.getItem("i18nextLng") === "ar") {
-                if (!isEnd) {
-                  handleNext();
-                }
-              } else {
-                if (!isBeginning) {
-                  handlePrev();
-                }
+
+      <div className={`absolute cursor-pointer top-0 h-full z-[1] left-0`}>
+        <button
+          type={"button"}
+          className={"flex items-center h-[100%]"}
+          onClick={() => {
+            if (localStorage.getItem("i18nextLng") === "ar") {
+              if (!isEnd) {
+                handleNext();
               }
-            }}
-          >
-            <ArrowBackIosIcon
-              color={"primary"}
-              className={clsx({
-                "opacity-50 cursor-default":
-                  localStorage.getItem("i18nextLng") === "ar"
-                    ? isEnd
-                    : isBeginning,
-              })}
-            />
-          </div>
-        </div>
-        <div className={`absolute cursor-pointer top-0 h-full z-[1] right-0`}>
-          <div
-            className={"flex items-center h-[100%]"}
-            onClick={() => {
-              if (localStorage.getItem("i18nextLng") === "ar") {
-                if (!isBeginning) {
-                  handlePrev();
-                }
-              } else {
-                if (!isEnd) {
-                  handleNext();
-                }
+            } else {
+              if (!isBeginning) {
+                handlePrev();
               }
-            }}
-          >
-            <ArrowForwardIosIcon
-              color="primary"
-              className={clsx({
-                "opacity-50 cursor-default":
-                  localStorage.getItem("i18nextLng") === "ar"
-                    ? isBeginning
-                    : isEnd,
-              })}
-            />
-          </div>
-        </div>
-      </>
+            }
+          }}
+        >
+          <ArrowBackIosIcon
+            color={"primary"}
+            className={clsx({
+              "opacity-50 cursor-default":
+                localStorage.getItem("i18nextLng") === "ar"
+                  ? isEnd
+                  : isBeginning,
+            })}
+          />
+        </button>
+      </div>
+      <div className={`absolute cursor-pointer top-0 h-full z-[1] right-0`}>
+        <button
+          type={"button"}
+          className={"flex items-center h-[100%]"}
+          onClick={() => {
+            if (localStorage.getItem("i18nextLng") === "ar") {
+              if (!isBeginning) {
+                handlePrev();
+              }
+            } else {
+              if (!isEnd) {
+                handleNext();
+              }
+            }
+          }}
+        >
+          <ArrowForwardIosIcon
+            color="primary"
+            className={clsx({
+              "opacity-50 cursor-default":
+                localStorage.getItem("i18nextLng") === "ar"
+                  ? isBeginning
+                  : isEnd,
+            })}
+          />
+        </button>
+      </div>
     </div>
   );
 };

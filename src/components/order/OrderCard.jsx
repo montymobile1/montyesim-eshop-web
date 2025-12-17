@@ -222,19 +222,17 @@ const OrderCard = ({ order, myesim, refetchData }) => {
                 fontSize="small"
               />
             }
-            label={
-              `${t("bundles.validity")}: ${t(
-                `validity.${
-                  order?.validity_label?.toLowerCase() ||
-                  order?.bundle_details?.validity_label?.toLowerCase()
-                }${
-                  order?.validity > 1 || order?.bundle_details?.validity > 1
-                    ? "_plural"
-                    : ""
-                }`,
-                { count: order?.validity || order?.bundle_details?.validity }
-              )}` || ""
-            }
+            label={`${t("bundles.validity")}: ${t(
+              `validity.${
+                order?.validity_label?.toLowerCase() ||
+                order?.bundle_details?.validity_label?.toLowerCase()
+              }${
+                order?.validity > 1 || order?.bundle_details?.validity > 1
+                  ? "_plural"
+                  : ""
+              }`,
+              { count: order?.validity || order?.bundle_details?.validity }
+            )}`}
             color="secondary"
           />
           <Chip

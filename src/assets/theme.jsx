@@ -1,7 +1,6 @@
 import { createTheme } from "@mui/material/styles";
-import tailwindConfigModule from "../../tailwind.config";
 import resolveConfig from "tailwindcss/resolveConfig";
-import i18n from "../i18n";
+import tailwindConfigModule from "../../tailwind.config";
 const tailwindConfig = resolveConfig(tailwindConfigModule);
 
 export const appTheme = createTheme({

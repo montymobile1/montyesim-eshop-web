@@ -413,7 +413,11 @@ const SignIn = () => {
                 onClick={signinWithGoogle}
                 className="flex items-center justify-center gap-[0.5rem] w-full py-2 px-4 border border-gray-300 rounded shadow-sm bg-white text-sm font-medium text-primary hover:bg-white focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#1877F2]"
               >
-                <img src={"/media/google.svg"} className="h-5 w-5" />
+                <img
+                  src={"/media/google.svg"}
+                  className="h-5 w-5"
+                  alt={"sign-in with google"}
+                />
                 {t("auth.signInWithGoogle")}
               </button>
 
@@ -421,7 +425,7 @@ const SignIn = () => {
             onClick={signinWithFacebook}
             className="flex items-center justify-center gap-[0.5rem] w-full py-2 px-4 border border-gray-300 rounded shadow-sm bg-white text-sm font-medium focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#1877F2]"
           >
-            <img src={"/media/facebook.svg"} className="h-5 w-5" />
+            <img src={"/media/facebook.svg"} className="h-5 w-5" alt={"sign-in with facebook"}/>
             {t("auth.signInWithFacebook")}
           </button> */}
             </div>

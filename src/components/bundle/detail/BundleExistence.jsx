@@ -1,12 +1,10 @@
 //UTILITIES
-import React from "react";
 import { useTranslation } from "react-i18next";
 //COMPONENT
-import { Check, Close } from "@mui/icons-material";
-import { Button, Dialog, DialogContent, IconButton } from "@mui/material";
+import { Close } from "@mui/icons-material";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
+import { Button, Dialog, DialogContent, IconButton } from "@mui/material";
 import { Link } from "react-router-dom";
-import { useSelector } from "react-redux";
 
 const BundleExistence = ({
   onClose,
