@@ -159,7 +159,7 @@ const BundleDetail = ({
         }
       })
       .catch((error) => {
-        const status = error?.response?.data?.status || "";
+        const status = error?.response?.data?.status || "failed";
         setCodeMessage({
           message: error?.response?.data?.message || error?.message || "",
           status: status,

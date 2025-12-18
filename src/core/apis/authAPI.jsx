@@ -11,12 +11,7 @@ export const userLimitedLogin = async (payload) => {
 };
 
 export const userLogin = async (payload) => {
-  try {
-    const res = await api.post(`api/v1/auth/login`, payload);
-    return res;
-  } catch (error) {
-    throw error;
-  }
+  return await api.post(`api/v1/auth/login`, payload);
 };
 
 export const resendOrderOTP = async (payload) => {
@@ -40,14 +35,9 @@ export const verifyOTP = async (payload) => {
 };
 
 export const userLogout = async (payload) => {
-  try {
-    const res = await api.post(`api/v1/auth/logout`, {
-      params: { ...payload },
-    });
-    return res;
-  } catch (error) {
-    throw error;
-  }
+  return await api.post(`api/v1/auth/logout`, {
+    params: { ...payload },
+  });
 };
 
 export const getUserInfo = async (payload) => {
@@ -62,14 +52,9 @@ export const getUserInfo = async (payload) => {
 };
 
 export const isUserLoggedIn = async (payload) => {
-  try {
-    const res = await api.get(`api/v1/auth/validate-token`, {
-      params: { ...payload },
-    });
-    return res;
-  } catch (error) {
-    throw error;
-  }
+  return await api.get(`api/v1/auth/validate-token`, {
+    params: { ...payload },
+  });
 };
 
 export const refreshToken = async (payload) => {
@@ -84,23 +69,13 @@ export const refreshToken = async (payload) => {
 };
 
 export const updateUserInfo = async (payload) => {
-  try {
-    const res = await api.post(`api/v1/auth/user-info`, payload);
-    return res;
-  } catch (error) {
-    throw error;
-  }
+  return await api.post(`api/v1/auth/user-infos`, payload);
 };
 
 export const deleteAccount = async (payload) => {
-  try {
-    const res = await api.delete(`api/v1/auth/delete-account`, {
-      data: { ...payload },
-    });
-    return res;
-  } catch (error) {
-    throw error;
-  }
+  return await api.delete(`api/v1/auth/delete-account`, {
+    data: { ...payload },
+  });
 };
 
 export const supabaseSignout = async () => {

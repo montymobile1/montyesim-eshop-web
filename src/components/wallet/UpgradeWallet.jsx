@@ -86,7 +86,7 @@ export default function UpgradeWallet() {
                 value={value ?? ""}
                 type="number"
                 helperText={error?.message}
-                onChange={(value) => onChange(value !== "" ? value : null)}
+                onChange={(value) => onChange(value === "" ? null : value)}
                 endAdornment={
                   sessionStorage.getItem("user_currency") ||
                   userInfo?.currency_code

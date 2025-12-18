@@ -436,8 +436,8 @@ const OrderCard = ({ order, myesim, refetchData }) => {
                       <Table dir="ltr">
                         <TableHead>
                           <TableRow>
-                            {transactionHeaders?.map((th, index) => (
-                              <TableCell key={index}>
+                            {transactionHeaders?.map((th) => (
+                              <TableCell key={th}>
                                 {t(`orders.${th}`)}
                               </TableCell>
                             ))}
@@ -445,9 +445,9 @@ const OrderCard = ({ order, myesim, refetchData }) => {
                         </TableHead>
                         <TableBody>
                           {order?.bundle_details?.transaction_history?.map(
-                            (tb, index) => (
+                            (tb) => (
                               <TableRow
-                                key={index}
+                                key={tb?.user_order_id}
                                 sx={{ "& > *": { border: "none !important" } }}
                               >
                                 <TableCell sx={{ minWidth: "100px" }}>

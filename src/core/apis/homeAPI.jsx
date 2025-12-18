@@ -2,55 +2,30 @@ import i18n from "../../i18n";
 import { api } from "./axios";
 
 export const getHomePageContent = async () => {
-  try {
-    const res = await api.get("api/v1/home/", {
-      params: {
-        bundle_version: localStorage.getItem("app_bundles_version"),
-        language: i18n.language,
-      },
-    });
-    return res;
-  } catch (error) {
-    throw error;
-  }
+  return await api.get("api/v1/home/", {
+    params: {
+      bundle_version: localStorage.getItem("app_bundles_version"),
+      language: i18n.language,
+    },
+  });
 };
 
 export const getCruiseContent = async () => {
-  try {
-    const res = await api.get("api/v1/home/cruise");
-    return res;
-  } catch (error) {
-    throw error;
-  }
+  return await api.get("api/v1/home/cruise");
 };
 
 export const getLandContent = async () => {
-  try {
-    const res = await api.get("api/v1/home/land");
-    return res;
-  } catch (error) {
-    throw error;
-  }
+  return await api.get("api/v1/home/land");
 };
 
 export const getBundlesByCountry = async (payload) => {
-  try {
-    const res = await api.get("api/v1/bundles/by-country", {
-      params: { country_codes: payload },
-    });
-    return res;
-  } catch (error) {
-    throw error;
-  }
+  return await api.get("api/v1/bundles/by-country", {
+    params: { country_codes: payload },
+  });
 };
 
 export const getBundlesByRegion = async (payload) => {
-  try {
-    const res = await api.get(`api/v1/bundles/by-region/${payload}`, {});
-    return res;
-  } catch (error) {
-    throw error;
-  }
+  return await api.get(`api/v1/bundles/by-region/${payload}`, {});
 };
 
 export const contactUs = async (payload) => {

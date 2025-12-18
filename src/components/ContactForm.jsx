@@ -32,7 +32,7 @@ const schema = ({ t }) =>
         t("errors.maxCharacter", {
           field: t("contactUs.message"),
           character: 255,
-        }),
+        })
       ),
   });
 
