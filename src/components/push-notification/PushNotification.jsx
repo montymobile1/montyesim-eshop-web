@@ -40,11 +40,15 @@ const PushNotification = () => {
         />
       </div>
 
-      <div
-        className={clsx("flex flex-col gap-[0.5rem]", {
-          "cursor-pointer":
-            notification?.category == "9" || notification?.iccid,
-        })}
+      <button
+        type={"button"}
+        className={clsx(
+          "bg-transparent border-0 p-0  flex flex-col gap-[0.5rem]",
+          {
+            "cursor-pointer":
+              notification?.category == "9" || notification?.iccid,
+          }
+        )}
         onClick={() => {
           if (notification?.iccid) {
             navigate(`/esim/${notification?.iccid}`);
@@ -57,7 +61,7 @@ const PushNotification = () => {
         {" "}
         <h3>{notification?.title}</h3>
         <p className={"text-base text-content-600"}>{notification?.body}</p>
-      </div>
+      </button>
     </div>
   );
 
@@ -122,11 +126,12 @@ const PushNotification = () => {
       dispatch(fetchUserInfo());
       queryClient.invalidateQueries({ queryKey: ["user-rewards"] });
     }
+
     setNotification({
       title: payload?.notification?.title,
       body: payload?.notification?.body,
       iccid: payload?.data?.iccid,
-      category: payload?.notification?.category,
+      category: payload?.data?.category,
     });
   });
   return (

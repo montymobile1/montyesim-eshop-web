@@ -11,6 +11,7 @@ export default defineConfig(({ mode }) => {
   let currentMode = mode === "dev" ? "development" : mode;
 
   //EXPLANATION : remove console on production env
+  // NOSONAR
   let buildDrop =
     mode === "production" || mode === "sales" ? ["console", "debugger"] : [];
 

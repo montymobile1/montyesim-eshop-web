@@ -62,14 +62,9 @@ const CurrencySlice = createSlice({
           ? import.meta.env.VITE_APP_OTP_CHANNEL.split(",")
           : ["email"];
 
-        state.sea_option = import.meta.env.VITE_APP_SEA_OPTION
-          ? import.meta.env.VITE_APP_SEA_OPTION === "true"
-          : true;
+        state.sea_option = import.meta.env.VITE_APP_SEA_OPTION !== "false";
 
-        state.social_login = import.meta.env.VITE_APP_SOCIAL_LOGIN
-          ? import.meta.env.VITE_APP_SOCIAL_LOGIN === "true"
-          : true;
-
+        state.social_login = import.meta.env.VITE_APP_SOCIAL_LOGIN !== "false";
         state.whatsapp_number = whatsappNumber?.value || "";
         state.system_currency = currency?.value || "EUR";
         state.allowed_payment_types = paymentTypes?.value
@@ -87,16 +82,9 @@ const CurrencySlice = createSlice({
         state.otp_channel = import.meta.env.VITE_APP_OTP_CHANNEL
           ? import.meta.env.VITE_APP_OTP_CHANNEL.split(",")
           : ["email"];
-        state.sea_option = import.meta.env.VITE_APP_SEA_OPTION
-          ? import.meta.env.VITE_APP_SEA_OPTION === "true"
-            ? true
-            : false
-          : true;
-        state.social_login = import.meta.env.VITE_APP_SOCIAL_LOGIN
-          ? import.meta.env.VITE_APP_SOCIAL_LOGIN === "true"
-            ? true
-            : false
-          : true;
+        state.sea_option = import.meta.env.VITE_APP_SEA_OPTION !== "false";
+
+        state.social_login = import.meta.env.VITE_APP_SOCIAL_LOGIN !== "false";
         state.transaction_expiry_time = null;
         state.allowed_payment_types = ["dcb"];
         state.system_currency = "EUR";

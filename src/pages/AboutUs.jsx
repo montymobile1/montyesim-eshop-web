@@ -1,14 +1,12 @@
-import React from "react";
-import { useQuery } from "react-query";
-import { getAboutusContent } from "../core/apis/homeAPI";
 import { Skeleton } from "@mui/material";
-import NoDataFound from "../components/shared/no-data-found/NoDataFound";
-import { ConnectSVG } from "../assets/icons/Home";
-import { ContentSkeletons } from "../components/shared/skeletons/HomePageSkeletons";
-import { NoContentSVG } from "../assets/icons/Common";
-import EditorText from "../components/shared/editor-text/EditorText";
 import { useTranslation } from "react-i18next";
-import { useSelector } from "react-redux";
+import { useQuery } from "react-query";
+import { NoContentSVG } from "../assets/icons/Common";
+import { ConnectSVG } from "../assets/icons/Home";
+import EditorText from "../components/shared/editor-text/EditorText";
+import NoDataFound from "../components/shared/no-data-found/NoDataFound";
+import { ContentSkeletons } from "../components/shared/skeletons/HomePageSkeletons";
+import { getAboutusContent } from "../core/apis/homeAPI";
 
 const AboutUs = () => {
   const { t } = useTranslation();

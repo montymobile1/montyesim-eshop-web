@@ -1,21 +1,19 @@
 //UTILITIES
-import React from "react";
-import { Link, useNavigate, useParams } from "react-router-dom";
 import { useQuery } from "react-query";
+import { Link, useParams } from "react-router-dom";
 //COMPONENT
 import ArrowBackIosNewIcon from "@mui/icons-material/ArrowBackIosNew";
-import OrderCard from "../../../components/order/OrderCard";
-import { getMyEsimByIccid } from "../../../core/apis/userAPI";
-import { NoDataFoundSVG } from "../../../assets/icons/Common";
-import NoDataFound from "../../../components/shared/no-data-found/NoDataFound";
 import { Skeleton } from "@mui/material";
 import { useTranslation } from "react-i18next";
 import { useDispatch } from "react-redux";
+import { NoDataFoundSVG } from "../../../assets/icons/Common";
+import OrderCard from "../../../components/order/OrderCard";
+import NoDataFound from "../../../components/shared/no-data-found/NoDataFound";
+import { getMyEsimByIccid } from "../../../core/apis/userAPI";
 import { fetchUserInfo } from "../../../redux/reducers/authReducer";
 
 const EsimDetail = (props) => {
   const { t } = useTranslation();
-  const navigate = useNavigate();
   const dispatch = useDispatch();
   const { iccid } = useParams();
   const { data, isLoading, error, refetch } = useQuery({

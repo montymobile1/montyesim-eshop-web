@@ -59,7 +59,7 @@ const Checkout = () => {
 
   const handleSuccessOrder = (id) => {
     const searchParams = new URLSearchParams(location.search);
-    searchParams.set("order_id", id ? id : orderId);
+    searchParams.set("order_id", id || orderId);
     localStorage.removeItem("referral_code");
 
     setTimeout(() => {
@@ -116,7 +116,8 @@ const Checkout = () => {
         "flex flex-col gap-4 w-full max-w-xxl mx-auto px-4 sm:px-6 lg:px-8 pt-20 pb-16"
       }
     >
-      <div
+      <button
+        type={"button"}
         className={
           "flex flex-row gap-2 items-center font-semibold cursor-pointer"
         }
@@ -134,7 +135,7 @@ const Checkout = () => {
           fontSize="small"
         />{" "}
         {t("checkout.goBack")}
-      </div>
+      </button>
 
       <div
         className={

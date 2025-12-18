@@ -10,6 +10,7 @@ import { Button, CircularProgress, Dialog, DialogContent } from "@mui/material";
 import { loadStripe } from "@stripe/stripe-js";
 import { toast } from "react-toastify";
 import { useSelector } from "react-redux";
+import { cancelOrder } from "../../core/apis/userAPI";
 
 export default function UpgradeWallet() {
   const { t } = useTranslation();
@@ -17,6 +18,7 @@ export default function UpgradeWallet() {
   const [clientSecret, setClientSecret] = useState(null);
   const [stripePromise, setStripePromise] = useState(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [orderDetail, setOrderDetail] = useState(null);
   const userInfo = useSelector(
     (state) => state.authentication?.user_info || null
   );
@@ -42,11 +44,17 @@ export default function UpgradeWallet() {
     mode: "all",
   });
 
+  const handleCancelOrder = () => {
+    if (orderDetail?.order_id) {
+      cancelOrder(orderDetail?.order_id);
+    }
+  };
   const handleUpgrade = (payload) => {
     setIsSubmitting(true);
     topupWallet(payload)
       .then((res) => {
         if (res?.data?.status === "success") {
+          setOrderDetail(res?.data?.data);
           setClientSecret(res?.data?.data?.payment_intent_client_secret);
           setStripePromise(loadStripe(res?.data?.data?.publishable_key));
           setOpenStripe(true);
@@ -112,6 +120,7 @@ export default function UpgradeWallet() {
               clientSecret={clientSecret}
               stripePromise={stripePromise}
               fromUpgradeWallet={true}
+              handleCancelOrder={handleCancelOrder}
               onClose={() => {
                 setOpenStripe(false);
                 setClientSecret(null);

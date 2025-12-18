@@ -58,7 +58,7 @@ const OtpVerification = ({
   const dispatch = useDispatch();
 
   const [isVerifying, setIsVerifying] = useState(false);
-  const [openTransactionExpired, setTransactionExpired] = useState(false);
+  const [openTransactionExpired, setOpenTransactionExpired] = useState(false);
   const [resend, setResend] = useState(true);
   const { login_type } = useSelector((state) => state.currency);
 
@@ -163,7 +163,7 @@ const OtpVerification = ({
       );
       console.log(remaining, "remaininggg");
       if (remaining === 0) {
-        setTransactionExpired(true);
+        setOpenTransactionExpired(true);
         handleCancelOrder();
         clearInterval(interval);
       }
@@ -441,17 +441,15 @@ const OtpVerification = ({
               !resend ? (
                 <>
                   {t("auth.didntReceiveCode")}{" "}
-                  <span
-                    role="button"
-                    tabIndex={0}
+                  <button
                     onClick={handleResendOtp}
                     onKeyDown={(e) => {
                       if (e.key === "Enter" || e.key === " ") handleResendOtp();
                     }}
-                    className="text-secondary underline cursor-pointer"
+                    className="text-secondary underline cursor-pointer bg-transparent p-0"
                   >
                     {t("auth.resendNow")}
-                  </span>
+                  </button>
                 </>
               ) : (
                 <p className="text-secondary font-bold">

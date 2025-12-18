@@ -27,9 +27,13 @@ const TooltipComponent = ({ title, children }) => {
           },
         }}
       >
-        <div className={"min-w-0"} onClick={() => handleToggleTooltip()}>
+        <button
+          type="button"
+          className="min-w-0 bg-transparent border-0 p-0 text-left cursor-pointer"
+          onClick={handleToggleTooltip}
+        >
           {children}
-        </div>
+        </button>
       </Tooltip>
     </ClickAwayListener>
   );

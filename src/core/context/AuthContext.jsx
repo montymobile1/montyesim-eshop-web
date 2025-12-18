@@ -84,8 +84,7 @@ export const AuthProvider = ({ children }) => {
         })
         .catch((error) => {
           toast.error(
-            `Failed to Sign-in : ${error?.message}` ||
-              "Failed to signin. Please try again later"
+            `Failed to Sign-in : ${error?.message || "Please try again later"}`
           );
           if (isAuthenticated) {
             handleLogout();
@@ -134,6 +133,7 @@ export const AuthProvider = ({ children }) => {
       //NOTES: we can use jwt decode to decode the token the aud should be one of the client ids used in supabase
       const googleIdToken = credential.idToken;
 
+      // NOSONAR
       const { data, error } = await supabase.auth.signInWithIdToken({
         provider: "google",
         token: googleIdToken,

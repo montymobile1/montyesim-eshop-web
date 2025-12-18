@@ -302,7 +302,10 @@ const OrderCard = ({ order, myesim, refetchData }) => {
                 }
               >
                 {order?.bundle_details?.countries?.map((country) => (
-                  <div className={"flex flex-row gap-[0.5rem]"}>
+                  <div
+                    className={"flex flex-row gap-[0.5rem]"}
+                    key={country?.id}
+                  >
                     <Avatar
                       src={country?.icon}
                       alt={country?.country || "country-flag"}
@@ -332,8 +335,11 @@ const OrderCard = ({ order, myesim, refetchData }) => {
             >
               {myesim ? (
                 <>
-                  {esimDetails?.map((el, index) => (
-                    <div className={"flex flex-col gap-[0.5rem]"} key={index}>
+                  {esimDetails?.map((el) => (
+                    <div
+                      className={"flex flex-col gap-[0.5rem]"}
+                      key={el?.title}
+                    >
                       <label className={"font-semibold"}>
                         {t(`label.${el.title}`)}
                       </label>

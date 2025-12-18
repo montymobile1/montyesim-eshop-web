@@ -33,6 +33,7 @@ import PaymentCompletion from "../../components/payment/PaymentCompletion";
 import NoDataFound from "../../components/shared/no-data-found/NoDataFound";
 import { CountriesSkeletons } from "../../components/shared/skeletons/HomePageSkeletons";
 import useQueryParams from "../../core/custom-hook/useQueryParams";
+import { normalizeString } from "../../core/helpers/CommonHelpers";
 
 const Plans = (props) => {
   const { t } = useTranslation();
@@ -211,15 +212,15 @@ const Plans = (props) => {
                         : []
                     }
                     filterOptions={(options, { inputValue }) => {
+                      const normalizedInput = normalizeString(inputValue);
+
                       return options?.filter((option) =>
                         [
                           option?.country,
                           option?.iso3_code,
                           option?.country_code,
                         ].some((field) =>
-                          field
-                            ?.toLowerCase()
-                            .includes(inputValue.toLowerCase())
+                          normalizeString(field)?.includes(normalizedInput)
                         )
                       );
                     }}

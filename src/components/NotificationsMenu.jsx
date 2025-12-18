@@ -1,15 +1,14 @@
-import React, { useRef, useState, useEffect, useCallback } from "react";
 import NotificationsNoneIcon from "@mui/icons-material/NotificationsNone";
-import { useTranslation } from "react-i18next";
-import { useClickOutside } from "../core/custom-hook/useClickOutside";
-import { markAsRead } from "../core/apis/userAPI";
-import NoDataFound from "./shared/no-data-found/NoDataFound";
-import { Link } from "react-router-dom";
-import dayjs from "dayjs";
 import { Badge, Skeleton } from "@mui/material";
+import dayjs from "dayjs";
+import { useCallback, useEffect, useRef, useState } from "react";
+import { useTranslation } from "react-i18next";
+import { Link } from "react-router-dom";
 import { toast } from "react-toastify";
+import { markAsRead } from "../core/apis/userAPI";
 import { useNotifications } from "../core/context/NotificationContext";
-import { useSelector } from "react-redux";
+import { useClickOutside } from "../core/custom-hook/useClickOutside";
+import NoDataFound from "./shared/no-data-found/NoDataFound";
 
 const NotificationsMenuBody = () => {
   const { t } = useTranslation();

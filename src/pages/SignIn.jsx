@@ -319,6 +319,7 @@ const SignIn = () => {
                   >
                     {otp_channel?.map((channel) => (
                       <FormControlLabel
+                        key={channel}
                         sx={{
                           alignItems: "center !important",
                           whiteSpace: "nowrap",

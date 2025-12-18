@@ -1,21 +1,20 @@
 //UTILITIES
-import React, { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { useSearchParams } from "react-router-dom";
 import { SwiperSlide } from "swiper/react";
-import { useTranslation } from "react-i18next";
 //COMPONENT
-import { ConnectSVG } from "../assets/icons/Home";
+import AdbIcon from "@mui/icons-material/Adb";
+import AppleIcon from "@mui/icons-material/Apple";
+import { LazyLoadImage } from "react-lazy-load-image-component";
 import {
   CustomToggleButton,
   CustomToggleGroup,
 } from "../assets/CustomComponents";
-import AppleIcon from "@mui/icons-material/Apple";
-import AdbIcon from "@mui/icons-material/Adb";
-import { androidSteps, iOSSteps } from "../core/variables/StaticVariables";
+import { ConnectSVG } from "../assets/icons/Home";
 import SwiperComponent from "../components/shared/swiper-component/SwiperComponent";
 import useQueryParams from "../core/custom-hook/useQueryParams";
-import { LazyLoadImage } from "react-lazy-load-image-component";
-import { useSelector } from "react-redux";
+import { androidSteps, iOSSteps } from "../core/variables/StaticVariables";
 
 const HowItWorks = () => {
   const { t } = useTranslation();
@@ -36,7 +35,7 @@ const HowItWorks = () => {
   }, [filters]);
 
   return (
-  <div className="min-h-screen">
+    <div className="min-h-screen">
       {/* Hero Section */}
       <div className="max-w-xxl mx-auto px-4 sm:px-6 lg:px-8 pb-16 flex flex-col gap-[2rem]">
         <div className="flex justify-center items-end">
@@ -89,7 +88,9 @@ const HowItWorks = () => {
                     />
                   </div>
                   <p className="w-[250px] bg-white shadow-sm rounded px-12 py-2 font-bold text-lg text-center">
-                    {`${t("howItWorks.step")} ${index + 1} ${t("howItWorks.of")} ${deviceSlides?.length}`}
+                    {`${t("howItWorks.step")} ${index + 1} ${t(
+                      "howItWorks.of"
+                    )} ${deviceSlides?.length}`}
                   </p>
                   <p className="text-center text-lg">
                     {t(`userGuide.${element?.description}`)}

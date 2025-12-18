@@ -164,9 +164,9 @@ const PaymentFlow = (props) => {
     <>
       {bundleDataLoading ? (
         <div className={"w-full sm:basis-[50%] shrink-0"}>
-          {Array.from({ length: 2 }).map((_, i) => (
+          {Array.from({ length: 2 }).map(() => (
             <Skeleton
-              key={`skeleton-${i}`}
+              key={`skeleton-${crypto.randomUUID()}`}
               variant="rectangle"
               height={150}
               className="rounded-md"

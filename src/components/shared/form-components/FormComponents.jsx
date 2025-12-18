@@ -150,7 +150,12 @@ export const FormRadioGroup = (props) => {
         onChange={(e) => onChange(e.target.value)}
       >
         {data?.map((el) => (
-          <FormControlLabel value={el} control={<Radio />} label={el} />
+          <FormControlLabel
+            key={el}
+            value={el}
+            control={<Radio />}
+            label={el}
+          />
         ))}
       </RadioGroup>
     </FormControl>

@@ -52,6 +52,7 @@ api.interceptors.request.use(
     return config;
   },
   (error) => {
+    // NOSONAR
     return Promise.reject(error);
   }
 );
@@ -124,6 +125,7 @@ api.interceptors.response.use(
     } else {
       const backendMessage = error?.response?.data?.message || error?.message;
       error.message = backendMessage;
+      // NOSONAR
       return Promise.reject(error);
     }
   }

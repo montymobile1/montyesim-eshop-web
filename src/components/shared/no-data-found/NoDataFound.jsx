@@ -12,7 +12,7 @@ const NoDataFound = (props) => {
       >
         {text}
       </p>
-      {action && action}
+      {action}
     </div>
   );
 };

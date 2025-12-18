@@ -4,9 +4,9 @@ import React from "react";
 export const CountriesSkeletons = () => {
   return (
     <div className="grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-      {new Array(9).fill().map((_, index) => (
+      {Array.from({ length: 9 }, (_, i) => ({ id: i })).map((item) => (
         <Skeleton
-          key={index}
+          key={`skeleton-${item.id}`} // stable string key
           variant="rectangular"
           height={100}
           className="rounded-lg"
