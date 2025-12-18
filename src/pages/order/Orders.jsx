@@ -57,16 +57,14 @@ const Orders = () => {
 
       <div className={"flex flex-col gap-[1rem]"}>
         {isLoading ? (
-          new Array(4)
-            .fill()
-            ?.map((_, index) => (
-              <Skeleton
-                key={`order-skeleton-${index}`}
-                variant="rectangle"
-                height={100}
-                className={"rounded-md"}
-              />
-            ))
+          Array.from({ length: 4 }, (_, i) => ({ id: i })).map((item) => (
+            <Skeleton
+              key={`order-skeleton-${item?.id}`}
+              variant="rectangle"
+              height={100}
+              className={"rounded-md"}
+            />
+          ))
         ) : error || !orders || orders?.length === 0 ? (
           <NoDataFound
             text={
@@ -76,15 +74,15 @@ const Orders = () => {
           />
         ) : (
           <>
-            {orders?.map((order, index) => (
+            {orders?.map((order) => (
               <OrderCard order={order} key={order?.order_number} />
             ))}
             <div ref={ref}></div>
             {isFetchingNextPage &&
               !isLoading &&
-              Array.from({ length: 4 }).map((_, i) => (
+              Array.from({ length: 4 }, (_, i) => ({ id: i })).map((item) => (
                 <Skeleton
-                  key={`skeleton-${i}`}
+                  key={`skeleton-${item?.id}`}
                   variant="rectangle"
                   height={100}
                   className="rounded-md"

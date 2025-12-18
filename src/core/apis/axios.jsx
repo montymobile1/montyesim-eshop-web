@@ -123,10 +123,11 @@ api.interceptors.response.use(
       deleteToken(messaging);
       supabaseSignout();
     } else {
+      console.log(error, "errorrrr");
       const backendMessage = error?.response?.data?.message || error?.message;
       error.message = backendMessage;
-      // NOSONAR
-      return Promise.reject(error);
+
+      throw error;
     }
   }
 );

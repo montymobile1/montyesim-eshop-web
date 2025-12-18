@@ -14,7 +14,7 @@ const UnprotectedRoute = ({ children }) => {
 
   if (loading) return <p>Loading...</p>;
 
-  return !user_info ? children : null;
+  return user_info ? null : children;
 };
 
 export default UnprotectedRoute;

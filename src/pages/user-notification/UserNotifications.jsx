@@ -53,16 +53,14 @@ const UserNotifications = () => {
     <div className={"flex flex-col gap-[1rem]"}>
       <h1>{t("notifications.title")}</h1>
       {isLoading ? (
-        new Array(4)
-          .fill()
-          ?.map((_, index) => (
-            <Skeleton
-              key={`notification-page-skeleton-${index}`}
-              variant="rectangle"
-              height={100}
-              className={"rounded-md"}
-            />
-          ))
+        Array.from({ length: 4 }, (_, i) => ({ id: i })).map((item) => (
+          <Skeleton
+            key={`notification-page-skeleton-${item?.id}`}
+            variant="rectangle"
+            height={100}
+            className={"rounded-md"}
+          />
+        ))
       ) : error || !notifications || notifications?.length === 0 ? (
         <NoDataFound
           text={
@@ -103,9 +101,9 @@ const UserNotifications = () => {
           <div ref={ref}></div>
           {isFetchingNextPage &&
             !isLoading &&
-            Array.from({ length: 4 }).map((_, i) => (
+            Array.from({ length: 4 }, (_, i) => ({ id: i })).map((item) => (
               <Skeleton
-                key={`skeleton-${i}`}
+                key={`skeleton-${item?.id}`}
                 variant="rectangle"
                 height={100}
                 className="rounded-md"

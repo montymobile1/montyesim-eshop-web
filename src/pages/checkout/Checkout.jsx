@@ -73,7 +73,7 @@ const Checkout = () => {
 
       navigate({
         pathname: iccid ? `/esim/${iccid}` : "/plans",
-        search: !iccid ? `?${searchParams.toString()}` : "",
+        search: iccid ? "" : `?${searchParams.toString()}`,
       });
     }, 5000);
   };

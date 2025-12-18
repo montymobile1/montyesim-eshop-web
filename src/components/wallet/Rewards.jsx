@@ -54,9 +54,13 @@ const Rewards = () => {
 
       <div className={"flex flex-col gap-2"}>
         {isLoading ? (
-          new Array(4)
-            .fill()
-            ?.map((el) => <Skeleton variant={"rectangular"} height={"50px"} />)
+          Array.from({ length: 4 }, (_, i) => ({ id: i })).map((item) => (
+            <Skeleton
+              key={`skeleton-${item?.id}`}
+              variant="rectangle"
+              height={"50px"}
+            />
+          ))
         ) : rewards?.length > 0 ? (
           rewards?.map((row, index) => <CashbackCard {...row} />)
         ) : (

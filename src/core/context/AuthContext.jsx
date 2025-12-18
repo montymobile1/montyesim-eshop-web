@@ -1,27 +1,26 @@
-import React, {
-  createContext,
-  useContext,
-  useState,
-  useEffect,
-  useCallback,
-} from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { deleteToken } from "firebase/messaging";
 import axios from "axios";
-import { toast } from "react-toastify";
 import {
+  signOut as firebaseSignOut,
   getAuth,
   GoogleAuthProvider,
   signInWithPopup,
-  signOut as firebaseSignOut,
 } from "firebase/auth";
-import supabase from "../supabase/SupabaseClient";
-import { SignIn, SignOut } from "../../redux/reducers/authReducer";
-import { supabaseSignout, userLogout } from "../apis/authAPI";
-import { DetachDevice } from "../../redux/reducers/deviceReducer";
+import { deleteToken } from "firebase/messaging";
+import {
+  createContext,
+  useCallback,
+  useContext,
+  useEffect,
+  useState,
+} from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { toast } from "react-toastify";
 import { messaging } from "../../../firebaseconfig";
 import { queryClient } from "../../main";
-import i18n from "../../i18n";
+import { SignIn, SignOut } from "../../redux/reducers/authReducer";
+import { DetachDevice } from "../../redux/reducers/deviceReducer";
+import { supabaseSignout, userLogout } from "../apis/authAPI";
+import supabase from "../supabase/SupabaseClient";
 
 const AuthContext = createContext();
 
@@ -125,7 +124,7 @@ export const AuthProvider = ({ children }) => {
       const result = await signInWithPopup(auth, provider);
       const credential = GoogleAuthProvider.credentialFromResult(result);
 
-      if (!credential || !credential.idToken) {
+      if (!credential?.idToken) {
         toast.error("Failed to retrieve ID Token");
         return;
       }
@@ -134,7 +133,7 @@ export const AuthProvider = ({ children }) => {
       const googleIdToken = credential.idToken;
 
       // NOSONAR
-      const { data, error } = await supabase.auth.signInWithIdToken({
+      const { error } = await supabase.auth.signInWithIdToken({
         provider: "google",
         token: googleIdToken,
       });

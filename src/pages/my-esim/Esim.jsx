@@ -54,16 +54,14 @@ const Esim = () => {
         </CustomToggleButton>
       </CustomToggleGroup>
       {isLoading ? (
-        new Array(4)
-          .fill()
-          ?.map((_, index) => (
-            <Skeleton
-              key={`esim-skeleton-${index}`}
-              variant="rectangle"
-              height={100}
-              className={"rounded-md"}
-            />
-          ))
+        Array.from({ length: 4 }, (_, i) => ({ id: i })).map((item) => (
+          <Skeleton
+            key={`esim-skeleton-${item?.id}`}
+            variant="rectangle"
+            height={100}
+            className={"rounded-md"}
+          />
+        ))
       ) : !data || finalData?.length === 0 ? (
         <NoDataFound
           action={

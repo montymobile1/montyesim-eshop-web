@@ -17,8 +17,8 @@ export const CountriesSkeletons = () => {
 };
 
 export const BundlesSkeletons = () => {
-  return Array.from({ length: 6 }).map((_, index) => (
-    <div key={index} className="flex flex-col gap-4 p-4 border rounded-lg">
+  return Array.from({ length: 6 }, (_, i) => ({ id: i })).map((item) => (
+    <div key={item?.id} className="flex flex-col gap-4 p-4 border rounded-lg">
       <Skeleton variant="rectangular" width="100%" height={150} />
       <Skeleton variant="text" width="60%" height={20} />
       <Skeleton variant="text" width="80%" height={20} />
@@ -28,8 +28,8 @@ export const BundlesSkeletons = () => {
 };
 
 export const FAQSkeletons = () => {
-  return Array.from({ length: 5 }).map((_, index) => (
-    <div key={index} className="flex flex-col gap-4 p-4 border rounded-lg">
+  return Array.from({ length: 5 }, (_, i) => ({ id: i })).map((item) => (
+    <div key={item?.id} className="flex flex-col gap-4 p-4 border rounded-lg">
       <Skeleton variant="rectangular" width="100%" height={50} />
       <Skeleton variant="text" width="60%" height={20} />
     </div>

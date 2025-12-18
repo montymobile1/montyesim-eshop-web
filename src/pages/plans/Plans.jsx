@@ -198,18 +198,18 @@ const Plans = (props) => {
                 <div className={"flex flex-row gap-2 items-center px-2 w-full"}>
                   <Search
                     className="text-primary cursor-pointer"
-                    onClick={!isSmall ? () => resetFilter() : null}
+                    onClick={isSmall ? null : () => resetFilter()}
                   />
 
                   <Autocomplete
                     size="small"
                     multiple
                     value={
-                      filters?.country_codes?.length !== 0
-                        ? (data?.countries || [])?.filter((el) =>
+                      filters?.country_codes?.length === 0
+                        ? []
+                        : (data?.countries || [])?.filter((el) =>
                             filters?.country_codes.split(",")?.includes(el?.id)
                           )
-                        : []
                     }
                     filterOptions={(options, { inputValue }) => {
                       const normalizedInput = normalizeString(inputValue);

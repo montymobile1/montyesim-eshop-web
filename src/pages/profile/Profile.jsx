@@ -140,7 +140,7 @@ const Profile = () => {
       ...finalPayload,
       currency: payload?.user_currency?.currency,
       language: localStorage.getItem("i18nextLng"),
-      msisdn: !value ? null : payload?.msisdn,
+      msisdn: value ? payload?.msisdn : null,
     })
       .then((res) => {
         const statusBool = res?.data?.status === "success";
@@ -163,11 +163,15 @@ const Profile = () => {
           );
           dispatch(UpdateAuthInfo(res?.data?.data?.user_info));
         }
+
         toast?.[statusBool ? "success" : "error"](
           statusBool
             ? t("profile.infoUpdatedSuccessfully")
             : t("profile.failedToUpdateUserInfo")
         );
+      })
+      .catch((error) => {
+        toast?.error(error?.message || "Failed to update user info");
       })
       .finally(() => {
         setIsSubmitting(false);
@@ -274,7 +278,7 @@ const Profile = () => {
                         login_type == "phone" || login_type == "email_phone"
                       }
                       defaultCountry={
-                        onlyCountries?.length !== 0 ? onlyCountries?.[0] : "lb"
+                        onlyCountries?.length === 0 ? "lb" : onlyCountries?.[0]
                       }
                       helperText={error?.message}
                       onChange={(value, country) => {
