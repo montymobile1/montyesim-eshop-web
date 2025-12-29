@@ -69,7 +69,7 @@ export const refreshToken = async (payload) => {
 };
 
 export const updateUserInfo = async (payload) => {
-  return await api.post(`api/v1/auth/user-infos`, payload);
+  return await api.post(`api/v1/auth/user-info`, payload);
 };
 
 export const deleteAccount = async (payload) => {
