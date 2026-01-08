@@ -1,9 +1,11 @@
 import { vi } from "vitest";
+import React from "react";
+import "@testing-library/jest-dom";
 
 // Set up DOM element for React's createRoot
-if (typeof document !== 'undefined') {
-  const root = document.createElement('div');
-  root.id = 'root';
+if (typeof document !== "undefined") {
+  const root = document.createElement("div");
+  root.id = "root";
   document.body.appendChild(root);
 }
 
@@ -57,27 +59,33 @@ vi.mock("./../core/apis/authAPI", () => {
 });
 
 vi.mock("./../core/supabase/SupabaseClient.jsx", () => {
-  return {
-    createClient: vi.fn().mockReturnValue({
-      auth: {
-        signInWithPassword: vi.fn().mockResolvedValue({
-          data: { user: { id: "mockUser" } },
-          error: null,
-        }),
-        signOut: vi.fn().mockResolvedValue({ error: null }),
-        getSession: vi.fn().mockResolvedValue({
-          data: { user: { id: "mockUser" } },
-          error: null,
-        }),
-      },
-      from: vi.fn(() => ({
-        select: vi.fn().mockResolvedValue({ data: [], error: null }),
-        insert: vi.fn().mockResolvedValue({ data: [], error: null }),
-        update: vi.fn().mockResolvedValue({ data: [], error: null }),
-        delete: vi.fn().mockResolvedValue({ data: [], error: null }),
-        eq: vi.fn().mockReturnThis(),
+  const mockSupabaseClient = {
+    auth: {
+      signInWithPassword: vi.fn().mockResolvedValue({
+        data: { user: { id: "mockUser" } },
+        error: null,
+      }),
+      signOut: vi.fn().mockResolvedValue({ error: null }),
+      getSession: vi.fn().mockResolvedValue({
+        data: { user: { id: "mockUser" } },
+        error: null,
+      }),
+      onAuthStateChange: vi.fn(() => ({
+        data: { subscription: { unsubscribe: vi.fn() } },
       })),
-    }),
+    },
+    from: vi.fn(() => ({
+      select: vi.fn().mockResolvedValue({ data: [], error: null }),
+      insert: vi.fn().mockResolvedValue({ data: [], error: null }),
+      update: vi.fn().mockResolvedValue({ data: [], error: null }),
+      delete: vi.fn().mockResolvedValue({ data: [], error: null }),
+      eq: vi.fn().mockReturnThis(),
+    })),
+  };
+
+  return {
+    default: mockSupabaseClient,
+    createClient: vi.fn().mockReturnValue(mockSupabaseClient),
   };
 });
 
@@ -108,3 +116,17 @@ vi.mock("firebase/messaging", () => {
     isSupported: vi.fn().mockResolvedValue(true),
   };
 });
+// // Mock react-lazy-load-image-component
+vi.mock("react-lazy-load-image-component", () => ({
+  LazyLoadImage: ({ src, alt, className, ...props }) =>
+    React.createElement("img", { src, alt, className, ...props }),
+}));
+// Mock Swiper components
+// vi.mock("swiper/react", () => {
+//   return {
+//     Swiper: ({ children }) => <div data-testid="swiper">{children}</div>,
+//     SwiperSlide: ({ children }) => (
+//       <div data-testid="swiper-slide">{children}</div>
+//     ),
+//   };
+// });
