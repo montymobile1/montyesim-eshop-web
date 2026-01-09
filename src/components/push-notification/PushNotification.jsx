@@ -73,12 +73,22 @@ const PushNotification = () => {
   }, [notification]);
 
   const registerDevice = (firebaseRes) => {
+    const ua = navigator.userAgent || "";
+
+    const getOS = () => {
+      if (/iPhone|iPad|iPod/i.test(ua)) return "iOS";
+      if (/Android/i.test(ua)) return "Android";
+      if (/Win/i.test(ua)) return "Windows";
+      if (/Mac/i.test(ua)) return "MacOS";
+      return "Unknown";
+    };
+
     addDevice({
       fcm_token: firebaseRes,
       manufacturer: navigator.vendor || "Unknown",
-      device_model: navigator.userAgent,
-      os: navigator.userAgentData?.platform,
-      os_version: navigator.userAgentData?.platformVersion || "Unknown",
+      device_model: ua,
+      os: getOS(),
+      os_version: navigator?.userAgentData?.platformVersion || "Unknown",
       app_version: navigator.appVersion,
       ram_size: navigator.deviceMemory
         ? `${navigator.deviceMemory} GB`
@@ -102,38 +112,52 @@ const PushNotification = () => {
   };
 
   useEffect(() => {
-    requestPermission().then((firebaseRes) => {
-      if (
-        (isAuthenticated && authenticatedToken) ||
-        (!isAuthenticated && anonymousToken)
-      )
-        return;
+    requestPermission()
+      .then((firebaseRes) => {
+        // Skip if no token (unsupported environment or denied)
+        if (!firebaseRes) {
+          return;
+        }
 
-      registerDevice(firebaseRes);
-    });
+        if (
+          (isAuthenticated && authenticatedToken) ||
+          (!isAuthenticated && anonymousToken)
+        )
+          return;
+
+        registerDevice(firebaseRes);
+      })
+      .catch((error) => {
+        console.warn("Push notification setup failed:", error.message);
+      });
   }, [isAuthenticated]);
 
-  onMessageListener().then((payload) => {
-    if (payload?.data?.category == 2) {
-      queryClient.invalidateQueries({ queryKey: ["my-esim"] });
-      if (payload?.data?.iccid) {
-        queryClient.invalidateQueries({
-          queryKey: [`esim-detail-${payload?.data?.iccid}`],
-        });
+  onMessageListener()
+    .then((payload) => {
+      if (payload?.data?.category == 2) {
+        queryClient.invalidateQueries({ queryKey: ["my-esim"] });
+        if (payload?.data?.iccid) {
+          queryClient.invalidateQueries({
+            queryKey: [`esim-detail-${payload?.data?.iccid}`],
+          });
+        }
       }
-    }
-    if (payload?.data?.category == 9) {
-      dispatch(fetchUserInfo());
-      queryClient.invalidateQueries({ queryKey: ["user-rewards"] });
-    }
+      if (payload?.data?.category == 9) {
+        dispatch(fetchUserInfo());
+        queryClient.invalidateQueries({ queryKey: ["user-rewards"] });
+      }
 
-    setNotification({
-      title: payload?.notification?.title,
-      body: payload?.notification?.body,
-      iccid: payload?.data?.iccid,
-      category: payload?.data?.category,
+      setNotification({
+        title: payload?.notification?.title,
+        body: payload?.notification?.body,
+        iccid: payload?.data?.iccid,
+        category: payload?.data?.category,
+      });
+    })
+    .catch((error) => {
+      // Silently handle - messaging not available in this environment
+      console.log("Message listener not available:", error.message);
     });
-  });
   return (
     <Toaster
       position="bottom-right"

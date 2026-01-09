@@ -29,6 +29,8 @@ const OrderPopup = ({ id, onClose, orderData }) => {
     (state) => state.authentication
   );
 
+  const { login_type } = useSelector((state) => state.currency);
+
   const { data, isLoading } = useQuery({
     queryKey: [`${user_info?.id}-order-${id}`],
     queryFn: () => getOrderByID(id).then((res) => res?.data?.data),
@@ -39,7 +41,7 @@ const OrderPopup = ({ id, onClose, orderData }) => {
       }
     },
   });
-
+  console.log(login_type, "looooo");
   useEffect(() => {
     //   //close popup if 401
     if (!isAuthenticated && !tmp?.isAuthenticated) {
@@ -77,7 +79,9 @@ const OrderPopup = ({ id, onClose, orderData }) => {
         {!isLoading ? (
           orderData || data ? (
             <p className={"text-center text-content-600 font-medium"}>
-              {t("orders.qrcode_sent_text")}
+              {login_type == "email"
+                ? t("orders.qrcode_sent_text_with_email")
+                : t("orders.qrcode_sent_text")}
             </p>
           ) : (
             ""

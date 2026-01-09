@@ -19,31 +19,73 @@ const firebaseConfig = {
 
 const app = initializeApp(firebaseConfig);
 
-//for safari because it doesn't support fcm
-export const messaging = isSupported() ? getMessaging(app) : null;
+let messaging = null;
+
+// Async initialization to handle isSupported() check
+(async () => {
+  try {
+    // Check if messaging is supported (handles Safari, WKWebView, etc.)
+    const messagingSupported = await isSupported();
+    if (messagingSupported) {
+      messaging = getMessaging(app);
+    } else {
+      console.warn("Firebase Messaging is not supported in this browser");
+    }
+  } catch (error) {
+    console.warn("Failed to initialize Firebase Messaging:", error.message);
+    messaging = null;
+  }
+})();
+
+export { messaging };
 
 export const onMessageListener = () =>
-  new Promise((resolve) => {
-    onMessage(messaging, (payload) => {
-      resolve(payload);
-    });
+  new Promise((resolve, reject) => {
+    if (!messaging) {
+      reject(new Error("Messaging not available"));
+      return;
+    }
+    try {
+      onMessage(messaging, (payload) => {
+        resolve(payload);
+      });
+    } catch (error) {
+      reject(error);
+    }
   });
 
 const auth = getAuth();
 const googleProvider = new GoogleAuthProvider();
 
 const requestPermission = async () => {
-  //requesting permission using Notification API
-  const permission = await Notification.requestPermission();
+  try {
+    // Check if messaging is available
+    if (!messaging) {
+      console.warn("Messaging not available in this environment");
+      return null;
+    }
 
-  if (permission === "granted") {
-    const token = await getToken(messaging, {
-      vapidKey: import.meta.env.VITE_APP_VAPID_KEY,
-    });
+    // Check if Notification API exists
+    if (!("Notification" in window)) {
+      console.warn("Notification API not supported");
+      return null;
+    }
 
-    return token;
-  } else if (permission === "denied") {
-    console.log("User Permission Denied.");
+    //requesting permission using Notification API
+    const permission = await Notification.requestPermission();
+
+    if (permission === "granted") {
+      const token = await getToken(messaging, {
+        vapidKey: import.meta.env.VITE_APP_VAPID_KEY,
+      });
+
+      return token;
+    } else if (permission === "denied") {
+      console.log("User Permission Denied.");
+    }
+  } catch (error) {
+    console.warn("Error requesting notification permission:", error.message);
+    return null;
   }
 };
 

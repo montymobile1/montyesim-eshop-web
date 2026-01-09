@@ -74,7 +74,8 @@
     "pageNotFound": "الصفحة غير موجودة",
     "pageNotExistMessage": "عذرًا، الصفحة التي تبحث عنها غير موجودة.",
     "referral_message": "تحقق من هذا واستخدم رمز الإحالة الخاص بي:",
-    "notice": "إشعار"
+    "notice": "إشعار",
+    "success": "تم"
   },
   "account": {
     "delete_account": "حذف الحساب",
@@ -159,7 +160,8 @@
     "qrcode_detail": "تفاصيل رمز QR",
     "payment_successfull": "تمت عملية الدفع بنجاح!",
     "please_wait_to_fetch_order": "يرجى الانتظار أثناء جلب تفاصيل الطلب",
-    "qrcode_sent_text": "تم إرسال رمز QR إلى بريدك الإلكتروني. يمكنك مسحه هنا ومشاركته مع أصدقائك.",
+    "qrcode_sent_text": "يمكنك مسحه هنا ومشاركته مع أصدقائك.",
+    "qrcode_sent_text_with_email": "تم إرسال رمز QR إلى بريدك الإلكتروني. يمكنك مسحه هنا ومشاركته مع أصدقائك.",
     "orders_history": "سجل الطلبات",
     "order_id": "رقم الطلب",
     "order_status": "حالة الطلب",

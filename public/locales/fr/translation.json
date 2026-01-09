@@ -6,7 +6,8 @@
     "pageNotExistMessage": "Désolé, la page que vous recherchez n'existe pas.",
     "referral_message": "Découvrez ceci et utilisez mon code de parrainage :",
     "noOptions": "Aucune option",
-    "notice": "Notification"
+    "notice": "Notification",
+    "success": "Succès"
   },
   "account": {
     "delete_account": "Supprimer le compte",
@@ -91,7 +92,8 @@
     "qrcode_detail": "Détails du code QR",
     "payment_successfull": "Votre paiement a été effectué avec succès !",
     "please_wait_to_fetch_order": "Veuillez patienter pendant que nous récupérons les détails de votre commande",
-    "qrcode_sent_text": "Le code QR a été envoyé à votre email. Vous pouvez le scanner ici et le partager avec vos amis.",
+    "qrcode_sent_text": "Vous pouvez le scanner ici et le partager avec vos amis.",
+    "qrcode_sent_text_with_email": "Le code QR a été envoyé à votre email. Vous pouvez le scanner ici et le partager avec vos amis.",
     "orders_history": "Historique des commandes",
     "order_id": "ID de commande",
     "order_status": "Statut de la commande",

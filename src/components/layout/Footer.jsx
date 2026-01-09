@@ -108,7 +108,7 @@ const Footer = () => {
               </Link>
             </div>
             <div dir="ltr" className="text-sm text-white">
-              © 2025 {footerProjectName}
+              © {new Date().getFullYear()} {footerProjectName}
             </div>
           </div>
         </div>

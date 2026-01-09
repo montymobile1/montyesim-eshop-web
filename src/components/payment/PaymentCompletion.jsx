@@ -20,7 +20,7 @@ const PaymentCompletion = ({ setOpenOrderDetail }) => {
       <DialogContent className="flex flex-col items-center justify-center gap-[2rem] text-center !py-10">
         <SuccessfulPaymentSVG />
         <div className={"flex flex-col gap-2"}>
-          <h1 className="font-bold">{t("common.hooray")}</h1>
+          <h1 className="font-bold">{t("common.success")}</h1>
           <p className="text-content-600 font-semibold">
             {t("orders.payment_successfull")}
           </p>

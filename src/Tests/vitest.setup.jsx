@@ -94,31 +94,6 @@ vi.mock("./../core/apis/configurationsAPI", () => {
   };
 });
 
-// Mock homeAPI.jsx
-vi.mock("./../core/apis/homeAPI", () => {
-  return {
-    getFAQContent: vi.fn().mockResolvedValue({
-      data: {
-        data: [
-          {
-            question: "What is an eSIM?",
-            answer: "An eSIM is a digital SIM card that allows you to activate a cellular plan without a physical SIM card.",
-          },
-          {
-            question: "How do I install an eSIM?",
-            answer: "You can install an eSIM by scanning a QR code or using an activation code provided by your carrier.",
-          },
-        ],
-      },
-    }),
-    contactUs: vi.fn().mockResolvedValue({
-      data: {
-        status: "success",
-      },
-    }),
-  };
-});
-
 vi.mock("./../core/supabase/SupabaseClient.jsx", () => {
   const mockSupabaseClient = {
     auth: {

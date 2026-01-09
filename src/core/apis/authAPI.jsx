@@ -21,6 +21,7 @@ export const resendOrderOTP = async (payload) => {
     );
     return res;
   } catch (error) {
+    console.log("error");
     throw error;
   }
 };
