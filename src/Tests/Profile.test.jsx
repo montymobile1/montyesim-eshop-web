@@ -22,7 +22,7 @@ describe("Profile", () => {
         user_token: "test-token",
         access_token: "access-token",
         refresh_token: "refresh-token",
-      })
+      }),
     );
 
     // Set currency state directly (login_type and system_currency are set via fetchCurrencyInfo)
@@ -33,11 +33,11 @@ describe("Profile", () => {
     render(
       <AuthLayout>
         <Profile />
-      </AuthLayout>
+      </AuthLayout>,
     );
 
     expect(
-      screen.getByRole("heading", { name: /profile.accountInformation/i })
+      screen.getByRole("heading", { name: /profile.accountInformation/i }),
     ).toBeInTheDocument();
   });
 
@@ -45,7 +45,7 @@ describe("Profile", () => {
     render(
       <AuthLayout>
         <Profile />
-      </AuthLayout>
+      </AuthLayout>,
     );
 
     // Check for labels (they use translation keys in the simple mock)
@@ -54,16 +54,13 @@ describe("Profile", () => {
     expect(screen.getByText(/profile.lastName/i)).toBeInTheDocument();
     expect(screen.getByText(/profile.phoneNumber/i)).toBeInTheDocument();
     expect(screen.getByText(/profile.defaultCurrency/i)).toBeInTheDocument();
-    expect(
-      screen.getByText(/profile.receiveUpdatesByEmail/i)
-    ).toBeInTheDocument();
   });
 
   it("renders all form inputs", () => {
     render(
       <AuthLayout>
         <Profile />
-      </AuthLayout>
+      </AuthLayout>,
     );
 
     // Check for input fields by their placeholders or labels
@@ -71,7 +68,7 @@ describe("Profile", () => {
     expect(emailInput).toBeInTheDocument();
 
     const firstNameInput = screen.getByPlaceholderText(
-      /profile.enterFirstName/i
+      /profile.enterFirstName/i,
     );
     expect(firstNameInput).toBeInTheDocument();
 
@@ -87,15 +84,15 @@ describe("Profile", () => {
     render(
       <AuthLayout>
         <Profile />
-      </AuthLayout>
+      </AuthLayout>,
     );
 
     // Check for Cancel and Save buttons
     expect(
-      screen.getByRole("button", { name: /btn.cancel/i })
+      screen.getByRole("button", { name: /btn.cancel/i }),
     ).toBeInTheDocument();
     expect(
-      screen.getByRole("button", { name: /btn.saveChanges/i })
+      screen.getByRole("button", { name: /btn.saveChanges/i }),
     ).toBeInTheDocument();
   });
 });

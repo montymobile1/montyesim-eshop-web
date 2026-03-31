@@ -14,10 +14,14 @@ export const userLogin = async (payload) => {
   return await api.post(`api/v1/auth/login`, payload);
 };
 
+export const resendLoginOTP = async (payload) => {
+  return await api.post(`api/v1/auth/resend-otp`, payload);
+};
+
 export const resendOrderOTP = async (payload) => {
   try {
     const res = await api.post(
-      `api/v1/user/bundle/resend_order_otp/${payload}`
+      `api/v1/user/bundle/resend_order_otp/${payload}`,
     );
     return res;
   } catch (error) {

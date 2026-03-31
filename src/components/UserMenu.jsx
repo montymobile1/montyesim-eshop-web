@@ -53,7 +53,7 @@ const UserMenu = () => {
                   : "text-left"
               }`}
             >
-              {login_type === "phone" || login_type === "email_phone"
+              {login_type === "phone" || login_type?.includes("email_phone")
                 ? user_info?.msisdn
                 : user_info?.email}
             </p>

@@ -1,5 +1,6 @@
 //UTILTIIES
 import { useState } from "react";
+import { useSelector } from "react-redux";
 import { toast } from "react-toastify";
 //API
 //COMPONENT
@@ -11,6 +12,7 @@ import {
   useStripe,
 } from "@stripe/react-stripe-js";
 import { useTranslation } from "react-i18next";
+import { logAnalyticsEventWithUser } from "../../core/helpers/CommonHelpers";
 import NoDataFound from "../shared/no-data-found/NoDataFound";
 
 export const StripePayment = (props) => {
@@ -60,10 +62,12 @@ const InjectedCheckout = ({
   fromUpgradeWallet,
   handleCancelOrder,
   handleSuccessOrder,
+  bundle,
 }) => {
   const { t } = useTranslation();
   const elements = useElements({ locale: localStorage.getItem("i18nextLng") });
   const stripe = useStripe();
+  const { user_info } = useSelector((state) => state.authentication);
 
   const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -72,6 +76,15 @@ const InjectedCheckout = ({
       toast.error(t("stripe.paymentProcessingError"));
       return;
     }
+
+    // Log Firebase Analytics event when user clicks pay
+    logAnalyticsEventWithUser("stripe-pay", {
+      bundle_code: bundle?.bundle_code || "",
+      bundle_name: bundle?.bundle_name || "",
+      user: user_info?.email || "temp user",
+      order_id: orderDetail?.order_id || "",
+      method: "Card",
+    });
 
     setIsSubmitting(true);
     stripe
@@ -83,6 +96,15 @@ const InjectedCheckout = ({
         if (result.error) {
           toast.error(result.error?.message);
         } else {
+          // Log Firebase Analytics event on payment success
+          logAnalyticsEventWithUser("stripe-payment-successful", {
+            bundle_code: bundle?.bundle_code || "",
+            bundle_name: bundle?.bundle_name || "",
+            user: user_info?.email || "temp user",
+            order_id: orderDetail?.order_id || "",
+            method: "Card",
+          });
+
           if (fromUpgradeWallet) {
             toast.success(t("stripe.wallet_topped_up_successfully"));
             return onClose();

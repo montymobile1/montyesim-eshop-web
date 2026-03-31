@@ -13,6 +13,13 @@ export default function MyWallet() {
   const { t } = useTranslation();
   const dispatch = useDispatch();
   const userInfo = useSelector((state) => state.authentication.user_info);
+  const displayReferAndEarn = useSelector(
+    (state) => state.currency?.refer_and_earn
+  );
+  const displayVoucherCode = useSelector(
+    (state) => state.currency?.voucher_code
+  );
+  const isSupportPromo = import.meta.env.VITE_SUPPORT_PROMO === "true";
 
   useEffect(() => {
     dispatch(fetchUserInfo());
@@ -58,8 +65,8 @@ export default function MyWallet() {
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6 px-0">
-        <VoucherCodeCard />
-        <ReferCard />
+        {isSupportPromo && displayVoucherCode && <VoucherCodeCard />}
+        {isSupportPromo && displayReferAndEarn && <ReferCard />}
         <UpgradeWallet />
       </div>
 

@@ -2,10 +2,10 @@ import { Edit } from "@mui/icons-material";
 import AccessTimeIcon from "@mui/icons-material/AccessTime";
 import AddToPhotosOutlinedIcon from "@mui/icons-material/AddToPhotosOutlined";
 import CalendarMonthIcon from "@mui/icons-material/CalendarMonth";
+import InstallMobileOutlinedIcon from "@mui/icons-material/InstallMobileOutlined";
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 import LanguageIcon from "@mui/icons-material/Language";
 import LanguageOutlinedIcon from "@mui/icons-material/LanguageOutlined";
-import QrCode2OutlinedIcon from "@mui/icons-material/QrCode2Outlined";
 import ReceiptLongIcon from "@mui/icons-material/ReceiptLong";
 import WifiIcon from "@mui/icons-material/Wifi";
 import {
@@ -66,7 +66,7 @@ const OrderCard = ({ order, myesim, refetchData }) => {
     ],
     queryFn: () =>
       getMyEsimConsumption(order?.bundle_details?.iccid).then(
-        (res) => res?.data?.data
+        (res) => res?.data?.data,
       ),
     enabled:
       (!!collapseElement || !!openConsumption) &&
@@ -180,7 +180,8 @@ const OrderCard = ({ order, myesim, refetchData }) => {
                   collapseElement ==
                     (order?.bundle_details?.order_number || order?.order_number)
                     ? null
-                    : order?.bundle_details?.order_number || order?.order_number
+                    : order?.bundle_details?.order_number ||
+                        order?.order_number,
                 )
               }
             >
@@ -231,7 +232,7 @@ const OrderCard = ({ order, myesim, refetchData }) => {
                   ? "_plural"
                   : ""
               }`,
-              { count: order?.validity || order?.bundle_details?.validity }
+              { count: order?.validity || order?.bundle_details?.validity },
             )}`}
             color="secondary"
           />
@@ -275,7 +276,7 @@ const OrderCard = ({ order, myesim, refetchData }) => {
               label={
                 <span dir={"ltr"}>
                   {`${order?.bundle_details?.countries?.length} ${t(
-                    "btn.countries"
+                    "btn.countries",
                   )}`}
                 </span>
               }
@@ -361,7 +362,7 @@ const OrderCard = ({ order, myesim, refetchData }) => {
                         <Skeleton />
                       ) : consumptionData?.expiry_date ? (
                         dayjs(consumptionData?.expiry_date)?.format(
-                          "DD-MM-YYYY HH:mm"
+                          "DD-MM-YYYY HH:mm",
                         )
                       ) : (
                         t("common.notAvailable")
@@ -484,7 +485,7 @@ const OrderCard = ({ order, myesim, refetchData }) => {
                                             ? "_plural"
                                             : ""
                                         }`,
-                                        { count: tb?.bundle?.validity }
+                                        { count: tb?.bundle?.validity },
                                       )}` || "N/A"}
                                     </span>
                                   )}
@@ -515,7 +516,7 @@ const OrderCard = ({ order, myesim, refetchData }) => {
                                   )}
                                 </TableCell>
                               </TableRow>
-                            )
+                            ),
                           )}
                         </TableBody>
                       </Table>
@@ -554,7 +555,7 @@ const OrderCard = ({ order, myesim, refetchData }) => {
                 <Button
                   onClick={() => setOpenQRCode(true)}
                   startIcon={
-                    <QrCode2OutlinedIcon
+                    <InstallMobileOutlinedIcon
                       style={
                         localStorage.getItem("i18nextLng") === "ar"
                           ? { marginLeft: "8px" }
@@ -567,7 +568,7 @@ const OrderCard = ({ order, myesim, refetchData }) => {
                   color="primary"
                   sx={{ width: "fit-content" }}
                 >
-                  {t("btn.view_qr_code")}
+                  {t("btn.install_esim")}
                 </Button>
               )}
               {order?.bundle_details?.is_topup_allowed && (

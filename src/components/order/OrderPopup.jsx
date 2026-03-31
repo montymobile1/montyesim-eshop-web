@@ -8,6 +8,7 @@ import { useTranslation } from "react-i18next";
 
 //API
 import { getOrderByID } from "../../core/apis/userAPI";
+import { logAnalyticsEventWithUser } from "../../core/helpers/CommonHelpers";
 //COMPONENT
 import ContentCopyIcon from "@mui/icons-material/ContentCopy";
 import NoDataFound from "../shared/no-data-found/NoDataFound";
@@ -21,8 +22,10 @@ import {
 } from "@mui/material";
 import { Link } from "react-router-dom";
 import { fetchUserInfo } from "../../redux/reducers/authReducer";
+import clsx from "clsx";
+import EsimInstallation from "./EsimInstallation";
 
-const OrderPopup = ({ id, onClose, orderData }) => {
+const OrderPopup = ({ id, onClose, orderData, fromPlans }) => {
   const { t } = useTranslation();
   const dispatch = useDispatch();
   const { isAuthenticated, user_info, tmp } = useSelector(
@@ -41,13 +44,29 @@ const OrderPopup = ({ id, onClose, orderData }) => {
       }
     },
   });
-  console.log(login_type, "looooo");
+
   useEffect(() => {
     //   //close popup if 401
     if (!isAuthenticated && !tmp?.isAuthenticated) {
       onClose();
     }
   }, []);
+
+  // Log analytics event when coming from plans page
+  useEffect(() => {
+    if (fromPlans && !isLoading && (orderData || data)) {
+      const order = orderData || data;
+
+      logAnalyticsEventWithUser("order-popup", {
+        bundle_code:
+          order?.bundle_code || order?.bundle_details?.bundle_code || "",
+        bundle_name:
+          order?.bundle_name || order?.bundle_details?.bundle_name || "",
+        user: user_info?.email || "temp user",
+        order_id: order?.order_id || order?.id || id || "",
+      });
+    }
+  }, [fromPlans, isLoading, orderData, data, user_info?.email, id]);
 
   return (
     <Dialog open={true} maxWidth="sm">
@@ -75,60 +94,65 @@ const OrderPopup = ({ id, onClose, orderData }) => {
             <Close />
           </IconButton>
         </div>
-        <h1 className={"mt-2 text-center"}>{t("orders.qrcode_detail")}</h1>
-        {!isLoading ? (
-          orderData || data ? (
-            <p className={"text-center text-content-600 font-medium"}>
-              {login_type == "email"
-                ? t("orders.qrcode_sent_text_with_email")
-                : t("orders.qrcode_sent_text")}
-            </p>
-          ) : (
-            ""
-          )
-        ) : (
-          <div className={"flex flex-col gap-[1rem]"}>
-            <p className={"text-center text-content-600 font-medium"}>
-              {t("orders.qrcode_loading")}
-            </p>
-            <Skeleton width={"100%"} />
-          </div>
-        )}
+        <h1 className={"mt-2 text-center"}>{t("orders.installYoureSIM")}</h1>
+
         {!isLoading && (data || orderData) && (
           <>
-            <div
-              className={
-                "bg-primary-50 p-4 rounded-2xl flex items-center justify-center shadow-sm flex flex-col gap-2"
-              }
-            >
+            {import.meta.env.VITE_APP_SEA_OPTION == "true" &&
+              import.meta.env.VITE_ESIM_INSTALLATION == "true" && (
+                <EsimInstallation
+                  data={data}
+                  orderData={orderData}
+                  isLoading={isLoading}
+                />
+              )}
+            <div className={"flex flex-col gap-4"}>
+              <p
+                className={clsx("text-center text-content-600 font-medium", {
+                  "text-start": import.meta.env.VITE_APP_SEA_OPTION == "true",
+                })}
+              >
+                {login_type == "email"
+                  ? t("orders.qrcode_sent_text_with_email")
+                  : t("orders.qrcode_sent_text")}
+              </p>
+
               <div
                 className={
-                  "bg-white p-2 flex items-center justify-center w-[200px] h-[200px] rounded-md shadow-sm"
+                  "bg-primary-50 p-4 rounded-2xl flex items-center justify-center shadow-sm flex flex-col gap-2"
                 }
               >
-                {isLoading ? (
-                  <Skeleton variant="rectangle" width={100} height={100} />
-                ) : orderData?.qr_code_value || data?.qr_code_value ? (
-                  <QRCode
-                    size={100}
-                    style={{ height: "150px", width: "150px" }}
-                    value={data?.qr_code_value || orderData?.qr_code_value}
-                    viewBox={`0 0 256 256`}
-                  />
-                ) : (
-                  <NoDataFound text="QR code not generated" />
-                )}
+                <div
+                  className={
+                    "bg-white p-2 flex items-center justify-center w-[200px] h-[200px] rounded-md shadow-sm"
+                  }
+                >
+                  {isLoading ? (
+                    <Skeleton variant="rectangle" width={100} height={100} />
+                  ) : orderData?.qr_code_value || data?.qr_code_value ? (
+                    <QRCode
+                      size={100}
+                      style={{ height: "150px", width: "150px" }}
+                      value={data?.qr_code_value || orderData?.qr_code_value}
+                      viewBox={`0 0 256 256`}
+                    />
+                  ) : (
+                    <NoDataFound text="QR code not generated" />
+                  )}
+                </div>
+                <label className={"self-start"}>
+                  {t("orders.instructions")}
+                </label>
+                <p
+                  className={`font-medium text-content-500 self-start ${
+                    localStorage.getItem("i18nextLng") === "ar"
+                      ? "!text-right"
+                      : "!text-left"
+                  }`}
+                >
+                  {t("orders.esim_instructions")}
+                </p>
               </div>
-              <label className={"self-start"}>{t("orders.instructions")}</label>
-              <p
-                className={`font-medium text-content-500 self-start ${
-                  localStorage.getItem("i18nextLng") === "ar"
-                    ? "!text-right"
-                    : "!text-left"
-                }`}
-              >
-                {t("orders.esim_instructions")}
-              </p>
             </div>
 
             <div className={"flex flex-col gap-[0.5rem]"}>
@@ -194,86 +218,16 @@ const OrderPopup = ({ id, onClose, orderData }) => {
                 </IconButton>
               </div>
             </div>
-            {import.meta.env.VITE_ESIM_INSTALLATION == "true" && (
-              <>
-                <div className={"flex flex-col gap-[0.5rem]"}>
-                  <label
-                    className={`font-semibold ${
-                      localStorage.getItem("i18nextLng") === "ar"
-                        ? "text-right"
-                        : "text-left"
-                    }`}
-                  >
-                    {t("orders.iosDirectInstallation")}
-                  </label>
-                  <Button
-                    sx={{ padding: "1rem" }}
-                    variant={"outlined"}
-                    href={`https://esimsetup.apple.com/esim_qrcode_provisioning?carddata=LPA:1$${
-                      data?.smdp_address || orderData?.smdp_address
-                    }$${orderData?.activation_code || data?.activation_code}`}
-                    target="_blank"
-                  >
-                    {t("orders.installNowLinkonIOS")}
-                  </Button>
-                </div>
-                <div className={"flex flex-col gap-[0.5rem] "}>
-                  <label
-                    dir={"ltr"}
-                    className={`font-semibold ${
-                      localStorage.getItem("i18nextLng") === "ar"
-                        ? "text-right"
-                        : "text-left"
-                    }`}
-                  >
-                    {t("orders.LPALink")}
-                  </label>
-                  <div className={"bg-white shadow-sm p-[0.8rem] rounded-md"}>
-                    <div
-                      className={"flex flex-row justify-between items-center "}
-                    >
-                      <div className={"font-medium text-content-500 truncate "}>
-                        {isLoading ? (
-                          <Skeleton width={100} />
-                        ) : (
-                          `LPA:1$${
-                            data?.smdp_address || orderData?.smdp_address
-                          }$${
-                            orderData?.activation_code || data?.activation_code
-                          }`
-                        )}
-                      </div>
 
-                      <IconButton
-                        onClick={() => {
-                          navigator.clipboard.writeText(
-                            `LPA:1$${
-                              data?.smdp_address || orderData?.smdp_address
-                            }$${
-                              orderData?.activation_code ||
-                              data?.activation_code
-                            }`
-                          );
-                          toast.success(t("btn.copiedSuccessfully"));
-                        }}
-                      >
-                        <ContentCopyIcon fontSize="small" color="primary" />
-                      </IconButton>
-                    </div>
-                    <label>{t("orders.instructions")}</label>
-                    <p
-                      className={`font-medium text-content-500   ${
-                        localStorage.getItem("i18nextLng") === "ar"
-                          ? "!text-right"
-                          : "!text-left"
-                      }`}
-                    >
-                      {t("orders.esim_lpa_instructions")}
-                    </p>
-                  </div>
-                </div>
-              </>
-            )}
+            {(!import.meta.env.VITE_APP_SEA_OPTION ||
+              import.meta.env.VITE_APP_SEA_OPTION == "false") &&
+              import.meta.env.VITE_ESIM_INSTALLATION == "true" && (
+                <EsimInstallation
+                  data={data}
+                  orderData={orderData}
+                  isLoading={isLoading}
+                />
+              )}
           </>
         )}
 

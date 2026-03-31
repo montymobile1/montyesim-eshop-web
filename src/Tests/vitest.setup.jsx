@@ -48,6 +48,10 @@ vi.mock("../../firebaseconfig", () => {
     googleProvider: {},
     signInWithPopup: vi.fn(),
     requestPermission: vi.fn(),
+    analytics: null,
+    logAnalyticsEvent: vi.fn(),
+    setAnalyticsUserId: vi.fn(),
+    clearAnalyticsUserId: vi.fn(),
   };
 });
 

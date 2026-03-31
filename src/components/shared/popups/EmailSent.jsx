@@ -1,15 +1,12 @@
 //UTILITIES
-import React, { useEffect } from "react";
+import { useEffect } from "react";
 
 //COMPONENT
 import { Close, QuestionMark } from "@mui/icons-material";
 import { Dialog, DialogContent, IconButton } from "@mui/material";
-import { useTranslation, Trans } from "react-i18next";
-import { useSelector } from "react-redux";
+import { Trans, useTranslation } from "react-i18next";
 
 const EmailSent = ({ email, onClose, verifyBy, phone }) => {
-  const login_type = useSelector((state) => state?.currency?.login_type);
-
   const { t } = useTranslation();
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -75,9 +72,9 @@ const EmailSent = ({ email, onClose, verifyBy, phone }) => {
               values={{
                 verifyBy: t(`auth.${verifyBy}`),
                 contact:
-                  login_type === "phone" || login_type === "email_phone"
-                    ? phone?.toLowerCase() || ""
-                    : email?.toLowerCase() || "",
+                  verifyBy === "email"
+                    ? email?.toLowerCase()
+                    : phone?.toLowerCase(),
               }}
               components={{ ltr: <span dir="ltr" /> }}
             />

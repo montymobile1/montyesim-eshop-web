@@ -46,6 +46,7 @@
     "dompurify": "^3.2.4",
     "dotenv": "^16.4.7",
     "file-saver": "^2.0.5",
+    "crypto-js": "^4.2.0",
     "firebase": "^11.4.0",
     "formik": "^2.4.5",
     "i18next": "^23.10.1",

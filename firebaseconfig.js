@@ -1,4 +1,5 @@
 import { initializeApp } from "firebase/app";
+
 import {
   getMessaging,
   getToken,
@@ -6,6 +7,7 @@ import {
   onMessage,
 } from "firebase/messaging";
 import { getAuth, GoogleAuthProvider, signInWithPopup } from "firebase/auth";
+import { getAnalytics, logEvent, setUserId, isSupported as isAnalyticsSupported } from "firebase/analytics";
 
 const firebaseConfig = {
   apiKey: import.meta.env.VITE_APP_API_KEY,
@@ -20,6 +22,20 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 
 let messaging = null;
+let analytics = null;
+
+// Initialize Analytics if supported
+(async () => {
+  try {
+    const analyticsSupported = await isAnalyticsSupported();
+    if (analyticsSupported) {
+      analytics = getAnalytics(app);
+    }
+  } catch (error) {
+    console.warn("Failed to initialize Firebase Analytics:", error.message);
+    analytics = null;
+  }
+})();
 
 // Async initialization to handle isSupported() check
 (async () => {
@@ -89,4 +105,37 @@ const requestPermission = async () => {
   }
 };
 
-export { auth, googleProvider, signInWithPopup, requestPermission };
+// Analytics log event helper
+export const logAnalyticsEvent = (eventName, eventParams = {}) => {
+  try {
+    if (analytics) {
+      logEvent(analytics, eventName, eventParams);
+    }
+  } catch (error) {
+    console.warn("Failed to log analytics event:", error.message);
+  }
+};
+
+// Set Firebase Analytics user ID (hashed email)
+export const setAnalyticsUserId = (hashedEmail) => {
+  try {
+    if (analytics && hashedEmail) {
+      setUserId(analytics, hashedEmail);
+    }
+  } catch (error) {
+    console.warn("Failed to set analytics user ID:", error.message);
+  }
+};
+
+// Clear Firebase Analytics user ID
+export const clearAnalyticsUserId = () => {
+  try {
+    if (analytics) {
+      setUserId(analytics, null);
+    }
+  } catch (error) {
+    console.warn("Failed to clear analytics user ID:", error.message);
+  }
+};
+
+export { auth, googleProvider, signInWithPopup, requestPermission, analytics };

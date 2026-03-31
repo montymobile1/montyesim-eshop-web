@@ -32,7 +32,7 @@ const schema = () =>
       .string()
       .label("Code")
       .transform((value, originalValue) =>
-        originalValue?.trim() === "" ? null : value
+        originalValue?.trim() === "" ? null : value,
       )
       .nullable(),
   });
@@ -60,6 +60,10 @@ const BundleDetail = ({
     message: "",
     status: "",
   });
+  const displayReferAndEarn = useSelector(
+    (state) => state.currency?.refer_and_earn,
+  );
+
   const { control, handleSubmit, reset, watch, getValues } = useForm({
     defaultValues: {
       code: "",
@@ -74,11 +78,11 @@ const BundleDetail = ({
     if (
       !tmp?.isAuthenticated &&
       !isAuthenticated &&
-      (login_type === "phone" || login_type === "email_phone")
+      (login_type === "phone" || login_type?.includes("email_phone"))
     ) {
       navigate(
         `/signin?next=${encodeURIComponent(
-          `/checkout/${bundle?.bundle_code}`
+          `/checkout/${bundle?.bundle_code}`,
         )}`,
         {
           state: {
@@ -86,7 +90,7 @@ const BundleDetail = ({
             new_price: newBundle?.price,
             new_price_display: newBundle?.price_display || null,
           },
-        }
+        },
       );
       return;
     }
@@ -276,7 +280,7 @@ const BundleDetail = ({
               `validity.${selectedBundle?.validity_label?.toLowerCase()}${
                 selectedBundle?.validity > 1 ? "_plural" : ""
               }`,
-              { count: selectedBundle?.validity }
+              { count: selectedBundle?.validity },
             )}`}
           </div>
         </div>
@@ -338,7 +342,7 @@ const BundleDetail = ({
                         />
                         <p>{supportedCountries?.country}</p>
                       </div>
-                    )
+                    ),
                   )
                 )}
               </div>
@@ -349,7 +353,7 @@ const BundleDetail = ({
               "flex flex-col w-[100%] sm:basis-[50%]  gap-[1rem] bg-bgLight rounded-md p-2 sm:min-h-[220px] sm:h-[220px]",
               {
                 "flex-1": selectedBundle?.bundle_category?.type === "CRUISE",
-              }
+              },
             )}
           >
             <h6>{t("bundles.additionalInfo")}</h6>
@@ -388,7 +392,11 @@ const BundleDetail = ({
               onSubmit={handleSubmit(handleCodeValidation)}
             >
               <h6 className={"text-start"}>
-                {t("bundles.apply_promo_or_referral")}
+                {t(
+                  displayReferAndEarn
+                    ? "bundles.apply_promo_or_referral"
+                    : "bundles.apply_promo",
+                )}
               </h6>
               <div className={"flex flex-row gap-2"}>
                 <div className={"basis-[80%]"}>
@@ -398,7 +406,11 @@ const BundleDetail = ({
                       fieldState: { error },
                     }) => (
                       <FormInput
-                        placeholder={t("bundles.enter_promo_code_or_referral")}
+                        placeholder={t(
+                          displayReferAndEarn
+                            ? "bundles.enter_promo_code_or_referral"
+                            : "bundles.enter_promo_code",
+                        )}
                         value={value}
                         onChange={(value) => {
                           onChange(value);

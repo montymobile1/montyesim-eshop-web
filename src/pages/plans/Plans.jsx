@@ -1,7 +1,7 @@
 //UTILITIES
 import clsx from "clsx";
 import { useEffect, useMemo, useState } from "react";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { useLocation, useNavigate, useSearchParams } from "react-router-dom";
 import { toast } from "react-toastify";
 //REDUCER
@@ -50,10 +50,12 @@ const Plans = (props) => {
   const isSmall = useMediaQuery("(max-width: 639px)");
   const pathSegments = location.pathname.split("/").filter(Boolean);
   const mainPath = pathSegments[1] || ""; // "cruises" or "" (land) //now : "land" or
-
+  const top_countries_count = useSelector(
+    (state) => state.currency?.top_countries_count,
+  );
   const [activeRadio, setActiveRadio] = useState(mainPath || defaultOption);
   const [activeTab, setActiveTab] = useState(
-    searchParams.get("type") || "countries"
+    searchParams.get("type") || "countries",
   );
 
   const [isSearching, setIsSearching] = useState(isSmall);
@@ -61,7 +63,7 @@ const Plans = (props) => {
   const [openOrderDetail, setOpenOrderDetail] = useState(false);
 
   const [search, setSearch] = useState(
-    searchParams.getAll("country_codes") || []
+    searchParams.getAll("country_codes") || [],
   );
   const [filters, setFilters] = useState({
     type: searchParams.get("type") || "",
@@ -81,7 +83,7 @@ const Plans = (props) => {
   };
 
   const [hoorayOpen, setHoorayOpen] = useState(
-    searchParams.get("order_id") || false
+    searchParams.get("order_id") || false,
   );
 
   //if testing
@@ -91,6 +93,7 @@ const Plans = (props) => {
   const { data, isLoading, error } = useHomeCountries();
 
   const homeData = useMemo(() => {
+    let topCountriesCount = parseInt(top_countries_count);
     let dataType = filters?.type || "";
 
     if (data) {
@@ -102,16 +105,23 @@ const Plans = (props) => {
       } else if (activeRadio === "cruises") {
         return data?.cruise_bundles || [];
       } else {
-        if (showAllCountries) {
+        if (showAllCountries || topCountriesCount == 0) {
           return data?.countries;
         } else {
-          return data?.countries?.slice(0, 9);
+          return data?.countries?.slice(0, topCountriesCount);
         }
       }
     } else {
       return [];
     }
-  }, [data, activeTab, showAllCountries, filters?.type, activeRadio]);
+  }, [
+    data,
+    activeTab,
+    showAllCountries,
+    filters?.type,
+    activeRadio,
+    top_countries_count,
+  ]);
 
   const resetFilter = () => {
     setIsSearching(false);
@@ -191,7 +201,7 @@ const Plans = (props) => {
                 }`,
                 {
                   "w-auto": isSmall,
-                }
+                },
               )}
             >
               {isSearching ? (
@@ -208,7 +218,7 @@ const Plans = (props) => {
                       filters?.country_codes?.length === 0
                         ? []
                         : (data?.countries || [])?.filter((el) =>
-                            filters?.country_codes.split(",")?.includes(el?.id)
+                            filters?.country_codes.split(",")?.includes(el?.id),
                           )
                     }
                     filterOptions={(options, { inputValue }) => {
@@ -220,8 +230,8 @@ const Plans = (props) => {
                           option?.iso3_code,
                           option?.country_code,
                         ].some((field) =>
-                          normalizeString(field)?.includes(normalizedInput)
-                        )
+                          normalizeString(field)?.includes(normalizedInput),
+                        ),
                       );
                     }}
                     options={data?.countries || []}
@@ -239,7 +249,7 @@ const Plans = (props) => {
                         setSearch(
                           value?.map((el) => {
                             return { id: el?.id };
-                          })
+                          }),
                         );
                         setActiveTab("countries");
                         setFilters({
@@ -257,7 +267,7 @@ const Plans = (props) => {
                                   country_name: el?.country,
                                 };
                               }) || [],
-                          })
+                          }),
                         );
                       }
                     }}
@@ -304,7 +314,7 @@ const Plans = (props) => {
                       `px-2 py-1 rounded text-base font-bold transition-colors`,
                       {
                         "bg-primary text-white": activeTab === "countries",
-                      }
+                      },
                     )}
                   >
                     {t("btn.countries")}
@@ -323,7 +333,7 @@ const Plans = (props) => {
                       `px-2 py-1 rounded text-base font-bold transition-colors text-primary`,
                       {
                         "bg-primary text-white": activeTab === "regions",
-                      }
+                      },
                     )}
                   >
                     {t("btn.regions")}
@@ -341,7 +351,7 @@ const Plans = (props) => {
                       `px-2 py-1 rounded text-base font-bold transition-colors`,
                       {
                         "bg-primary text-white": activeTab === "global",
-                      }
+                      },
                     )}
                   >
                     {t("btn.global")}
@@ -395,6 +405,7 @@ const Plans = (props) => {
       )}
       {openOrderDetail && (
         <OrderPopup
+          fromPlans={true}
           id={searchParams.get("order_id")}
           onClose={() => {
             setOpenOrderDetail(false);

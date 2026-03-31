@@ -1,6 +1,6 @@
 //UTILITIES
 import { useMemo, useRef, useState } from "react";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 //REDUCER
 import { AttachSearch, DetachSearch } from "../../redux/reducers/searchReducer";
 //COMPONENT
@@ -30,6 +30,15 @@ export const CountriesList = (props) => {
   const [expandedRow, setExpandedRow] = useState(null);
   const [expandedCountry, setExpandedCountry] = useState(null);
   const [selectedCountry, setSelectedCountry] = useState(null);
+  const top_countries_count = useSelector(
+    (state) => state.currency?.top_countries_count,
+  );
+
+  const topCountriesCount = useMemo(() => {
+    return Number.parseInt(top_countries_count) - 1;
+  }, [top_countries_count]);
+
+  console.log(topCountriesCount, "pppp");
 
   // Calculate itemsPerRow based on screen size
   const itemsPerRow = useMemo(() => {
@@ -58,7 +67,7 @@ export const CountriesList = (props) => {
   // Calculate the row index for a given country
   const getRowIndex = (countryId) => {
     const countryIndex = data.findIndex(
-      (country) => (region ? country.region_code : country.id) === countryId
+      (country) => (region ? country.region_code : country.id) === countryId,
     );
     return Math.floor(countryIndex / itemsPerRow);
   };
@@ -95,7 +104,7 @@ export const CountriesList = (props) => {
                   },
                 ],
               }),
-        })
+        }),
       );
     }
   };
@@ -123,7 +132,7 @@ export const CountriesList = (props) => {
                     }
                     expandedCountry={expandedCountry}
                   />
-                )
+                ),
             )}
           </div>
 
@@ -143,24 +152,27 @@ export const CountriesList = (props) => {
           </Grid2>
         </div>
       ))}
-      {!isLoading && data?.length > 8 && countryDisplay && (
-        <div className="mt-8 text-center">
-          <button
-            onClick={() => {
-              setShowAllCountries(!showAllCountries);
+      {!isLoading &&
+        data?.length > topCountriesCount &&
+        topCountriesCount >= 0 &&
+        countryDisplay && (
+          <div className="mt-8 text-center">
+            <button
+              onClick={() => {
+                setShowAllCountries(!showAllCountries);
 
-              if (showAllCountries && sectionRef) {
-                sectionRef.current?.scrollIntoView({
-                  behavior: "smooth",
-                });
-              }
-            }}
-            className="px-8 py-3 bg-primary text-white rounded font-medium hover:bg-secondary/90 transition-colors"
-          >
-            {showAllCountries ? t("btn.viewLess") : t("btn.viewAllCountries")}
-          </button>
-        </div>
-      )}
+                if (showAllCountries && sectionRef) {
+                  sectionRef.current?.scrollIntoView({
+                    behavior: "smooth",
+                  });
+                }
+              }}
+              className="px-8 py-3 bg-primary text-white rounded font-medium hover:bg-secondary/90 transition-colors"
+            >
+              {showAllCountries ? t("btn.viewLess") : t("btn.viewAllCountries")}
+            </button>
+          </div>
+        )}
     </div>
   );
 };

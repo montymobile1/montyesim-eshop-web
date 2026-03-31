@@ -54,7 +54,7 @@ api.interceptors.request.use(
   (error) => {
     // NOSONAR
     return Promise.reject(error);
-  }
+  },
 );
 // Set the AUTH token for any request
 api.interceptors.response.use(
@@ -81,7 +81,7 @@ api.interceptors.response.use(
               "X-Language": "en",
               "x-device-id": sessionStorage.getItem("x-device-id") || "1234",
             },
-          }
+          },
         )
         .then((res) => {
           const newToken = res?.data?.data?.access_token;
@@ -91,13 +91,13 @@ api.interceptors.response.use(
             store.dispatch(
               LimitedSignIn({
                 ...res?.data?.data,
-              })
+              }),
             );
           } else if (authenticationStore?.isAuthenticated) {
             store.dispatch(
               SignIn({
                 ...res?.data?.data,
-              })
+              }),
             );
           } else {
             store.dispatch(SignOut());
@@ -123,11 +123,10 @@ api.interceptors.response.use(
       deleteToken(messaging);
       supabaseSignout();
     } else {
-      console.log(error, "errorrrr");
       const backendMessage = error?.response?.data?.message || error?.message;
       error.message = backendMessage;
 
       throw error;
     }
-  }
+  },
 );

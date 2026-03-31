@@ -9,12 +9,18 @@ import clsx from "clsx";
 import { useDispatch, useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
 import { toast } from "react-toastify";
-import { resendOrderOTP, userLogin, verifyOTP } from "../core/apis/authAPI";
+import {
+  resendLoginOTP,
+  resendOrderOTP,
+  verifyOTP,
+} from "../core/apis/authAPI";
 import { verifyOrderOTP } from "../core/apis/userAPI";
 import { dcbMessage } from "../core/variables/ProjectVariables";
 import { SignIn } from "../redux/reducers/authReducer";
 import NoDataFound from "./shared/no-data-found/NoDataFound";
 import TransactionExpired from "./TransactionExpired";
+
+const REST_OTP_CHANNEL_DELAY_SECONDS = 15;
 
 const schema = ({ t }) =>
   yup.object().shape({
@@ -25,7 +31,7 @@ const schema = ({ t }) =>
           .string()
           .matches(/^\d$/, t("auth.otpMustBeNumber"))
           .required(t("auth.otpRequired"))
-          .length(1, t("auth.otpDigitLength"))
+          .length(1, t("auth.otpDigitLength")),
       )
       .length(6, t("auth.otpSixDigits")),
   });
@@ -43,16 +49,19 @@ const OtpVerification = ({
   loading = false,
   errorAssign = false,
   otpRequested = false,
+  setShowOtpVerification,
+  setVerifyBy,
   otpExpiration,
 }) => {
   const { iccid } = useParams();
   const { t } = useTranslation();
   const otp_expiration_time = useSelector(
-    (state) => state.currency?.otp_expiration_time
+    (state) => state.currency?.otp_expiration_time,
   );
+  const [loadingResend, setLoadingResend] = useState(false);
 
   const transaction_expiry_time = useSelector(
-    (state) => state.currency?.transaction_expiry_time
+    (state) => state.currency?.transaction_expiry_time,
   );
   const inputRefs = useRef([]);
   const dispatch = useDispatch();
@@ -60,15 +69,29 @@ const OtpVerification = ({
   const [isVerifying, setIsVerifying] = useState(false);
   const [openTransactionExpired, setOpenTransactionExpired] = useState(false);
   const [resend, setResend] = useState(true);
-  const { login_type } = useSelector((state) => state.currency);
+  const { login_type, otp_channel } = useSelector((state) => state.currency);
 
   const [expiresAt, setExpiresAt] = useState(
-    Date.now() + (otpExpiration ?? orderDetail?.otp_expiration ?? 300) * 1000
+    Date.now() +
+      (login_type === "email_phone_both"
+        ? REST_OTP_CHANNEL_DELAY_SECONDS
+        : (otpExpiration ?? orderDetail?.otp_expiration ?? 300)) *
+        1000,
   );
 
   const [timer, setTimer] = useState(
-    Math.max(0, Math.floor((expiresAt - Date.now()) / 1000))
+    Math.max(0, Math.floor((expiresAt - Date.now()) / 1000)),
   );
+
+  const getOtpExpirySeconds = () => {
+    if (checkout) {
+      if (otp_expiration_time && otp_expiration_time !== "") {
+        return otp_expiration_time * 60;
+      }
+      return otpExpiration ?? orderDetail?.otp_expiration ?? 300;
+    }
+    return otpExpiration ?? orderDetail?.otp_expiration ?? 300;
+  };
 
   // Transaction expiry tracking for checkout
 
@@ -107,10 +130,14 @@ const OtpVerification = ({
       setTimeout(() => ac.abort(), 60000);
     } else {
       toast.error(
-        "Autofill OTP not supported. Please enter your code manually."
+        "Autofill OTP not supported. Please enter your code manually.",
       );
     }
   };
+
+  const restOtpChannel = useMemo(() => {
+    return otp_channel?.filter((el) => el !== verifyBy);
+  }, [otp_channel, verifyBy]);
 
   useEffect(() => {
     if (inputRefs.current[0]) {
@@ -133,7 +160,7 @@ const OtpVerification = ({
     const interval = setInterval(() => {
       const remaining = Math.max(
         0,
-        Math.floor((expiresAt - Date.now()) / 1000)
+        Math.floor((expiresAt - Date.now()) / 1000),
       );
       setTimer(remaining);
 
@@ -144,7 +171,7 @@ const OtpVerification = ({
     }, 1000);
 
     return () => clearInterval(interval);
-  }, [expiresAt, loading]);
+  }, [expiresAt, loading, login_type]);
 
   // Transaction expiry timer for checkout
   useEffect(() => {
@@ -159,9 +186,9 @@ const OtpVerification = ({
     const interval = setInterval(() => {
       const remaining = Math.max(
         0,
-        Math.floor((transactionExpiresAt - Date.now()) / 1000)
+        Math.floor((transactionExpiresAt - Date.now()) / 1000),
       );
-      console.log(remaining, "remaininggg");
+
       if (remaining === 0) {
         setOpenTransactionExpired(true);
         handleCancelOrder();
@@ -190,8 +217,8 @@ const OtpVerification = ({
             ...(login_type === "phone"
               ? { phone }
               : login_type === "email"
-              ? { user_email: email?.toLowerCase() }
-              : { user_email: email?.toLowerCase(), phone }),
+                ? { user_email: email?.toLowerCase() }
+                : { user_email: email?.toLowerCase(), phone }),
             verification_pin: payload.otp.join(""),
             provider_token: "",
             provider_type: "",
@@ -243,7 +270,12 @@ const OtpVerification = ({
     }
   };
 
-  const handleResendOtp = () => {
+  /* EXPLANATION:
+  Resend otp howi beshof iza l otp expired by3ml generate la new otp and send it
+  iza mano expired it send same otp again 
+  */
+
+  const handleResendOtp = (newVerify) => {
     const storageKey = `${phone}-otpVerification`;
 
     if (checkout) {
@@ -259,7 +291,7 @@ const OtpVerification = ({
             setExpiresAt(newExpiresAt);
             localStorage.setItem(
               storageKey,
-              JSON.stringify({ otpExpSec, expiresAt: newExpiresAt })
+              JSON.stringify({ otpExpSec, expiresAt: newExpiresAt }),
             );
             setResend(true);
           }
@@ -277,7 +309,13 @@ const OtpVerification = ({
           }
         });
     } else {
-      const requestPayload = {};
+      setLoadingResend(true);
+      const requestPayload = {
+        otp_channel:
+          newVerify?.toLowerCase() == verifyBy?.toLowerCase()
+            ? verifyBy?.toUpperCase()
+            : newVerify?.toUpperCase(),
+      };
       switch (login_type) {
         case "email":
           requestPayload.email = email?.toLowerCase();
@@ -286,6 +324,8 @@ const OtpVerification = ({
           requestPayload.phone = phone;
           break;
         case "email_phone":
+        case "email_phone_email":
+        case "email_phone_both":
           requestPayload.email = email?.toLowerCase();
           requestPayload.phone = phone;
           break;
@@ -293,16 +333,23 @@ const OtpVerification = ({
           break;
       }
 
-      userLogin(requestPayload)
+      resendLoginOTP(requestPayload)
         .then((res) => {
           if (res?.data?.status === "success") {
-            const otpExpSec = res?.data?.data?.otp_expiration ?? 300;
+            const fallbackMinutes = otp_expiration_time ?? 5;
+            const fallbackSeconds = fallbackMinutes * 60;
+            const otpExpSec =
+              login_type === "email_phone_both"
+                ? REST_OTP_CHANNEL_DELAY_SECONDS
+                : (res?.data?.data?.otp_expiration ?? fallbackSeconds);
+
             const newExpiresAt = Date.now() + otpExpSec * 1000;
             setExpiresAt(newExpiresAt);
             localStorage.setItem(
               storageKey,
-              JSON.stringify({ otpExpSec, expiresAt: newExpiresAt })
+              JSON.stringify({ otpExpSec, expiresAt: newExpiresAt }),
             );
+
             setShowEmailSent(true);
             setResend(true);
           }
@@ -319,6 +366,9 @@ const OtpVerification = ({
           } else {
             toast?.error(e?.message || "Failed to send message");
           }
+        })
+        .finally(() => {
+          setLoadingResend(false);
         });
     }
   };
@@ -357,7 +407,7 @@ const OtpVerification = ({
           "w-full max-w-md flex flex-col gap-[2rem] sm:px-unset",
           {
             "px-8 mx-auto": !checkout,
-          }
+          },
         )}
       >
         <h1 className="font-bold text-center text-primary">
@@ -371,9 +421,7 @@ const OtpVerification = ({
               })}
           <br />
           <span dir="ltr" className="font-medium">
-            {login_type === "phone" || login_type === "email_phone"
-              ? phone?.toLowerCase() || ""
-              : email?.toLowerCase() || ""}
+            {verifyBy === "email" ? email?.toLowerCase() : phone?.toLowerCase()}
           </span>
         </p>
 
@@ -437,14 +485,15 @@ const OtpVerification = ({
           </div>
 
           <div className="flex flex-row flex-wrap gap-[0.5rem] w-full justify-center text-center text-sm">
-            {!loading ? (
+            {!loading && !loadingResend ? (
               !resend ? (
                 <>
                   {t("auth.didntReceiveCode")}{" "}
                   <button
-                    onClick={handleResendOtp}
+                    onClick={() => handleResendOtp(verifyBy)}
                     onKeyDown={(e) => {
-                      if (e.key === "Enter" || e.key === " ") handleResendOtp();
+                      if (e.key === "Enter" || e.key === " ")
+                        handleResendOtp(verifyBy);
                     }}
                     className="text-secondary underline cursor-pointer bg-transparent p-0"
                   >
@@ -477,6 +526,45 @@ const OtpVerification = ({
               />
             )}
           </div>
+          {!resend && restOtpChannel?.length > 0 && (
+            <>
+              <div className="text-center text-sm font-semibold text-gray-500 my-2">
+                {t("auth.orContinueWith")}
+              </div>
+              <div className="flex flex-col">
+                {restOtpChannel?.map((channel, index) => (
+                  <div key={channel} className="flex flex-col">
+                    <Button
+                      fullWidth
+                      variant="contained"
+                      color="primary"
+                      type="button"
+                      disabled={loadingResend}
+                      onClick={() => {
+                        setVerifyBy(channel);
+                        handleResendOtp(channel);
+                        reset();
+                      }}
+                      onKeyDown={(e) => {
+                        if (e.key === "Enter" || e.key === " ")
+                          handleResendOtp(channel);
+                      }}
+                    >
+                      {t("auth.signInViaChannel", { channel })}
+                    </Button>
+
+                    {/* Add "Or" between buttons except after the last one */}
+
+                    {index < restOtpChannel?.length - 1 && (
+                      <div className="text-center text-sm font-semibold text-gray-500 my-2">
+                        {t("auth.orContinueWith")}
+                      </div>
+                    )}
+                  </div>
+                ))}
+              </div>
+            </>
+          )}
         </div>
       </form>
     </>

@@ -1,14 +1,11 @@
 import React from "react";
-
-export const supportEmail = "support@montyesim.com";
-export const supportPhone = "+44 207 370 53 10";
-export const supportWhatsappPhone = "+442073705310";
 export const onlyCountries = [];
 export const supportedLanguages = [
   { code: "en", name: "English", flag: "EN" },
   { code: "ar", name: "العربية", flag: "ع" },
   { code: "fr", name: "Français", flag: "FR" },
 ];
+export const defaultLoginType = "email";
 export const supportedPrefix = [];
 export const excludedCountries = ["il"];
 export const dcbMessage = "dcbMessage";

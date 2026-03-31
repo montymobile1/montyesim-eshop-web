@@ -26,6 +26,9 @@ import Referral from "../../pages/referral/Referral";
 export const useAppRoutes = () => {
   const login_type = useSelector((state) => state?.currency?.login_type);
   const isSupportPromo = import.meta?.env?.VITE_SUPPORT_PROMO === "true";
+  const displayReferAndEarn = useSelector(
+    (state) => state.currency?.refer_and_earn,
+  );
 
   return useMemo(() => {
     const routes = [
@@ -97,12 +100,12 @@ export const useAppRoutes = () => {
       {
         path: "/checkout/:id",
         element: <Checkout />,
-        isPrivate: login_type == "phone" || login_type == "email_phone",
+        isPrivate: login_type == "phone" || login_type?.includes("email_phone"),
       },
       {
         path: "/checkout/:id/:iccid",
         element: <Checkout topup={true} />,
-        isPrivate: login_type == "phone" || login_type == "email_phone",
+        isPrivate: login_type == "phone" || login_type?.includes("email_phone"),
       },
       {
         path: "/referral",
@@ -129,17 +132,19 @@ export const useAppRoutes = () => {
         element: <Profile />,
         isPrivate: true,
       },
-      {
-        path: "/refer-earn",
-        element: <ReferAndEarn />,
-        isPrivate: true,
-      },
     ];
 
     if (isSupportPromo) {
       routes.push({
         path: "/my-wallet",
         element: <MyWallet />,
+        isPrivate: true,
+      });
+    }
+    if (isSupportPromo && displayReferAndEarn) {
+      routes.push({
+        path: "/refer-earn",
+        element: <ReferAndEarn />,
         isPrivate: true,
       });
     }

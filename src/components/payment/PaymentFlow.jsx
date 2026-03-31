@@ -7,6 +7,7 @@ import { useSelector } from "react-redux";
 import { useLocation, useParams } from "react-router-dom";
 import { toast } from "react-toastify";
 import { assignBundle, assignTopupBundle } from "../../core/apis/userAPI";
+import { logAnalyticsEventWithUser } from "../../core/helpers/CommonHelpers";
 import OtpVerification from "../OtpVerification";
 import { FormRadioGroup } from "../shared/form-components/FormComponents";
 import NoDataFound from "../shared/no-data-found/NoDataFound";
@@ -96,7 +97,26 @@ const PaymentFlow = (props) => {
         setOrderDetail(res?.data?.data);
         setOrderId(res?.data?.data?.order_id);
 
+        // Log Firebase Analytics event for order creation
+        logAnalyticsEventWithUser("create-order", {
+          bundle_code: props?.bundle?.bundle_code || "",
+          bundle_name: props?.bundle?.bundle_name || "",
+          user: user_info?.email || "temp user",
+          order_id: res?.data?.data?.order_id || "",
+          method: typeSelected || "",
+        });
+
         if (res?.data?.data?.payment_status == "COMPLETED") {
+          // Log wallet payment success event if payment method is Wallet
+          if (typeSelected === "Wallet") {
+            logAnalyticsEventWithUser("wallet-payment-successful", {
+              bundle_code: props?.bundle?.bundle_code || "",
+              bundle_name: props?.bundle?.bundle_name || "",
+              user: user_info?.email || "",
+              order_id: res?.data?.data?.order_id || "",
+              method: "Wallet",
+            });
+          }
           handleSuccessOrder(res?.data?.data?.order_id);
         } else {
           setClientSecret(res?.data?.data?.payment_intent_client_secret);
@@ -109,6 +129,8 @@ const PaymentFlow = (props) => {
       .catch((e) => {
         setLoading(false);
         setErrorAssign(true);
+        setClientSecret(null);
+        setStripePromise(null);
         toast?.error(e?.message || t("payment.failedToLoadPaymentInput"));
       });
   };
@@ -236,7 +258,7 @@ const PaymentFlow = (props) => {
                   related_search={related_search}
                   loading={loading}
                   verifyBy={
-                    login_type == "phone" || login_type == "email_phone"
+                    login_type == "phone" || login_type?.includes("email_phone")
                       ? "sms"
                       : "email"
                   }

@@ -1,5 +1,6 @@
 //UTILITIES
 import { useMemo, useState } from "react";
+import { useSelector } from "react-redux";
 //COMPONENT
 import DoDisturbIcon from "@mui/icons-material/DoDisturb";
 import {
@@ -12,6 +13,7 @@ import {
 } from "@mui/material";
 import { useTranslation } from "react-i18next";
 import BundleDetail from "../detail/BundleDetail";
+import { logAnalyticsEventWithUser } from "../../../core/helpers/CommonHelpers";
 
 const BundleCard = ({
   bundle,
@@ -24,8 +26,16 @@ const BundleCard = ({
   topup,
 }) => {
   const { t } = useTranslation();
+  const { user_info } = useSelector((state) => state.authentication);
+
   const [openDetail, setOpenDetail] = useState(false);
   const handleDetail = () => {
+    // Log Firebase Analytics event with automatic email hashing
+    logAnalyticsEventWithUser("bundle-detail", {
+      bundle_code: bundle?.bundle_code || "",
+      bundle_name: bundle?.bundle_name || "",
+      user: user_info?.email || "temp user",
+    });
     setOpenDetail(true);
   };
 

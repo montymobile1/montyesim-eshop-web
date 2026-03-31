@@ -10,13 +10,9 @@ import {
   Backdrop,
   Button,
   CircularProgress,
-  FormControlLabel,
-  FormHelperText,
   Link as MuiLink,
-  Radio,
-  RadioGroup,
-  Typography,
 } from "@mui/material";
+import parsePhoneNumberFromString from "libphonenumber-js";
 import { isValidPhoneNumber } from "react-phone-number-input";
 import { useSelector } from "react-redux";
 import OtpVerification from "../components/OtpVerification";
@@ -34,7 +30,6 @@ import {
   onlyCountries,
   supportedPrefix,
 } from "../core/variables/ProjectVariables";
-import parsePhoneNumberFromString from "libphonenumber-js";
 
 const SignIn = () => {
   const { t } = useTranslation();
@@ -46,11 +41,11 @@ const SignIn = () => {
   const [otpExpiration, setOtpExpiration] = useState(200);
   const [otpRequested, setOtpRequested] = useState(false);
   const [info, setInfo] = useState(null);
-  const { login_type, otp_channel, social_login } = useSelector(
-    (state) => state.currency
-  );
+  const { login_type, otp_channel, social_login, otp_expiration_time } =
+    useSelector((state) => state.currency);
   const canSocialLogin =
-    !(login_type === "phone" || login_type === "email_phone") && social_login;
+    !(login_type === "phone" || login_type?.includes("email_phone")) &&
+    social_login;
 
   const defaultSelectedCountry = info;
 
@@ -61,7 +56,8 @@ const SignIn = () => {
         .label("Phone number")
         .nullable()
         .when("$signinType", {
-          is: () => login_type === "phone" || login_type === "email_phone",
+          is: () =>
+            login_type === "phone" || login_type?.includes("email_phone"),
           then: (schema) => schema.required(t("auth.phoneRequired")),
           otherwise: (schema) => schema.notRequired(),
         })
@@ -94,7 +90,8 @@ const SignIn = () => {
         })
         .nullable()
         .when("$signinType", {
-          is: (val) => login_type !== "phone" || login_type == "email_phone",
+          is: (val) =>
+            login_type !== "phone" || login_type?.includes("email_phone"),
           then: (schema) => schema.required(`${t("checkout.emailRequired")}`),
           otherwise: (schema) => schema.notRequired(),
         }),
@@ -109,7 +106,7 @@ const SignIn = () => {
       }),
     });
 
-  const { control, handleSubmit, getValues } = useForm({
+  const { control, handleSubmit, getValues, reset, setValue } = useForm({
     defaultValues: {
       email: "",
       phone: "",
@@ -119,11 +116,16 @@ const SignIn = () => {
     resolver: yupResolver(schema({ t })),
     mode: "all",
   });
+
+  useEffect(() => {
+    reset({ ...getValues(), verify_by: otp_channel?.[0] || "" });
+  }, [otp_channel]);
+
   const handleSubmitForm = (payload) => {
     setIsSubmitting(true);
 
     const requestPayload = {
-      verify_by: payload?.verify_by,
+      otp_channel: payload?.verify_by?.toUpperCase(),
       confirm: payload?.confirm,
     };
 
@@ -139,10 +141,11 @@ const SignIn = () => {
         break;
 
       case "email_phone":
+      case "email_phone_email":
+      case "email_phone_both":
         requestPayload.email = payload?.email?.toLowerCase();
         requestPayload.phone = payload?.phone;
         break;
-
       default:
         break;
     }
@@ -150,12 +153,13 @@ const SignIn = () => {
     userLogin(requestPayload)
       .then((res) => {
         if (res?.data?.status === "success") {
-          const otpExpSec = res?.data?.data?.otp_expiration;
+          const otpExpSec =
+            res?.data?.data?.otp_expiration || otp_expiration_time * 60;
           const expiresAt = Date.now() + otpExpSec * 1000;
 
           localStorage.setItem(
             storageKey,
-            JSON.stringify({ otpExpSec, expiresAt })
+            JSON.stringify({ otpExpSec, expiresAt }),
           );
 
           setOtpExpiration(otpExpSec);
@@ -170,7 +174,7 @@ const SignIn = () => {
             const { expiresAt } = JSON.parse(saved);
             const remaining = Math.max(
               0,
-              Math.floor((expiresAt - Date.now()) / 1000)
+              Math.floor((expiresAt - Date.now()) / 1000),
             );
 
             setOtpExpiration(remaining);
@@ -202,7 +206,9 @@ const SignIn = () => {
             verifyBy={getValues("verify_by")}
             setShowEmailSent={setShowEmailSent}
             otpRequested={otpRequested}
+            setShowOtpVerification={setShowOtpVerification}
             otpExpiration={otpExpiration}
+            setVerifyBy={(channel) => setValue("verify_by", channel)}
           />
         </div>
         {showEmailSent && (
@@ -244,7 +250,7 @@ const SignIn = () => {
           className="flex flex-col gap-[1rem]"
           onSubmit={handleSubmit(handleSubmitForm)}
         >
-          {(login_type === "email" || login_type == "email_phone") && (
+          {(login_type === "email" || login_type?.includes("email_phone")) && (
             <div>
               <label htmlFor="email" className="block text-sm font-medium mb-2">
                 {t("auth.email")}
@@ -266,7 +272,7 @@ const SignIn = () => {
               />
             </div>
           )}
-          {(login_type === "phone" || login_type === "email_phone") && (
+          {(login_type === "phone" || login_type?.includes("email_phone")) && (
             <div>
               <label htmlFor="phone" className="block text-sm font-medium mb-2">
                 {t("auth.phoneNumber")}
@@ -288,8 +294,8 @@ const SignIn = () => {
                             ? defaultSelectedCountry
                             : onlyCountries[0]
                           : excludedCountries?.includes(defaultSelectedCountry)
-                          ? "lb"
-                          : defaultSelectedCountry || "lb"
+                            ? "lb"
+                            : defaultSelectedCountry || "lb"
                       }
                       disabled={false}
                       helperText={error?.message}
@@ -301,55 +307,6 @@ const SignIn = () => {
                 }}
               />
             </div>
-          )}
-
-          {otp_channel?.length > 1 && (
-            <Controller
-              render={({
-                field: { onChange, value },
-                fieldState: { error },
-              }) => (
-                <div className={"flex flex-col gap-[0.5rem]"}>
-                  <RadioGroup
-                    name="use-radio-group"
-                    value={value}
-                    onChange={onChange}
-                    row
-                    sx={{ columnGap: 2, flexWrap: "nowrap", overflowX: "auto" }}
-                  >
-                    {otp_channel?.map((channel) => (
-                      <FormControlLabel
-                        key={channel}
-                        sx={{
-                          alignItems: "center !important",
-                          whiteSpace: "nowrap",
-                        }}
-                        value={channel}
-                        label={
-                          <div className="flex flex-row gap-[0.5rem] items-center">
-                            <Typography
-                              fontWeight={"bold"}
-                              color="primary"
-                              fontSize={"1rem"}
-                            >
-                              {t("auth.verifyByChannel", {
-                                channel: channel,
-                              })}
-                            </Typography>
-                          </div>
-                        }
-                        control={<Radio checked={value === channel} />}
-                      />
-                    ))}
-                  </RadioGroup>
-                  {error?.message !== "" && (
-                    <FormHelperText>{error?.message}</FormHelperText>
-                  )}
-                </div>
-              )}
-              name="verify_by"
-              control={control}
-            />
           )}
 
           <div className="flex">
@@ -390,15 +347,32 @@ const SignIn = () => {
             />
           </div>
 
-          <div>
-            <Button
-              disabled={isSubmitting}
-              type="submit"
-              color="primary"
-              variant="contained"
-            >
-              {isSubmitting ? t("auth.signingIn") : t("auth.signIn")}
-            </Button>
+          <div className="flex flex-col">
+            {otp_channel?.map((channel, index) => (
+              <div key={channel} className="flex flex-col">
+                <Button
+                  fullWidth
+                  disabled={isSubmitting}
+                  variant="contained"
+                  color="primary"
+                  type="submit"
+                  onClick={() => setValue("verify_by", channel)}
+                >
+                  {isSubmitting
+                    ? t("auth.signingIn")
+                    : otp_channel?.length > 1
+                      ? t("auth.signInViaChannel", { channel })
+                      : t("auth.signIn")}
+                </Button>
+
+                {/* Add "Or" between buttons except after the last one */}
+                {index < otp_channel.length - 1 && (
+                  <div className="text-center text-sm font-semibold text-gray-500 my-2">
+                    {t("auth.orContinueWith")}
+                  </div>
+                )}
+              </div>
+            ))}
           </div>
         </form>
 

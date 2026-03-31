@@ -34,12 +34,12 @@ const Profile = () => {
   const [selectedCountry, setSelectedCountry] = useState("");
   const login_type = useSelector((state) => state?.currency?.login_type);
   const system_currency = useSelector(
-    (state) => state.currency?.system_currency
+    (state) => state.currency?.system_currency,
   );
 
   const schema = yup.object().shape({
     email:
-      login_type === "email" || login_type == "email_phone"
+      login_type === "email" || login_type?.includes("email_phone")
         ? yup
             .string()
             .email(t("profile.errors.emailInvalid"))
@@ -53,14 +53,14 @@ const Profile = () => {
       .test(
         "only-letters",
         t("profile.errors.onlyLettersAllowed"),
-        (value) => !value || /^[^\d]+$/.test(value)
+        (value) => !value || /^[^\d]+$/.test(value),
       )
       .max(
         60,
         t("errors.maxCharacter", {
           field: t("profile.firstName"),
           character: 60,
-        })
+        }),
       )
       .nullable(),
 
@@ -70,14 +70,14 @@ const Profile = () => {
       .test(
         "only-letters",
         t("profile.errors.onlyLettersAllowed"),
-        (value) => !value || /^[^\d]+$/.test(value)
+        (value) => !value || /^[^\d]+$/.test(value),
       )
       .max(
         60,
         t("errors.maxCharacter", {
           field: t("profile.lastName"),
           character: 60,
-        })
+        }),
       )
       .nullable(),
 
@@ -85,7 +85,7 @@ const Profile = () => {
       .string()
       .label(t("profile.phoneNumber"))
       .when("$signinType", {
-        is: () => login_type === "phone" || login_type === "email_phone",
+        is: () => login_type === "phone" || login_type?.includes("email_phone"),
         then: (schema) => schema.required(t("profile.errors.phoneRequired")),
         otherwise: (schema) => schema.notRequired(),
       })
@@ -97,7 +97,6 @@ const Profile = () => {
         return isValidPhoneNumber(value); // validate if actual number exists
       }),
 
-    should_notify: yup.bool(),
     default_currency: yup.object().nullable(),
   });
 
@@ -121,7 +120,6 @@ const Profile = () => {
       msisdn: user_info?.msisdn || "",
       first_name: user_info?.first_name || "",
       last_name: user_info?.last_name || "",
-      should_notify: user_info?.should_notify || false,
       user_currency: null,
     },
     resolver: yupResolver(schema),
@@ -148,7 +146,7 @@ const Profile = () => {
           if (payload?.user_currency) {
             sessionStorage?.setItem(
               "user_currency",
-              payload?.user_currency?.currency
+              payload?.user_currency?.currency,
             );
             supportedLanguages?.forEach((el) => {
               localStorage.removeItem(`home_countries_cache_${el?.code}`);
@@ -159,7 +157,7 @@ const Profile = () => {
           queryClient.invalidateQueries();
 
           dispatch(
-            UpdateCurrency({ user_currency: payload?.user_currency || null })
+            UpdateCurrency({ user_currency: payload?.user_currency || null }),
           );
           dispatch(UpdateAuthInfo(res?.data?.data?.user_info));
         }
@@ -167,7 +165,7 @@ const Profile = () => {
         toast?.[statusBool ? "success" : "error"](
           statusBool
             ? t("profile.infoUpdatedSuccessfully")
-            : t("profile.failedToUpdateUserInfo")
+            : t("profile.failedToUpdateUserInfo"),
         );
       })
       .catch((error) => {
@@ -183,7 +181,6 @@ const Profile = () => {
       email: user_info?.email || "",
       first_name: user_info?.first_name || "",
       last_name: user_info?.last_name || "",
-      should_notify: user_info?.should_notify || false,
       msisdn: user_info?.msisdn || selectedCountry?.dialCode || "",
       user_currency: currencies
         ? currencies?.find((el) => el?.currency == user_info?.currency_code)
@@ -274,9 +271,7 @@ const Profile = () => {
                     <FormPhoneInput
                       onlyCountries={onlyCountries}
                       value={value}
-                      disabled={
-                        login_type == "phone" || login_type == "email_phone"
-                      }
+                      disabled={!user_info?.phone_editable}
                       defaultCountry={
                         onlyCountries?.length === 0 ? "lb" : onlyCountries?.[0]
                       }
@@ -325,27 +320,6 @@ const Profile = () => {
                 />
               </div>
             </div>
-            {login_type != "phone" && (
-              <div className={"flex flex-row"}>
-                <Controller
-                  render={({
-                    field: { onChange, value },
-                    fieldState: { error },
-                  }) => (
-                    <FormSwitch
-                      label={t("profile.receiveUpdatesByEmail")}
-                      disabled
-                      placeholder={"Enter email"}
-                      value={value}
-                      helperText={error?.message}
-                      onChange={(value) => onChange(value)}
-                    />
-                  )}
-                  name="should_notify"
-                  control={control}
-                />
-              </div>
-            )}
             <div className={"flex flex-row gap-[1rem] items-end justify-end "}>
               <Button
                 variant={"contained"}

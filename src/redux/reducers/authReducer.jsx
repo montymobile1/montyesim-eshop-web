@@ -1,6 +1,8 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { fetchUserInfoFromAPI } from "../redux-services/authServices";
 import i18n from "../../i18n";
+import { setAnalyticsUserId, clearAnalyticsUserId } from "../../../firebaseconfig";
+import { hashEmail } from "../../core/helpers/CommonHelpers";
 
 const initialState = {
   tmp: {
@@ -40,6 +42,13 @@ const AuthSlice = createSlice({
 
       i18n.changeLanguage(action?.payload?.user_info?.language?.toLowerCase());
 
+      // Set Firebase Analytics user ID with hashed email
+      const email = action?.payload?.user_info?.email;
+      if (email) {
+        const hashedEmail = hashEmail(email);
+        setAnalyticsUserId(hashedEmail);
+      }
+
       return {
         ...state,
         tmp: {
@@ -56,6 +65,9 @@ const AuthSlice = createSlice({
       };
     },
     SignOut: (state, action) => {
+      // Clear Firebase Analytics user ID
+      clearAnalyticsUserId();
+
       return {
         ...state,
         ...initialState,

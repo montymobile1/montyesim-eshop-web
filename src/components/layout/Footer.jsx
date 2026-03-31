@@ -7,16 +7,19 @@ import { Link } from "react-router-dom";
 import {
   footerProjectName,
   supportAddress,
-  supportEmail,
   supportMap,
 } from "../../core/variables/ProjectVariables";
 import Container from "../Container";
 const Footer = () => {
   const { t } = useTranslation();
 
-  const whatsapp_number = useSelector(
-    (state) => state.currency?.whatsapp_number || ""
+  const company_support_email = useSelector(
+    (state) => state.currency?.company_support_email || ""
   );
+  const company_support_number = useSelector(
+    (state) => state.currency?.company_support_number || ""
+  );
+
   const handleNavigation = () => {
     window.scrollTo(0, 0);
   };
@@ -28,7 +31,7 @@ const Footer = () => {
       <Container className="py-8 flex flex-col gap-[1rem]">
         <div className="flex flex-col sm:flex-row items-center sm:items-baseline justify-around gap-[2rem]">
           {/* Contact Info */}
-          {whatsapp_number?.trim() !== "" && (
+          {company_support_number?.trim() !== "" && (
             <div className="text-center">
               <div className="flex items-center justify-center mb-4">
                 <div className="w-10 h-10 rounded bg-white flex items-center justify-center">
@@ -40,7 +43,9 @@ const Footer = () => {
                 {t("footer.phone")}
               </h3>
               <p dir="ltr">
-                {whatsapp_number?.trim() === "" ? "N/A" : whatsapp_number}
+                {company_support_number?.trim() === ""
+                  ? "N/A"
+                  : company_support_number}
               </p>
             </div>
           )}
@@ -56,7 +61,9 @@ const Footer = () => {
               {" "}
               {t("footer.email")}
             </h3>
-            <a href={`mailto:${supportEmail}`}>{supportEmail}</a>
+            <a href={`mailto:${company_support_email}`}>
+              {company_support_email}
+            </a>
           </div>
 
           {/* Office */}

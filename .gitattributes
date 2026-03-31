@@ -2,6 +2,7 @@
 src/index.css merge=ours
 src/assets/theme.jsx merge=ours
 src/core/variables/ProjectVariables.jsx merge=ours
+src/components/iconImage/IconImage.jsx merge=ours
 public/logo/logo.png merge=keep-ours -text
 public/logo/logo2.png merge=keep-ours -text
 public/logo/loader.png merge=keep-ours -text

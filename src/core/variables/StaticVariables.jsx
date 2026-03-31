@@ -205,3 +205,18 @@ export const bundles = [
     },
   },
 ];
+
+/*EXPLANATION
+email => for email verification
+phone => for sms verification
+email_phone   => for sms verification
+email_phone_email => for email verification
+email_phone_both=> for both email and sms verification
+*/
+export const OTPChannelsMap = {
+  email: ["email"],
+  phone: ["sms"],
+  email_phone: ["sms"],
+  email_phone_email: ["email"],
+  email_phone_both: ["email", "sms"],
+};

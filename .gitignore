@@ -29,5 +29,5 @@ build/
 coverage/*
 
 # Negate the 'lcov.info' to include it
-
+package-lock.json
 !coverage/lcov.info
