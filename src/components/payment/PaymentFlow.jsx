@@ -129,8 +129,6 @@ const PaymentFlow = (props) => {
       .catch((e) => {
         setLoading(false);
         setErrorAssign(true);
-        setClientSecret(null);
-        setStripePromise(null);
         toast?.error(e?.message || t("payment.failedToLoadPaymentInput"));
       });
   };

@@ -27,7 +27,7 @@ build/
 # Ignore all files in 'coverage'
 
 coverage/*
-
-# Negate the 'lcov.info' to include it
+.env
+.env.*
 package-lock.json
-!coverage/lcov.info
+

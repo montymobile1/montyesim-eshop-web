@@ -8,3 +8,7 @@ public/logo/logo2.png merge=keep-ours -text
 public/logo/loader.png merge=keep-ours -text
 tailwind.config.js merge=ours
 index.html merge=keepMine
+.gitlab-ci.yml merge=ours
+nginx.conf merge=ours
+downstream-env.yml merge=ours
+.old-gitlab-ci.yml merge=ours
