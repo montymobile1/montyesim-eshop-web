@@ -83,16 +83,6 @@ const OtpVerification = ({
     Math.max(0, Math.floor((expiresAt - Date.now()) / 1000)),
   );
 
-  const getOtpExpirySeconds = () => {
-    if (checkout) {
-      if (otp_expiration_time && otp_expiration_time !== "") {
-        return otp_expiration_time * 60;
-      }
-      return otpExpiration ?? orderDetail?.otp_expiration ?? 300;
-    }
-    return otpExpiration ?? orderDetail?.otp_expiration ?? 300;
-  };
-
   // Transaction expiry tracking for checkout
 
   const [transactionExpiresAt] = useState(() => {

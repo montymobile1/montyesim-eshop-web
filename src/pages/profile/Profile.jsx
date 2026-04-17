@@ -1,31 +1,30 @@
-import React, { useEffect, useState } from "react";
-import * as yup from "yup";
-import { useForm, Controller } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
+import { useEffect, useState } from "react";
+import { Controller, useForm } from "react-hook-form";
 import { isValidPhoneNumber } from "react-phone-number-input";
-import { toast } from "react-toastify";
 import { useDispatch, useSelector } from "react-redux";
+import { toast } from "react-toastify";
+import * as yup from "yup";
 //COMPONENT
+import { Info } from "@mui/icons-material";
+import { Button, Card, CardContent, Tooltip } from "@mui/material";
+import parsePhoneNumberFromString from "libphonenumber-js";
+import { useTranslation } from "react-i18next";
+import { useQuery } from "react-query";
 import {
   FormDropdownList,
   FormInput,
   FormPhoneInput,
-  FormSwitch,
 } from "../../components/shared/form-components/FormComponents";
-import { Button, Card, CardContent, Tooltip } from "@mui/material";
 import { updateUserInfo } from "../../core/apis/authAPI";
-import { UpdateAuthInfo } from "../../redux/reducers/authReducer";
 import { getActiveCurrencies } from "../../core/apis/configurationsAPI";
-import { useQuery } from "react-query";
-import { UpdateCurrency } from "../../redux/reducers/currencyReducer";
-import { Info } from "@mui/icons-material";
-import { queryClient } from "../../main";
-import { useTranslation } from "react-i18next";
 import {
   onlyCountries,
   supportedLanguages,
 } from "../../core/variables/ProjectVariables";
-import parsePhoneNumberFromString from "libphonenumber-js";
+import { queryClient } from "../../main";
+import { UpdateAuthInfo } from "../../redux/reducers/authReducer";
+import { UpdateCurrency } from "../../redux/reducers/currencyReducer";
 
 const Profile = () => {
   const { t } = useTranslation();
