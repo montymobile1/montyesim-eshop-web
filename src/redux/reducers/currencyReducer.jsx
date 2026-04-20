@@ -76,7 +76,7 @@ const CurrencySlice = createSlice({
         state.top_countries_count = topCountriesCount?.value || 9;
         state.otp_channel =
           OTPChannelsMap?.[loginType?.value] ||
-          OTPChannelsMap?.defaultLoginType ||
+          OTPChannelsMap?.[defaultLoginType] ||
           "email";
 
         state.sea_option = import.meta.env.VITE_APP_SEA_OPTION !== "false";
@@ -100,7 +100,7 @@ const CurrencySlice = createSlice({
         state.login_type = defaultLoginType;
         state.bundles_version = "";
         state.otp_expiration_time = "";
-        state.otp_channel = OTPChannelsMap?.defaultLoginType || "email";
+        state.otp_channel = OTPChannelsMap?.[defaultLoginType] || "email";
         state.sea_option = import.meta.env.VITE_APP_SEA_OPTION !== "false";
         state.refer_and_earn =
           import.meta.env.VITE_APP_REFER_AND_EARN === "true";
