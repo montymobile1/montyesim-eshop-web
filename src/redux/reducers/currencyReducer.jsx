@@ -8,16 +8,12 @@ const initialState = {
   user_currency: null,
   login_type: defaultLoginType || "email",
   otp_channel: OTPChannelsMap?.[defaultLoginType] || ["email"],
-  sea_option: true,
-  social_login: true,
   allowed_payment_types: ["dcb"],
   whatsapp_number: "",
   bundles_version: null,
   referral_amount: "",
   otp_expiration_time: "",
   transaction_expiry_time: null,
-  refer_and_earn: false,
-  voucher_code: false,
   company_support_number: "",
   company_support_email: "",
   top_countries_count: 9,
@@ -79,11 +75,6 @@ const CurrencySlice = createSlice({
           OTPChannelsMap?.[defaultLoginType] ||
           "email";
 
-        state.sea_option = import.meta.env.VITE_APP_SEA_OPTION !== "false";
-        state.refer_and_earn =
-          import.meta.env.VITE_APP_REFER_AND_EARN === "true";
-        state.voucher_code = import.meta.env.VITE_APP_VOUCHER_CODE === "true";
-        state.social_login = import.meta.env.VITE_APP_SOCIAL_LOGIN !== "false";
         state.whatsapp_number = whatsappNumber?.value || "";
         state.company_support_number = companySupportPhone?.value || "";
         state.company_support_email = companySupportEmail?.value || "";
@@ -101,11 +92,6 @@ const CurrencySlice = createSlice({
         state.bundles_version = "";
         state.otp_expiration_time = "";
         state.otp_channel = OTPChannelsMap?.[defaultLoginType] || "email";
-        state.sea_option = import.meta.env.VITE_APP_SEA_OPTION !== "false";
-        state.refer_and_earn =
-          import.meta.env.VITE_APP_REFER_AND_EARN === "true";
-        state.voucher_code = import.meta.env.VITE_APP_VOUCHER_CODE === "true";
-        state.social_login = import.meta.env.VITE_APP_SOCIAL_LOGIN !== "false";
         state.transaction_expiry_time = null;
         state.top_countries_count = 9;
         state.allowed_payment_types = ["dcb"];

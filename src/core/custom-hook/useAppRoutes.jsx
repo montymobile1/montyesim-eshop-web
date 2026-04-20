@@ -26,9 +26,7 @@ import Referral from "../../pages/referral/Referral";
 export const useAppRoutes = () => {
   const login_type = useSelector((state) => state?.currency?.login_type);
   const isSupportPromo = import.meta?.env?.VITE_SUPPORT_PROMO === "true";
-  const displayReferAndEarn = useSelector(
-    (state) => state.currency?.refer_and_earn,
-  );
+  const displayReferAndEarn = useSelector((state) => state.env?.refer_and_earn);
 
   return useMemo(() => {
     const routes = [
@@ -150,5 +148,5 @@ export const useAppRoutes = () => {
     }
 
     return routes;
-  }, [login_type]);
+  }, [login_type, displayReferAndEarn]);
 };

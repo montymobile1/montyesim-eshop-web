@@ -13,12 +13,8 @@ export default function MyWallet() {
   const { t } = useTranslation();
   const dispatch = useDispatch();
   const userInfo = useSelector((state) => state.authentication.user_info);
-  const displayReferAndEarn = useSelector(
-    (state) => state.currency?.refer_and_earn
-  );
-  const displayVoucherCode = useSelector(
-    (state) => state.currency?.voucher_code
-  );
+  const displayReferAndEarn = useSelector((state) => state.env?.refer_and_earn);
+  const displayVoucherCode = useSelector((state) => state.env?.voucher_code);
   const isSupportPromo = import.meta.env.VITE_SUPPORT_PROMO === "true";
 
   useEffect(() => {

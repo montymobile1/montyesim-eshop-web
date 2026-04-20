@@ -8,6 +8,7 @@ import PushNotification from "./components/push-notification/PushNotification";
 import AppRouter from "./core/routes/AppRouter";
 import { fetchUserInfo, SignOut } from "./redux/reducers/authReducer";
 import { fetchCurrencyInfo } from "./redux/reducers/currencyReducer";
+import { initializeEnvConfig } from "./redux/reducers/envReducer";
 import { setDayjsLocale } from "./components/dayjsSetup.js";
 import { ToastContainer } from "react-toastify";
 import { useVisibleToastPosition } from "./core/custom-hook/useVisibleToastPosition.jsx";
@@ -44,6 +45,7 @@ function App() {
     if (!sessionStorage.getItem("x-device-id")) {
       getDeviceId();
     }
+    dispatch(initializeEnvConfig());
     dispatch(fetchCurrencyInfo());
     if (isAuthenticated) {
       dispatch(fetchUserInfo());

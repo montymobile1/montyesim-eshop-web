@@ -41,11 +41,15 @@ const SignIn = () => {
   const [otpExpiration, setOtpExpiration] = useState(200);
   const [otpRequested, setOtpRequested] = useState(false);
   const [info, setInfo] = useState(null);
-  const { login_type, otp_channel, social_login, otp_expiration_time } =
-    useSelector((state) => state.currency);
+  const { login_type, otp_channel, otp_expiration_time } = useSelector(
+    (state) => state.currency,
+  );
+  const social_login = useSelector((state) => state.env?.social_login);
   const canSocialLogin =
     !(login_type === "phone" || login_type?.includes("email_phone")) &&
-    social_login;
+    social_login?.length > 0;
+
+  console.log(social_login, "sociallll", canSocialLogin);
 
   const defaultSelectedCountry = info;
 
@@ -384,25 +388,33 @@ const SignIn = () => {
               <div className="flex-grow border-t-[0.1rem] border-500"></div>
             </div>
             <div className="flex flex-col gap-[1rem]">
-              <button
-                onClick={signinWithGoogle}
-                className="flex items-center justify-center gap-[0.5rem] w-full py-2 px-4 border border-gray-300 rounded shadow-sm bg-white text-sm font-medium text-primary hover:bg-white focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#1877F2]"
-              >
-                <img
-                  src={"/media/google.svg"}
-                  className="h-5 w-5"
-                  alt={"sign-in with google"}
-                />
-                {t("auth.signInWithGoogle")}
-              </button>
+              {social_login?.includes("google") && (
+                <button
+                  onClick={signinWithGoogle}
+                  className="flex items-center justify-center gap-[0.5rem] w-full py-2 px-4 border border-gray-300 rounded shadow-sm bg-white text-sm font-medium text-primary hover:bg-white focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#1877F2]"
+                >
+                  <img
+                    src={"/media/google.svg"}
+                    className="h-5 w-5"
+                    alt={"sign-in with google"}
+                  />
+                  {t("auth.signInWithGoogle")}
+                </button>
+              )}
 
-              {/* <button
-            onClick={signinWithFacebook}
-            className="flex items-center justify-center gap-[0.5rem] w-full py-2 px-4 border border-gray-300 rounded shadow-sm bg-white text-sm font-medium focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#1877F2]"
-          >
-            <img src={"/media/facebook.svg"} className="h-5 w-5" alt={"sign-in with facebook"}/>
-            {t("auth.signInWithFacebook")}
-          </button> */}
+              {social_login?.includes("facebook") && (
+                <button
+                  onClick={signinWithFacebook}
+                  className="flex items-center justify-center gap-[0.5rem] w-full py-2 px-4 border border-gray-300 rounded shadow-sm bg-white text-sm font-medium focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#1877F2]"
+                >
+                  <img
+                    src={"/media/facebook.svg"}
+                    className="h-5 w-5"
+                    alt={"sign-in with facebook"}
+                  />
+                  {t("auth.signInWithFacebook")}
+                </button>
+              )}
             </div>
           </>
         )}

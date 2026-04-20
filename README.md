@@ -71,6 +71,12 @@ Please ensure the following environment variables are defined in your .env file 
     VITE_APP_PROJECT_TITLE=your-project-title
     VITE_ENVIRONMENT=development-or-production
     VITE_APP_TITLE=your-app-title
+    VITE_APP_SEA_OPTION=declare if cruise bundles will be available ex:true
+    VITE_APP_SOCIAL_LOGIN=list of enabled social login seperated by comma ex: "google,facebook"
+    VITE_DEFAULT_LANGUAGE="en"
+    VITE_ESIM_INSTALLATION=declare if esim installation should be visible in esim order popup ex:true
+    VITE_APP_REFER_AND_EARN=declare if refer and earn feature is enabled ex:true
+    VITE_APP_VOUCHER_CODE=declare if voucher feature is enabled ex:true
 ```
 
 ## **Logins**
