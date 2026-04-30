@@ -115,7 +115,7 @@ const OrderCard = ({ order, myesim, refetchData }) => {
             <Avatar
               src={
                 order?.bundle_details?.bundle_category?.type == "CRUISE"
-                  ? "/media/global.svg"
+                  ? "/media/cruises.png"
                   : order?.bundle_details?.icon
               }
               alt={

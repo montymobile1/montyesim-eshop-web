@@ -40,7 +40,8 @@ const BundleCard = ({
   };
 
   const avatarSrc = useMemo(() => {
-    if (globalDisplay || cruises) return "/media/global.svg";
+    if (cruises) return "/media/cruises.png";
+    else if (globalDisplay) return "/media/global.svg";
     else if (regionIcon)
       return regionIcon; //NOTES: requested to be done from frontend manually taken by props
     else return bundle?.icon;
@@ -101,7 +102,7 @@ const BundleCard = ({
                   `validity.${bundle?.validity_label?.toLowerCase()}${
                     bundle?.validity > 1 ? "_plural" : ""
                   }`,
-                  { count: bundle?.validity }
+                  { count: bundle?.validity },
                 )}`
               )}
             </p>
@@ -201,6 +202,7 @@ const BundleCard = ({
           onClose={() => setOpenDetail(false)}
           bundle={bundle}
           iccid={iccid}
+          cruises={cruises}
           countryData={countryData}
         />
       )}

@@ -42,6 +42,7 @@ const BundleDetail = ({
   bundle,
   globalDisplay,
   iccid,
+  cruises,
   regionIcon,
 }) => {
   const { t } = useTranslation();
@@ -203,7 +204,8 @@ const BundleDetail = ({
   }, [appliedCode]);
 
   const avatarSrc = useMemo(() => {
-    if (globalDisplay) return "/media/global.svg";
+    if (cruises) return "/media/cruises.png";
+    else if (globalDisplay) return "/media/global.svg";
     else if (regionIcon)
       return regionIcon; //NOTES: requested to be done from frontend manually taken by props
     else return bundle?.icon;
