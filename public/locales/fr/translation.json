@@ -262,6 +262,7 @@
     "noTopupsAvailable": "Actuellement, il n'y a aucune recharge disponible",
     "availableIn": "Disponible dans",
     "supportedCountries": "Pays pris en charge",
+    "supportedShips": "Navires pris en charge",
     "bundleIsntSupportedCountry": "Ce forfait n'est pris en charge dans aucun pays.",
     "additionalInfo": "Informations supplémentaires",
     "planType": "Type de forfait",

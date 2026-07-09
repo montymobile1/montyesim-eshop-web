@@ -7,6 +7,7 @@ const initialState = {
   sea_option: true,
   refer_and_earn: false,
   voucher_code: false,
+  supportShips: false,
 };
 
 const envSlice = createSlice({
@@ -21,6 +22,7 @@ const envSlice = createSlice({
         sea_option,
         refer_and_earn,
         voucher_code,
+        supportShips,
       } = action.payload;
       if (social_login !== undefined) state.social_login = social_login;
       if (enableFb !== undefined) state.enableFb = enableFb;
@@ -28,6 +30,7 @@ const envSlice = createSlice({
       if (sea_option !== undefined) state.sea_option = sea_option;
       if (refer_and_earn !== undefined) state.refer_and_earn = refer_and_earn;
       if (voucher_code !== undefined) state.voucher_code = voucher_code;
+      if (supportShips !== undefined) state.supportShips = supportShips;
     },
     initializeEnvConfig: (state) => {
       const socialLoginProviders =
@@ -42,6 +45,7 @@ const envSlice = createSlice({
       state.sea_option = import.meta.env.VITE_APP_SEA_OPTION !== "false";
       state.refer_and_earn = import.meta.env.VITE_APP_REFER_AND_EARN === "true";
       state.voucher_code = import.meta.env.VITE_APP_VOUCHER_CODE === "true";
+      state.supportShips = import.meta.env.VITE_APP_SUPPORT_SHIPS === "true";
     },
   },
 });

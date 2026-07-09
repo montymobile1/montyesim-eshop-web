@@ -49,8 +49,6 @@ const SignIn = () => {
     !(login_type === "phone" || login_type?.includes("email_phone")) &&
     social_login?.length > 0;
 
-  console.log(social_login, "sociallll", canSocialLogin);
-
   const defaultSelectedCountry = info;
 
   const schema = ({ t }) =>

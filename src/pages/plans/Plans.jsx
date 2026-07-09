@@ -229,8 +229,11 @@ const Plans = (props) => {
                           option?.country,
                           option?.iso3_code,
                           option?.country_code,
+                          ...(option?.alternative_country?.split(",") ?? []),
                         ].some((field) =>
-                          normalizeString(field)?.includes(normalizedInput),
+                          normalizeString(field.trim())?.includes(
+                            normalizedInput,
+                          ),
                         ),
                       );
                     }}
@@ -330,7 +333,7 @@ const Plans = (props) => {
                       });
                     }}
                     className={clsx(
-                      `px-2 py-1 rounded text-base font-bold transition-colors text-primary`,
+                      `px-2 py-1 rounded text-base font-bold transition-colors`,
                       {
                         "bg-primary text-white": activeTab === "regions",
                       },

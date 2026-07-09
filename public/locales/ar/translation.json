@@ -260,6 +260,7 @@
     "noTopupsAvailable": "حالياً، لا توجد أي شحنات متاحة",
     "availableIn": "متوفر في",
     "supportedCountries": "الدول المدعومة",
+    "supportedShips": "السفن المدعومة",
     "bundleIsntSupportedCountry": "هذه الباقة غير مدعومة في أي دولة.",
     "additionalInfo": "معلومات إضافية",
     "planType": "نوع الباقة",

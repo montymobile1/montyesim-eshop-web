@@ -14,6 +14,7 @@ import {
 import { useTranslation } from "react-i18next";
 import BundleDetail from "../detail/BundleDetail";
 import { logAnalyticsEventWithUser } from "../../../core/helpers/CommonHelpers";
+import SupportedCard from "./SupportedCard";
 
 const BundleCard = ({
   bundle,
@@ -27,7 +28,7 @@ const BundleCard = ({
 }) => {
   const { t } = useTranslation();
   const { user_info } = useSelector((state) => state.authentication);
-
+  const supportShips = useSelector((state) => state.env?.supportShips);
   const [openDetail, setOpenDetail] = useState(false);
   const handleDetail = () => {
     // Log Firebase Analytics event with automatic email hashing
@@ -126,53 +127,19 @@ const BundleCard = ({
                 ))}
             </div>
           </div>
-          {!cruises && (
-            <div className="flex flex-row justify-between gap-4 bg-bgLight rounded-lg p-4">
-              <p className="text-primary font-semibold text-sm">
-                {t("bundles.supportedCountries")}
-              </p>
-              <AvatarGroup
-                max={4}
-                total={bundle?.count_countries || 0}
-                sx={{
-                  "& .MuiAvatar-root": {
-                    width: 20,
-                    height: 20,
-                    fontSize: "0.75rem",
-                  },
-                  "& .MuiAvatarGroup-avatar": {
-                    width: 20,
-                    height: 20,
-                    fontSize: "0.5rem",
-                  },
-                  "& .MuiAvatar-root:first-of-type": {
-                    zIndex: 1,
-                  },
-                }}
-              >
-                {isLoading &&
-                  Array.from({ length: 4 }).map((_, idx) => (
-                    <Skeleton
-                      variant="circular"
-                      width={20}
-                      height={20}
-                      key={`skeleton-${idx}`}
-                    />
-                  ))}
-                {!isLoading && bundle?.countries?.length === 0 ? (
-                  <DoDisturbIcon color="primary" />
-                ) : (
-                  bundle?.countries?.map((supportedCountries) => (
-                    <Avatar
-                      key={supportedCountries?.id}
-                      alt={supportedCountries?.country}
-                      src={supportedCountries?.icon}
-                    />
-                  ))
-                )}
-              </AvatarGroup>
-            </div>
+          {(!cruises || (cruises && supportShips)) && (
+            <SupportedCard
+              cruises={cruises}
+              data={cruises ? bundle?.supported_ships : bundle?.countries}
+              isLoading={isLoading}
+              count={
+                cruises
+                  ? bundle?.supported_ships?.length
+                  : bundle?.count_countries
+              }
+            />
           )}
+
           {isLoading ? (
             <Skeleton
               variant="rectangular"

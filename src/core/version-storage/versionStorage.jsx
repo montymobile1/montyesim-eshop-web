@@ -1,8 +1,18 @@
-import i18n from "../../i18n";
-
-const getLanguageAwareKey = (baseKey) => `${baseKey}_${i18n?.language}`;
+import { supportedLanguages } from "../variables/ProjectVariables";
 
 export const VERSION_STORAGE_KEY = "app_bundles_version";
+
+const HOME_COUNTRIES_CACHE_BASE_KEY = "home_countries_cache";
+
+export const clearHomeCountriesCache = () => {
+  supportedLanguages.forEach(({ code }) => {
+    try {
+      localStorage.removeItem(`${HOME_COUNTRIES_CACHE_BASE_KEY}_${code}`);
+    } catch (error) {
+      console.error(`Error clearing home cache for ${code}:`, error);
+    }
+  });
+};
 
 export const getStoredVersion = () => {
   try {
@@ -26,7 +36,7 @@ export const clearCacheIfVersionChanged = (newVersion) => {
 
   if (storedVersion !== newVersion) {
     try {
-      localStorage.removeItem(getLanguageAwareKey(`home_countries_cache`));
+      clearHomeCountriesCache();
       setStoredVersion(newVersion);
       return true;
     } catch (error) {

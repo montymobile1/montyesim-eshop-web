@@ -260,6 +260,7 @@
     "noTopupsAvailable": "Currently, There are no top-ups available",
     "availableIn": "Available in",
     "supportedCountries": "Supported Countries",
+    "supportedShips": "Supported Ships",
     "bundleIsntSupportedCountry": "This bundle isn't supported in any country.",
     "additionalInfo": "Additional Information",
     "planType": "Plan Type",

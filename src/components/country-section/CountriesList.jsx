@@ -38,8 +38,6 @@ export const CountriesList = (props) => {
     return Number.parseInt(top_countries_count) - 1;
   }, [top_countries_count]);
 
-  console.log(topCountriesCount, "pppp");
-
   // Calculate itemsPerRow based on screen size
   const itemsPerRow = useMemo(() => {
     if (isSmall) return 1;

@@ -77,6 +77,7 @@ Please ensure the following environment variables are defined in your .env file 
     VITE_ESIM_INSTALLATION=declare if esim installation should be visible in esim order popup ex:true
     VITE_APP_REFER_AND_EARN=declare if refer and earn feature is enabled ex:true
     VITE_APP_VOUCHER_CODE=declare if voucher feature is enabled ex:true
+    VITE_APP_SUPPORT_SHIPS=declare if cruise could have support ships section ex:true
 ```
 
 ## **Logins**
