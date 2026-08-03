@@ -122,6 +122,11 @@ api.interceptors.response.use(
       queryClient.clear();
       deleteToken(messaging);
       supabaseSignout();
+
+      const backendMessage = error?.response?.data?.message || error?.message;
+      error.message = backendMessage;
+
+      throw error;
     } else {
       const backendMessage = error?.response?.data?.message || error?.message;
       error.message = backendMessage;

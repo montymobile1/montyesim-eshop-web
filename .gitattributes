@@ -12,3 +12,4 @@ index.html merge=keepMine
 nginx.conf merge=ours
 downstream-env.yml merge=ours
 .old-gitlab-ci.yml merge=ours
+config/** merge=ours
