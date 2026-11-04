@@ -27,8 +27,12 @@ i18n
       lookupLocalStorage: "i18nextLng",
     },
     supportedLngs: ["en", "ar", "fr"],
+    // "brand" holds client-specific texts (public/locales/{{lng}}/brand.json).
+    // main holds the default texts; each client branch overrides them. See README "Brand Translations".
+    ns: ["translation", "brand"],
+    defaultNS: "translation",
     backend: {
-      loadPath: "/locales/{{lng}}/translation.json",
+      loadPath: "/locales/{{lng}}/{{ns}}.json",
     },
     react: {
       useSuspense: true,

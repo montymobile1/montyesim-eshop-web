@@ -8,7 +8,6 @@ export const supportedLanguages = [
 export const defaultLoginType = "email";
 export const supportedPrefix = [];
 export const excludedCountries = ["il"];
-export const dcbMessage = "dcbMessage";
 export const footerProjectName = "Monty eSIM";
 export const supportAddress = (
   <>

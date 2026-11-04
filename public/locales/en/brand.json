@@ -1,0 +1,5 @@
+{
+  "auth": {
+    "dcbMessage": "You are about to pay using your phone number. A verification code was sent to you by {{verifyBy}}"
+  }
+}

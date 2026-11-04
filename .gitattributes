@@ -6,6 +6,7 @@ src/components/iconImage/IconImage.jsx merge=ours
 public/logo/logo.png merge=keep-ours -text
 public/logo/logo2.png merge=keep-ours -text
 public/logo/loader.png merge=keep-ours -text
+public/logo/logo-white.png merge=keep-ours -text
 tailwind.config.js merge=ours
 index.html merge=keepMine
 .gitlab-ci.yml merge=ours
@@ -13,3 +14,5 @@ nginx.conf merge=ours
 downstream-env.yml merge=ours
 .old-gitlab-ci.yml merge=ours
 config/** merge=ours
+# client-specific translations: each client branch keeps its own copy (see README "Brand Translations")
+public/locales/*/brand.json merge=ours

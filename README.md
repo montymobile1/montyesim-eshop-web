@@ -78,6 +78,7 @@ Please ensure the following environment variables are defined in your .env file 
     VITE_APP_REFER_AND_EARN=declare if refer and earn feature is enabled ex:true
     VITE_APP_VOUCHER_CODE=declare if voucher feature is enabled ex:true
     VITE_APP_SUPPORT_SHIPS=declare if cruise could have support ships section ex:true
+    VITE_SUPPORT_PROMO=declare if promo codes are enabled (also enables the wallet) ex:true
 ```
 
 ## **Logins**
@@ -92,8 +93,19 @@ The project supports **three types of login**:
 
 ### 2. **Standard Login**
 
-- Users enter their **email**.
-- They receive a **One-Time Password (OTP)** via email to log in.
+- Users log in with a **One-Time Password (OTP)**.
+- The login type sets which identifier is used (email, phone or both) and where the OTP is sent (email, SMS or both).
+- The available login types are listed in [StaticVariables.jsx](src/core/variables/StaticVariables.jsx) (see `OTPChannelsMap` and the explanation comment above it):
+
+| Login type          | OTP sent via  |
+| ------------------- | ------------- |
+| `email`             | Email         |
+| `phone`             | SMS           |
+| `email_phone`       | SMS           |
+| `email_phone_email` | Email         |
+| `email_phone_both`  | Email and SMS |
+
+- The active type comes from the `login_type` admin variable (see [Admin Variables](#admin-variables)). If it is not set, the `defaultLoginType` in [ProjectVariables.jsx](src/core/variables/ProjectVariables.jsx) is used.
 
 ### 3. **Social Login**
 
@@ -136,7 +148,6 @@ To enable social login, configure the following platforms:
   `https://your-domain.com`
 - **Authorized Redirect URIs**:
   `https://your-project.firebaseapp.com/__/auth/handler`
-
 - This **Client ID will be used in Supabase** configuration.
 
 ---
@@ -166,7 +177,6 @@ To enable social login, configure the following platforms:
 ### **Facebook Developer Console**
 
 1. Go to: [https://developers.facebook.com/](https://developers.facebook.com/)
-
 2. Navigate to:
 
 - **My Apps > Your App > Facebook Login > Settings**
@@ -233,4 +243,73 @@ Admin variables are the one needed to be set inside the admin portal within sett
     OTP_EXPIRATION_TIME=number | otp default expiration time
     allowed_payment_types=strings seperated by comma | ex:Card,Wallet | options : Card , Wallet , DCB
     login_type=string | options listed in static variables
+```
+
+## **Project Variables**
+
+Some values are specific to each project but are not secret, so they are not kept in `.env`. They are set in one file:
+
+[src/core/variables/ProjectVariables.jsx](src/core/variables/ProjectVariables.jsx)
+
+```bash
+    onlyCountries=array | country codes allowed in the phone input (empty means all)
+    supportedLanguages=array | languages available in the language switcher (code, name, flag)
+    defaultLoginType=string | login type used when login_type is not set in the admin portal
+    supportedPrefix=array | phone prefixes allowed in the phone input (empty means all)
+    excludedCountries=array | country codes hidden from the phone input
+    footerProjectName=string | project name shown in the footer
+    supportAddress=JSX | address shown in the support section
+    supportMap=string | Google Maps link to the support address
+```
+
+Texts that differ per project (such as the DCB checkout message) are not set here; see [Brand Translations](#brand-translations).
+
+## **Theme**
+
+All colors and theme values are defined in one place: [tailwind.config.js](tailwind.config.js).
+
+This includes the `primary` and `secondary` color scales, the status colors (`error`, `success`, `warning`), text, border and background colors, shadows, spacing, border radius and fonts.
+
+These values are read with `resolveConfig` from `tailwindcss` and passed on to the other libraries, so they all use the same colors:
+
+- **Material UI**: [src/assets/theme.jsx](src/assets/theme.jsx) builds the MUI theme (palette and component overrides) from the Tailwind values.
+- **Other components**: [src/assets/CustomComponents.jsx](src/assets/CustomComponents.jsx) uses the same values for styled components and the Stripe payment element (`stripeAppearance`).
+
+To change the branding, edit `tailwind.config.js` only. Do not hard-code colors in components or in the MUI theme.
+
+## **Brand Translations**
+
+Texts that can differ per client deployment (for example the DCB payment message) do **not** go in `translation.json`. They go in a separate namespace file:
+
+```bash
+    public/locales/en/brand.json
+    public/locales/ar/brand.json
+    public/locales/fr/brand.json
+```
+
+- On `main` these files hold the **default** texts.
+- On a client branch, replace the values with that client's texts, keeping the same keys:
+
+```json
+{
+  "auth": {
+    "dcbMessage": "Client-specific text. A verification code was sent to you by {{verifyBy}}"
+  }
+}
+```
+
+- Supported brand keys:
+
+```bash
+    auth.dcbMessage | message shown on the OTP screen during DCB checkout
+```
+
+- In code, read a brand key with the `brand:` prefix, e.g. `t("brand:auth.dcbMessage", { verifyBy })`.
+
+### Keeping brand files when merging `main`
+
+`brand.json` is listed in `.gitattributes` with `merge=ours`, like the other client-specific files (`ProjectVariables.jsx`, `theme.jsx`, logos, ...). The `ours` merge driver must be enabled once on every machine that merges `main` into a client branch:
+
+```bash
+    git config merge.ours.driver true
 ```

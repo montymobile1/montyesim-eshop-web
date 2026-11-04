@@ -15,7 +15,6 @@ import {
   verifyOTP,
 } from "../core/apis/authAPI";
 import { verifyOrderOTP } from "../core/apis/userAPI";
-import { dcbMessage } from "../core/variables/ProjectVariables";
 import { SignIn } from "../redux/reducers/authReducer";
 import NoDataFound from "./shared/no-data-found/NoDataFound";
 import TransactionExpired from "./TransactionExpired";
@@ -405,7 +404,7 @@ const OtpVerification = ({
         </h1>
         <p className="text-center font-semibold text-content-600">
           {checkout
-            ? t(`auth.${dcbMessage}`, { verifyBy: t(`auth.${verifyBy}`) })
+            ? t("brand:auth.dcbMessage", { verifyBy: t(`auth.${verifyBy}`) })
             : t("auth.verificationCodeSent", {
                 verifyBy: t(`auth.${verifyBy}`),
               })}
