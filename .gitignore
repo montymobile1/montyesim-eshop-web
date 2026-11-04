@@ -38,3 +38,6 @@ coverage/*
 
 # Config
 config/
+
+# Client-specific app association files (copied from config/well-known at build time)
+public/.well-known/
